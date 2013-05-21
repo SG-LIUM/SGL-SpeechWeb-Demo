@@ -16,8 +16,7 @@ class AudioFileApiControllerSpec extends Specification {
 
     "send 405 on bad input" in {
       running(FakeApplication()) {
-        val result = controllers.AudioFileApiController.addAudioFile()(FakeRequest())
-        status(result) must equalTo(405)
+        //TODO
       }
     }
 
