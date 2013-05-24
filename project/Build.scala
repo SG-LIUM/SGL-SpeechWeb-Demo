@@ -16,6 +16,7 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here
+    scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
     resolvers := Seq(
       "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
       "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
