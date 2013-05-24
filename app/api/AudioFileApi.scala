@@ -15,22 +15,11 @@ object AudioFileApi {
     val regexp = """\d+""".r
     val maybeLastFile: Option[File] = dirs.filter(f => f.isDirectory && regexp.findFirstIn(f.getName).isDefined).sorted.lastOption
 
-    maybeLastFile flatMap { f =>
-        Try(f.getName.toInt) match {
-          case Success(v) => Some(v + 1)
-          case Failure(v) => None
-        }
-      }
+    maybeLastFile flatMap { f => Try(f.getName.toInt).toOption.map(_+1) }
   }
 
-  def getNextFileId(dirs: Array[File]): Option[Int] = {
-    getNextFileId(dirs.toList)
+  def getNextFileId(dirs: Array[File]): Option[Int] = getNextFileId(dirs.toList)
 
-  }
-  def getNextFileId(dir: File): Option[Int] = {
-    for {
-      files <- Option(dir.listFiles)
-      id <- getNextFileId(files)
-    } yield(id)
-  }
+  def getNextFileId(dir: File): Option[Int] = Option(dir.listFiles) flatMap getNextFileId
+
 }
