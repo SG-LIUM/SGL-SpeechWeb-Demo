@@ -16,10 +16,12 @@ class AudioFileApiSpec extends Specification
   with CreateSampleDirectories
   with SampleDirectories {
 
+
   "AudioFileApi " should {
 
-    "should return the next available id" in {
-      AudioFileApi.getNextFileId(dirs) should beSome(124)
+    "should return the next available id" in new WithApplication {
+      val api = new AudioFileApi(play.api.libs.concurrent.Akka.system)
+      api.getNextFileId(dirs) should beSome(124)
     }
 
   }
@@ -37,8 +39,7 @@ trait SampleDirectories {
 
 trait CreateSampleDirectories extends Before with SampleDirectories {
   def before = {
-    dirs map (d => Try(d.delete))
-    dirs map (d => Files.createDirectory(d))
+    dirs map (d => Try(Files.createDirectory(d)))
   }
 }
 

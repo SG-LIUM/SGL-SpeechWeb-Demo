@@ -5,7 +5,10 @@ import java.io.File
 import scala.util.{Try, Success, Failure}
 import scala.util.matching.Regex
 
-object AudioFileApi {
+import akka.actor.ActorSystem
+
+case class AudioFileApi(
+  actorSystem: ActorSystem) {
 
   def createAudioFile(tmpFile: File): Try[Int] = {
     Success(0)

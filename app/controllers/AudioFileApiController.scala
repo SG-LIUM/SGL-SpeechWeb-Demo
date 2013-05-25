@@ -3,7 +3,7 @@ package controllers
 import play.api._
 import play.api.mvc._
 
-import fr.lium.api.AudioFileApi
+import fr.lium.Env
 
 import com.wordnik.swagger.core._
 import com.wordnik.swagger.annotations._
@@ -12,6 +12,8 @@ import java.io.File
 
 @Api(value = "/audiofile", listingPath = "/api-docs.{format}/audiofile", description = "Operations about audio files")
 object AudioFileApiController extends BaseApiController {
+
+  private lazy val env = Env.current
 
   def getOptions(path: String) = Action { implicit request => JsonResponse(new value.ApiResponse(200, "Ok")) }
 
@@ -24,7 +26,7 @@ object AudioFileApiController extends BaseApiController {
     new ApiParamImplicit(value = "Audio file to attach", required = true, dataType = "file", paramType = "body")))
   def addAudioFile () = Action(parse.multipartFormData) { request =>
     request.body.file("file").map { audiofile =>
-      AudioFileApi.createAudioFile(audiofile.ref.file)
+      env.audioFileApi.createAudioFile(audiofile.ref.file)
       JsonResponse("OK")
     }.getOrElse {
       JsonResponse(new value.ApiResponse(405, "Invalid input"), 405)
