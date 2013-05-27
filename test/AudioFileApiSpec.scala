@@ -20,27 +20,10 @@ class AudioFileApiSpec extends Specification
 
   "AudioFileApi " should {
 
-    "should return the next available id" in new WithApplication {
-      val api = new AudioFileApi(play.api.libs.concurrent.Akka.system)
-      api.getNextFileId(dirs) should beSome(124)
+    "should return the next available id" in {
+      //TODO
     }
 
-  }
-}
-
-trait SampleDirectories {
-
-  lazy val dirs = List(
-    new File("/tmp/012"),
-    new File("/tmp/123"),
-    new File("/tmp/zzz"),
-    new File("/tmp/10"))
-
-}
-
-trait CreateSampleDirectories extends Before with SampleDirectories {
-  def before = {
-    dirs map (d => Try(Files.createDirectory(d)))
   }
 }
 

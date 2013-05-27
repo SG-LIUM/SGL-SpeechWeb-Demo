@@ -8,16 +8,16 @@ import java.nio.file.Files
 
 object FileUtils {
 
-  def getNextFileId(dirs: List[File]): Option[Int] = {
+  def getNextFileId(dirs: List[File]): Int = {
     val regexp = """\d+""".r
     val maybeLastFile: Option[File] = dirs.filter(f ⇒ f.isDirectory && regexp.findFirstIn(f.getName).isDefined).sorted.lastOption
 
-    maybeLastFile flatMap { f ⇒ Try(f.getName.toInt).toOption.map(_ + 1) }
+    maybeLastFile.flatMap{ f ⇒ Try(f.getName.toInt).toOption.map(_ + 1) } getOrElse(1)
   }
 
-  def getNextFileId(dirs: Array[File]): Option[Int] = getNextFileId(dirs.toList)
+  def getNextFileId(dirs: Array[File]): Int = getNextFileId(dirs.toList)
 
-  def getNextFileId(dir: File): Option[Int] = Option(dir.listFiles) flatMap getNextFileId
+  def getNextFileId(dir: File): Int = Option(dir.listFiles) map getNextFileId getOrElse(1)
 
   def moveFileToDir(fromFile: File, toDir: File): Try[File] = {
     val newFileName = toDir.getAbsolutePath + File.separator + fromFile.getName

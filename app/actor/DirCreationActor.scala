@@ -32,7 +32,7 @@ class DirCreationActor(baseDir: File)
 
   private def createDir: Try[Int] = {
     Try {
-      val nextId = FileUtils.getNextFileId(baseDir).get
+      val nextId = FileUtils.getNextFileId(baseDir)
       new File(baseDir + File.separator + nextId).mkdir()
       nextId
     }
