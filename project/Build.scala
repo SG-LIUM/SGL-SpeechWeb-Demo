@@ -11,7 +11,8 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc,
     anorm,
-    "com.wordnik" %% "swagger-play2-utils" % "1.2.4"
+    "com.wordnik" %% "swagger-play2-utils" % "1.2.4",
+    "commons-io" % "commons-io" % "2.4"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

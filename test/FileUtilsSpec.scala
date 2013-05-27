@@ -13,6 +13,8 @@ import scala.util.Try
 import fr.lium.api.AudioFileApi
 import fr.lium.util.FileUtils
 
+import org.apache.commons.io.{FileUtils => ApacheFileUtils}
+
 class FileUtilsSpec extends Specification
   with CreateSampleDirectories
   with SampleDirectories {
@@ -42,7 +44,9 @@ trait SampleDirectories {
 }
 
 trait CreateSampleDirectories extends Before with SampleDirectories {
+
   def before = {
+    dirs map (d => Try(ApacheFileUtils.deleteDirectory(d)))
     dirs map (d => Try(Files.createDirectory(d)))
   }
 }
