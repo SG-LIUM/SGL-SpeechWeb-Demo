@@ -7,6 +7,7 @@ import fr.lium.Env
 
 import com.wordnik.swagger.core._
 import com.wordnik.swagger.annotations._
+import javax.ws.rs.{ QueryParam, PathParam }
 
 import java.io.File
 import scala.concurrent.ExecutionContext.Implicits._
@@ -19,6 +20,16 @@ object AudioFileApiController extends BaseApiController {
   private lazy val env = Env.current
 
   def getOptions(path: String) = Action { implicit request ⇒ JsonResponse(new value.ApiResponse(200, "Ok")) }
+
+  @ApiOperation(value = "Find audio file by ID", notes = "Returns an audioFile", responseClass = "AudioFile", httpMethod = "GET")
+  @ApiErrors(Array(
+    new ApiError(code = 400, reason = "Invalid ID supplied"),
+    new ApiError(code = 404, reason = "AudioFile not found")))
+  def getAudioFileById(
+    @ApiParam(value = "ID of the audiofile to fetch")@PathParam("id") id: String) = Action { implicit request =>
+      //TODO
+      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
+    }
 
   @ApiOperation(value = "Add a new Audio File",
     responseClass = "void")
