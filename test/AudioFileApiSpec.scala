@@ -23,9 +23,10 @@ class AudioFileApiSpec extends Specification
   with SampleDirectories {
 
 
-  "AudioFileApi " should {
+  "AudioFileApi createAudioFile" should {
 
-    "should return the next available id" in new WithApplication {
+    "create a new dir and move the tmp file to it" in new WithApplication {
+
       implicit val timeout = Timeout(DurationInt(5) seconds)
 
       val baseDir = new File("/tmp/testaudio/")
