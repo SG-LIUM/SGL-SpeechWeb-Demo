@@ -29,4 +29,19 @@ object FileUtils {
     }
   }
 
+  def moveFileToFile(fromFile: File, toFile: File): Try[File] = {
+    val newFileName = toFile.getAbsolutePath
+    val result = Try(Files.move(fromFile.toPath, new File(newFileName).toPath))
+
+    result match {
+      case Success(v) ⇒ Success(new File(newFileName))
+      case Failure(e) ⇒ Failure(e)
+    }
+  }
+
+  def getFileExtension(fileName: String): Option[String] =
+    if (fileName.contains('.'))
+      Some(fileName.substring(fileName.lastIndexOf(".")))
+    else None
+
 }

@@ -22,7 +22,7 @@ case class AudioFileApi(
     baseDirectory: File,
     actorSystem: ActorSystem) {
 
-  def createAudioFile(tmpFile: File): Future[Try[(Int, File)]] = {
+  def createAudioFile(tmpFile: File, newFileName: String): Future[Try[(Int, File)]] = {
 
     //Create the next directory using an Actor
     //It will avoid race conditions
@@ -32,7 +32,8 @@ case class AudioFileApi(
     dirId.map { tryD ⇒
       for {
         d <- tryD
-        newFile <- FileUtils.moveFileToDir(tmpFile, new File(baseDirectory + File.separator + d + File.separator))
+        newFile <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + d + File.separator + "audio" +
+          FileUtils.getFileExtension(newFileName).getOrElse("")))
       } yield (d, newFile)
     }
 

@@ -30,7 +30,7 @@ object AudioFileApiController extends BaseApiController {
   def addAudioFile() = Action(parse.multipartFormData) { request ⇒
     request.body.file("file").map { audiofile ⇒
       Async {
-        val f = env.audioFileApi.createAudioFile(audiofile.ref.file)
+        val f = env.audioFileApi.createAudioFile(audiofile.ref.file, audiofile.filename)
         f.map { result ⇒
 
           result match {
