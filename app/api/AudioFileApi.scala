@@ -1,28 +1,40 @@
 package fr.lium
 package api
 
-import java.io.File
-import scala.util.{Try, Success, Failure}
-import scala.util.matching.Regex
+import fr.lium.actor.DirCreationActor
+import fr.lium.util.FileUtils
 
-import akka.actor.ActorSystem
+import java.io.File
+
+import scala.util.matching.Regex
+import scala.util.{ Try, Success, Failure }
+import scala.concurrent.Future
+
+import scala.language.postfixOps
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits._
+
+import akka.actor.{ ActorSystem, Props, ActorRef }
+import akka.pattern.{ ask, pipe }
+import akka.util.Timeout
 
 case class AudioFileApi(
-  actorSystem: ActorSystem) {
+    baseDirectory: File,
+    actorSystem: ActorSystem) {
 
-  def createAudioFile(tmpFile: File): Try[Int] = {
-    Success(0)
+  def createAudioFile(tmpFile: File): Future[Try[(Int, File)]] = {
+
+    //Create the next directory using an Actor
+    //It will avoid race conditions
+    val dirCreationActor: ActorRef = actorSystem.actorOf(Props(new DirCreationActor(baseDirectory)), name = "dirCreationActor")
+    val dirId: Future[Try[Int]] = ask(dirCreationActor, "create")(5 seconds).mapTo[Try[Int]]
+
+    dirId.map { tryD ⇒
+      for {
+        d <- tryD
+        newFile <- FileUtils.moveFileToDir(tmpFile, new File(baseDirectory + File.separator + d + File.separator))
+      } yield (d, newFile)
+    }
 
   }
-  def getNextFileId(dirs: List[File]): Option[Int] = {
-    val regexp = """\d+""".r
-    val maybeLastFile: Option[File] = dirs.filter(f => f.isDirectory && regexp.findFirstIn(f.getName).isDefined).sorted.lastOption
-
-    maybeLastFile flatMap { f => Try(f.getName.toInt).toOption.map(_+1) }
-  }
-
-  def getNextFileId(dirs: Array[File]): Option[Int] = getNextFileId(dirs.toList)
-
-  def getNextFileId(dir: File): Option[Int] = Option(dir.listFiles) flatMap getNextFileId
-
 }

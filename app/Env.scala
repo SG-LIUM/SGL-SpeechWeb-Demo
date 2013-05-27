@@ -3,6 +3,7 @@ package fr.lium
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import play.api.{ Application, Play }
+import java.io.File
 
 import fr.lium.api.AudioFileApi
 
@@ -11,6 +12,7 @@ final class Env(
     actorSystem: ActorSystem) {
 
   lazy val audioFileApi = new AudioFileApi(
+    new File(config.getString("lium.baseDir")),
     actorSystem = actorSystem)
 }
 

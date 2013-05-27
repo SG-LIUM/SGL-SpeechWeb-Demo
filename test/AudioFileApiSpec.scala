@@ -11,6 +11,7 @@ import java.io.File
 import scala.util.Try
 
 import fr.lium.api.AudioFileApi
+import fr.lium.util.FileUtils
 
 class AudioFileApiSpec extends Specification
   with CreateSampleDirectories
