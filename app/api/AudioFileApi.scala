@@ -3,6 +3,7 @@ package api
 
 import fr.lium.actor.DirCreationActor
 import fr.lium.util.FileUtils
+import fr.lium.model.AudioFile
 
 import java.io.File
 
@@ -22,7 +23,7 @@ case class AudioFileApi(
     baseDirectory: File,
     actorSystem: ActorSystem) {
 
-  def createAudioFile(tmpFile: File, newFileName: String): Future[Try[(Int, File)]] = {
+  def createAudioFile(tmpFile: File, newFileName: String): Future[Try[AudioFile]] = {
 
     //Create the next directory using an Actor
     //It will avoid race conditions
@@ -34,8 +35,12 @@ case class AudioFileApi(
         d <- tryD
         newFile <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + d + File.separator + "audio" +
           FileUtils.getFileExtension(newFileName).getOrElse("")))
-      } yield (d, newFile)
+      } yield AudioFile(d, newFile)
     }
 
+  }
+
+  def getAudioFileById(id: Long): Option[AudioFile] = {
+    None
   }
 }

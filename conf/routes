@@ -12,11 +12,11 @@ GET /api-docs.json controllers.ApiHelpController.getResources
 
 # OPTIONS to support hosting UI off domain
 
-OPTIONS /*wholepath                                         controllers.AudioFileApiController.getOptions(wholepath)
+OPTIONS /*wholepath                                          controllers.AudioFileApiController.getOptions(wholepath)
 
-GET     /api-docs.json/audiofile                            controllers.ApiHelpController.getResource(path = "/api-docs.json/audiofile")
-POST    /audiofile.json                                     controllers.AudioFileApiController.addAudioFile
-POST    /audiofile.json/{id}/transcription                  controllers.AudioFileApiController.transcription(id: Long)
+GET     /api-docs.json/audiofiles                            controllers.ApiHelpController.getResource(path = "/api-docs.json/audiofiles")
+POST    /audiofiles.json                                     controllers.AudioFileApiController.addAudioFile
+POST    /audiofiles.json/{id}/transcription                  controllers.AudioFileApiController.transcription(id: Long)
 #
 
 # Map static resources from the /public folder to the /assets URL path

@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits._
 
 import scala.util.{ Try, Success, Failure }
 
-@Api(value = "/audiofile", listingPath = "/api-docs.{format}/audiofile", description = "Operations about audio files")
+@Api(value = "/audiofiles", listingPath = "/api-docs.{format}/audiofiles", description = "Operations about audio files")
 object AudioFileApiController extends BaseApiController {
 
   private lazy val env = Env.current
@@ -35,7 +35,7 @@ object AudioFileApiController extends BaseApiController {
         f.map { result ⇒
 
           result match {
-            case Success(v) ⇒ JsonResponse(new Integer(v._1))
+            case Success(audioFile) ⇒ JsonResponse(new Integer(audioFile.id))
             case Failure(e) ⇒ JsonResponse("Ooops! It seems we had a problem storing the file. Message: " + e.getMessage, 500)
           }
 
