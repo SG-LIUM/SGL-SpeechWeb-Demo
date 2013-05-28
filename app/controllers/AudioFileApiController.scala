@@ -21,16 +21,6 @@ object AudioFileApiController extends BaseApiController {
 
   def getOptions(path: String) = Action { implicit request ⇒ JsonResponse(new value.ApiResponse(200, "Ok")) }
 
-  @ApiOperation(value = "Find audio file by ID", notes = "Returns an audioFile", responseClass = "AudioFile", httpMethod = "GET")
-  @ApiErrors(Array(
-    new ApiError(code = 400, reason = "Invalid ID supplied"),
-    new ApiError(code = 404, reason = "AudioFile not found")))
-  def getAudioFileById(
-    @ApiParam(value = "ID of the audiofile to fetch")@PathParam("id") id: String) = Action { implicit request =>
-      //TODO
-      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
-    }
-
   @ApiOperation(value = "Add a new Audio File",
     responseClass = "void")
   @ApiErrors(Array(
@@ -56,4 +46,16 @@ object AudioFileApiController extends BaseApiController {
     }
   }
 
+
+  @ApiOperation(value = "Start a transcription", responseClass = "void", httpMethod = "POST")
+  @ApiErrors(Array(
+    new ApiError(code = 400, reason = "Invalid input")))
+  def transcription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Long) = Action { implicit request =>
+    request.body.asJson match {
+      case Some(e) => {
+        Ok
+      }
+      case None => JsonResponse(new value.ApiResponse(400, "Invalid input"), 400)
+    }
+  }
 }
