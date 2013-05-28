@@ -47,8 +47,7 @@ case class AudioFileApi(
     val dir = new File(baseDirectory + File.separator + id + File.separator)
 
     if (dir.exists && dir.isDirectory) {
-      val regexp = ("""^""" + audioFileBasename + """.*""").r
-      val maybeFile: Option[File] = dir.listFiles.toList.filter(f ⇒ regexp.findFirstIn(f.getName).isDefined).headOption
+      val maybeFile: Option[File] = dir.listFiles.toList.filter(f ⇒ f.getName startsWith audioFileBasename).headOption
       maybeFile map { f =>
         AudioFile(id, f)
       }
