@@ -49,13 +49,12 @@ object AudioFileApiController extends BaseApiController {
 
   @ApiOperation(value = "Start a transcription", responseClass = "void", httpMethod = "POST")
   @ApiErrors(Array(
-    new ApiError(code = 400, reason = "Invalid input")))
-  def transcription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Long) = Action { implicit request =>
-    request.body.asJson match {
-      case Some(e) => {
-        Ok
-      }
-      case None => JsonResponse(new value.ApiResponse(400, "Invalid input"), 400)
+    new ApiError(code = 404, reason = "AudioFile not found")))
+  def transcription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
+    env.audioFileApi.getAudioFileById(id).map { audioFile =>
+      JsonResponse("Transcription started: " + env.transcriptionApi.startTranscription(audioFile))
+    }.getOrElse {
+      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
     }
   }
 }

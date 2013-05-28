@@ -5,15 +5,18 @@ import com.typesafe.config.Config
 import play.api.{ Application, Play }
 import java.io.File
 
-import fr.lium.api.AudioFileApi
+import fr.lium.api.{AudioFileApi, TranscriptionApi}
 
 final class Env(
     config: Config,
     actorSystem: ActorSystem) {
 
   lazy val audioFileApi = new AudioFileApi(
-    new File(config.getString("lium.baseDir")),
-    actorSystem = actorSystem)
+    baseDirectory = new File(config.getString("lium.baseDir")),
+    actorSystem = actorSystem,
+    audioFileBasename = config.getString("lium.audioFileBasename"))
+
+  lazy val transcriptionApi = TranscriptionApi
 }
 
 object Env {

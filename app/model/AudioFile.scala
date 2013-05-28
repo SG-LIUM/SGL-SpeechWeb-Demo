@@ -11,5 +11,5 @@ case class AudioFile(
 //Output
 case class AudioFileTranscriptions(
   audioFile: AudioFile,
-  transcriptions: List[Transcription])
+  transcriptions: List[TranscriptionFinished])
 

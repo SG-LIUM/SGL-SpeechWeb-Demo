@@ -1,8 +1,11 @@
 package fr.lium
 package model
 
-case class Transcription(
-  id: Long,
+case class TranscriptionFinished(
   file: AudioFile,
-  system: String,
+  system: Option[String] = None,
   transcription: List[Segment])
+
+case class TranscriptionInProgress(
+  file: AudioFile,
+  system: Option[String] = None)

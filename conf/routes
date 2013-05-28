@@ -16,7 +16,7 @@ OPTIONS /*wholepath                                          controllers.AudioFi
 
 GET     /api-docs.json/audiofiles                            controllers.ApiHelpController.getResource(path = "/api-docs.json/audiofiles")
 POST    /audiofiles.json                                     controllers.AudioFileApiController.addAudioFile
-POST    /audiofiles.json/{id}/transcription                  controllers.AudioFileApiController.transcription(id: Long)
+POST    /audiofiles.json/:id/transcription                  controllers.AudioFileApiController.transcription(id: Int)
 #
 
 # Map static resources from the /public folder to the /assets URL path

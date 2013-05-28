@@ -9,11 +9,12 @@ import java.io.File
 
 import scala.util.matching.Regex
 import scala.util.{ Try, Success, Failure }
-import scala.concurrent.Future
 
 import scala.language.postfixOps
+
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.Future
 
 import akka.actor.{ ActorSystem, Props, ActorRef }
 import akka.pattern.{ ask, pipe }
@@ -21,7 +22,8 @@ import akka.util.Timeout
 
 case class AudioFileApi(
     baseDirectory: File,
-    actorSystem: ActorSystem) {
+    actorSystem: ActorSystem,
+    audioFileBasename: String) {
 
   def createAudioFile(tmpFile: File, newFileName: String): Future[Try[AudioFile]] = {
 
@@ -33,14 +35,26 @@ case class AudioFileApi(
     dirId.map { tryD ⇒
       for {
         d <- tryD
-        newFile <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + d + File.separator + "audio" +
+        newFile <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + d + File.separator + audioFileBasename +
           FileUtils.getFileExtension(newFileName).getOrElse("")))
       } yield AudioFile(d, newFile)
     }
 
   }
 
-  def getAudioFileById(id: Long): Option[AudioFile] = {
-    None
+  def getAudioFileById(id: Int): Option[AudioFile] = {
+
+    val dir = new File(baseDirectory + File.separator + id + File.separator)
+
+    if (dir.exists && dir.isDirectory) {
+      val regexp = ("""^""" + audioFileBasename + """.*""").r
+      val maybeFile: Option[File] = dir.listFiles.toList.filter(f ⇒ regexp.findFirstIn(f.getName).isDefined).headOption
+      maybeFile map { f =>
+        AudioFile(id, f)
+      }
+    } else {
+      None
+    }
+
   }
 }
