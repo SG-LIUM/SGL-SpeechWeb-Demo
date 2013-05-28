@@ -1,7 +1,7 @@
 package fr.lium
 package model
 
-trait Gender
+sealed trait Gender
 
-case class Male() extends Gender
-case class Female() extends Gender
+case object Male extends Gender
+case object Female extends Gender
