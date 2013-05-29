@@ -13,6 +13,7 @@ import java.io.File
 import scala.concurrent.ExecutionContext.Implicits._
 
 import scala.util.{ Try, Success, Failure }
+import play.api.libs.json._
 
 @Api(value = "/audiofiles", listingPath = "/api-docs.{format}/audiofiles", description = "Operations about audio files")
 object AudioFileApiController extends BaseApiController {
@@ -35,7 +36,7 @@ object AudioFileApiController extends BaseApiController {
         f.map { result ⇒
 
           result match {
-            case Success(audioFile) ⇒ JsonResponse(new Integer(audioFile.id))
+            case Success(audioFile) ⇒ JsonOk(Json.obj("id" -> audioFile.id))
             case Failure(e) ⇒ JsonResponse("Ooops! It seems we had a problem storing the file. Message: " + e.getMessage, 500)
           }
 
@@ -50,9 +51,47 @@ object AudioFileApiController extends BaseApiController {
   @ApiOperation(value = "Start a transcription", responseClass = "void", httpMethod = "POST")
   @ApiErrors(Array(
     new ApiError(code = 404, reason = "AudioFile not found")))
-  def transcription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
+  def startTranscription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
-      JsonResponse("Transcription started: " + env.transcriptionApi.startTranscription(audioFile))
+      val progress = env.transcriptionApi.startTranscription(audioFile)
+      JsonOk(Json.obj(
+        "audioFile" -> Json.obj(
+          "id"        -> progress.file.id),
+        "urlStatus" -> routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL()))
+    }.getOrElse {
+      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
+    }
+  }
+
+  @ApiOperation(value = "Get the progress of a transcription", responseClass = "void", httpMethod = "GET")
+  @ApiErrors(Array(
+    new ApiError(code = 404, reason = "AudioFile not found")))
+  def getTranscriptionProgress(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
+    env.audioFileApi.getAudioFileById(id).map { audioFile =>
+      val progress = env.transcriptionApi.getTranscriptionProgress(audioFile)
+      JsonOk(Json.obj(
+        "audioFile" -> Json.obj(
+          "id"        -> progress.file.id),
+        "progress" -> progress.progress))
+    }.getOrElse {
+      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
+    }
+  }
+
+  @ApiOperation(value = "Get the transcription", responseClass = "void", httpMethod = "GET")
+  @ApiErrors(Array(
+    new ApiError(code = 404, reason = "AudioFile not found")))
+  def getTranscription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
+    env.audioFileApi.getAudioFileById(id).map { audioFile =>
+      val progress = env.transcriptionApi.getTranscription(audioFile)
+      progress.map { p =>
+      JsonOk(Json.obj(
+        "audioFile" -> Json.obj(
+          "id"        -> p.file.id)))
+      }.getOrElse {
+        JsonResponse(new value.ApiResponse(404, "Transcription not found. It may not be finished. Check " +
+          routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL() + " to check the progress."), 404)
+      }
     }.getOrElse {
       JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
     }

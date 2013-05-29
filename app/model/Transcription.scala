@@ -8,4 +8,5 @@ case class TranscriptionFinished(
 
 case class TranscriptionInProgress(
   file: AudioFile,
+  progress: Int = 0,
   system: Option[String] = None)
