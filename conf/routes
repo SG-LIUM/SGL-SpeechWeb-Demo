@@ -17,10 +17,10 @@ OPTIONS /*wholepath                                          controllers.AudioFi
 GET     /api-docs.json/audiofiles                            controllers.ApiHelpController.getResource(path = "/api-docs.json/audiofiles")
 POST    /audiofiles.json                                     controllers.AudioFileApiController.addAudioFile
 POST    /audiofiles.json/:id/transcription                   controllers.AudioFileApiController.startTranscription(id: Int)
+GET     /audiofiles.json/:id/transcription                   controllers.AudioFileApiController.getTranscription(id: Int)
 
 #TODO: Consider creating a transcription resources
 GET     /audiofiles.json/:id/transcriptionProgress           controllers.AudioFileApiController.getTranscriptionProgress(id: Int)
-GET     /audiofiles.json/:id/transcription                   controllers.AudioFileApiController.getTranscription(id: Int)
 #
 
 # Map static resources from the /public folder to the /assets URL path

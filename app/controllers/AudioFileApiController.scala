@@ -20,7 +20,7 @@ object AudioFileApiController extends BaseApiController {
 
   private lazy val env = Env.current
 
-  def getOptions(path: String) = Action { implicit request ⇒ JsonResponse(new value.ApiResponse(200, "Ok")) }
+  def getOptions(path: String) = Action { implicit request ⇒ JsonResponse(Ok(Json.obj("message" -> "Ok"))) }
 
   @ApiOperation(value = "Add a new Audio File",
     responseClass = "void")
@@ -36,14 +36,15 @@ object AudioFileApiController extends BaseApiController {
         f.map { result ⇒
 
           result match {
-            case Success(audioFile) ⇒ JsonOk(Json.obj("id" -> audioFile.id))
-            case Failure(e) ⇒ JsonResponse("Ooops! It seems we had a problem storing the file. Message: " + e.getMessage, 500)
+            case Success(audioFile) ⇒ JsonResponse(Ok(Json.obj("id" -> audioFile.id)))
+            case Failure(e) ⇒ JsonResponse(InternalServerError(Json.obj("message" -> ("Ooops! It seems we had a problem storing the file. Message: " +
+              e.getMessage))))
           }
 
         }
       }
     }.getOrElse {
-      JsonResponse(new value.ApiResponse(405, "Invalid input"), 405)
+      JsonResponse(Status(405)(Json.obj("message" -> "Invalid input")))
     }
   }
 
@@ -54,12 +55,12 @@ object AudioFileApiController extends BaseApiController {
   def startTranscription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
       val progress = env.transcriptionApi.startTranscription(audioFile)
-      JsonOk(Json.obj(
+      JsonResponse(Ok(Json.obj(
         "audioFile" -> Json.obj(
           "id"        -> progress.file.id),
-        "urlStatus" -> routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL()))
+        "urlStatus" -> routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL())))
     }.getOrElse {
-      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
+      JsonResponse(NotFound(Json.obj("message" -> "AudioFile not found")))
     }
   }
 
@@ -69,12 +70,12 @@ object AudioFileApiController extends BaseApiController {
   def getTranscriptionProgress(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
       val progress = env.transcriptionApi.getTranscriptionProgress(audioFile)
-      JsonOk(Json.obj(
+      JsonResponse(Ok(Json.obj(
         "audioFile" -> Json.obj(
           "id"        -> progress.file.id),
-        "progress" -> progress.progress))
+        "progress" -> progress.progress)))
     }.getOrElse {
-      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
+      JsonResponse(NotFound(Json.obj("message" -> "AudioFile not found")))
     }
   }
 
@@ -85,15 +86,15 @@ object AudioFileApiController extends BaseApiController {
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
       val progress = env.transcriptionApi.getTranscription(audioFile)
       progress.map { p =>
-      JsonOk(Json.obj(
+      JsonResponse(Ok(Json.obj(
         "audioFile" -> Json.obj(
-          "id"        -> p.file.id)))
+          "id"        -> p.file.id))))
       }.getOrElse {
-        JsonResponse(new value.ApiResponse(404, "Transcription not found. It may not be finished. Check " +
-          routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL() + " to check the progress."), 404)
+        JsonResponse(NotFound(Json.obj("message" -> ("Transcription not found. It may not be finished. Check " +
+          routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL() + " to check the progress."))))
       }
     }.getOrElse {
-      JsonResponse(new value.ApiResponse(404, "AudioFile not found"), 404)
+      JsonResponse(NotFound(Json.obj("message" -> "AudioFile not found")))
     }
   }
 }
