@@ -2,7 +2,7 @@ package fr.lium
 package model
 
 case class Word(
-  audioFile: AudioFile,
+  show: String,
   start: Float,
   duration: Float,
   word: String,

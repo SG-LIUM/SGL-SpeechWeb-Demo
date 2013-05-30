@@ -33,7 +33,7 @@ object ReadsWrites {
   implicit val wordWrites = new Writes[Word] {
     def writes(w: Word): JsValue = {
       Json.obj(
-        "audioFile" -> w.audioFile,
+        "show"      -> w.show,
         "start"     -> w.start,
         "duration"  -> w.duration,
         "word"      -> w.word,
