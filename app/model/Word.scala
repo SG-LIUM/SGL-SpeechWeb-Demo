@@ -1,7 +1,7 @@
 package fr.lium
 package model
 
-case class Segment(
+case class Word(
   audioFile: AudioFile,
   start: Float,
   duration: Float,

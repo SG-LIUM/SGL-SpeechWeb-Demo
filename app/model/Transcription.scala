@@ -4,7 +4,7 @@ package model
 case class TranscriptionFinished(
   file: AudioFile,
   system: Option[String] = None,
-  transcription: List[Segment])
+  transcription: List[Word])
 
 case class TranscriptionInProgress(
   file: AudioFile,
