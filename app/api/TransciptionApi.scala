@@ -26,7 +26,7 @@ case object TranscriptionApi {
     //TODO
     //We should for sure do something here
 
-    None
+    Some(TranscriptionFinished(file, None, Nil))
   }
 
 }

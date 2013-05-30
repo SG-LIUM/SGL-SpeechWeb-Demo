@@ -7,13 +7,9 @@ import play.api.mvc._
 import java.io.StringWriter
 import play.api.libs.json._
 
-object BaseApiController {
-  val mapper = JsonUtil.getJsonMapper
-}
-
 class BaseApiController extends Controller with RestResourceUtil {
 
-  protected def JsonResponse(response: SimpleResult[JsObject]): PlainResult =
+  protected def JsonResponse(response: SimpleResult[JsValue]): PlainResult =
     response.as("application/json")
       .withHeaders(
         ("Access-Control-Allow-Origin", "*"),
