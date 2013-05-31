@@ -22,17 +22,15 @@ case class WordApi(test: String = "") {
             parseFloatOption(start) getOrElse(0),
             parseFloatOption(duration) getOrElse(0),
             word,
-            parseFloatOption(score) getOrElse(0), (gender, channel, spkId) match {
+            parseFloatOption(score) getOrElse(0),
+            (gender, channel, spkId) match {
               case ("N/A","N/A","N/A") => None
               case (gender, channel, spkId)=> Some(Speaker(spkId, channel, gender match {
                 case "M" => Male
                 case "F" => Female
               }))
             }))
-        case _ => {
-            println("bad format")
-            None
-        }
+        case _ => None
     }
   }
 }
