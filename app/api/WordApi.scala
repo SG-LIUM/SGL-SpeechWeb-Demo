@@ -2,8 +2,11 @@ package fr.lium
 package api
 
 import fr.lium.model.{Female, Male, Word}
+import fr.lium.util.conversion.parseFloatOption
+
 import java.io.File
 import scala.io.Source
+
 
 case class WordApi(test: String = "") {
 
@@ -13,11 +16,17 @@ case class WordApi(test: String = "") {
   def getWordFromLine(line: String): Option[Word] = {
     val v: List[String] = line.split(" ").toList
 
-    if(v.length != 9) {
-      println("bad format")
-      None
-    } else {
-      Some(Word(v(0), v(2).toFloat, v(3).toFloat, v(4), v(5).toFloat, None))
+    v match {
+        case List(show, _, start, duration, word, score, _, _, _) => Some(
+          Word(show,
+            parseFloatOption(start) getOrElse(0),
+            parseFloatOption(duration) getOrElse(0),
+            word,
+            parseFloatOption(score) getOrElse(0), None))
+        case _ => {
+            println("bad format")
+            None
+        }
     }
   }
 }
