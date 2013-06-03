@@ -5,7 +5,7 @@ import com.typesafe.config.Config
 import play.api.{ Application, Play }
 import java.io.File
 
-import fr.lium.api.{AudioFileApi, TranscriptionApi}
+import fr.lium.api.{AudioFileApi, TranscriptionApi, WordApi}
 
 final class Env(
     config: Config,
@@ -16,7 +16,10 @@ final class Env(
     actorSystem = actorSystem,
     audioFileBasename = config.getString("lium.audioFileBasename"))
 
-  lazy val transcriptionApi = TranscriptionApi
+  lazy val wordApi = WordApi
+
+  lazy val transcriptionApi = new TranscriptionApi(wordApi, Some(new File(config.getString("lium.sampleFile"))))
+
 }
 
 object Env {

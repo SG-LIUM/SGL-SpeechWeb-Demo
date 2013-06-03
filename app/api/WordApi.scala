@@ -8,7 +8,7 @@ import java.io.File
 import scala.io.Source
 
 
-case class WordApi(test: String = "") {
+case object WordApi {
 
   def getWordsFromFile(file: File): List[Word] =
     getWordsFromLines(Source.fromFile(file).getLines.toList)

@@ -1,9 +1,11 @@
 package fr.lium
 package api
 
+import java.io.File
+
 import fr.lium.model.{AudioFile, TranscriptionFinished, TranscriptionInProgress}
 
-case object TranscriptionApi {
+case class TranscriptionApi(wordApi: WordApi.type, sampleFile: Option[File] = None) {
 
   def startTranscription(file: AudioFile): TranscriptionInProgress = {
 
@@ -26,7 +28,9 @@ case object TranscriptionApi {
     //TODO
     //We should for sure do something here
 
-    Some(TranscriptionFinished(file, None, Nil))
+    sampleFile map { f =>
+      TranscriptionFinished(file, None, wordApi.getWordsFromFile(f))
+    }
   }
 
 }

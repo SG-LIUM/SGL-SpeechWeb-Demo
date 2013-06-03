@@ -10,7 +10,7 @@ import fr.lium.model.{Male, Speaker, Word}
 
 class WordApiSpec extends Specification {
 
-  val wordApi = new WordApi
+  val wordApi = WordApi
 
   val sampleLine = """BFMTV_BFMStory_2012-01-10_175800 1 2406.395 0.02 donc 1.00 M S S23"""
   val sampleLineNa = """BFMTV_BFMStory_2012-01-10_175800 1 2406.395 0.02 donc 1.00 N/A N/A N/A"""
