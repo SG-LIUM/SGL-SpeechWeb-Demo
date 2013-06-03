@@ -11,7 +11,13 @@ import scala.io.Source
 case class WordApi(test: String = "") {
 
   def getWordsFromFile(file: File): List[Word] =
-    Source.fromFile(file).getLines.toList.flatMap(getWordFromLine)
+    getWordsFromLines(Source.fromFile(file).getLines.toList)
+
+  def getWordsFromLines(lines: String): List[Word] =
+    getWordsFromLines(lines.split("\n").toList)
+
+  def getWordsFromLines(lines: List[String]): List[Word] =
+    lines.flatMap(getWordFromLine)
 
   def getWordFromLine(line: String): Option[Word] = {
     val v: List[String] = line.split(" ").toList
