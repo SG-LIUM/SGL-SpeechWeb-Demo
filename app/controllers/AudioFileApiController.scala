@@ -83,7 +83,7 @@ object AudioFileApiController extends BaseApiController {
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
       val transcriptionFinished = env.transcriptionApi.getTranscription(audioFile)
       transcriptionFinished.map { t =>
-        JsonResponse(Ok(Json.toJson(t)))
+        JsonResponse(Ok(Json.toJson(List(t))))
       }.getOrElse {
         JsonResponse(NotFound(Json.obj("message" -> ("Transcription not found. It may not be finished. Check " +
           routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL() + " to check the progress."))))

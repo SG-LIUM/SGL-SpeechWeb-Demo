@@ -3,7 +3,7 @@
 @main("Transcription result", "demo") {
 
 <!-- Main Wrapper -->
-<div id="main-wrapper">
+<div id="main-wrapper" ng-controller="TranscriptionCtrl">
   <div class="container">
     <div class="row">
       <div class="6u skel-cell-mainContent">
@@ -50,5 +50,8 @@
 <script>
 // jQuery method
 $('video').mediaelementplayer();
+$("video").on("timeupdate", function (e) {
+  console.debug("Current time of videoplay: " + e.target.currentTime );
+});
 </script>
 }
