@@ -5,6 +5,8 @@
 # Home page
 GET     /                           controllers.Application.index
 GET     /docs                       controllers.Application.docs
+GET     /demo                       controllers.Application.demo
+GET     /about                      controllers.Application.about
 
 
 # Swagger - Root Resources Listing
