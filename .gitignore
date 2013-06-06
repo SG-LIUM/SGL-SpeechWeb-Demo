@@ -16,3 +16,6 @@ dist
 /data/*
 *.ctm
 *.seg
+*.avi
+*.webm
+*.mp4
