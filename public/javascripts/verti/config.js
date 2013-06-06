@@ -6,7 +6,7 @@
 
 window._skel_config = {
 	preset: 'standard',
-	prefix: 'assets/stylesheets/verti/style',
+	prefix: '/assets/stylesheets/verti/style',
 	resetCSS: true
 };
 
