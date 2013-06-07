@@ -1,7 +1,7 @@
-function TranscriptionCtrl($scope, Restangular) {
+function TranscriptionCtrl($scope, Restangular, BinarySearch) {
 
   //Init some sane defaults
-  var displayWordStart = 0;
+  $scope.displayWordStart = 0;
   var step = 50;
   var nextTimeToDisplay = 0;
 
@@ -9,18 +9,18 @@ function TranscriptionCtrl($scope, Restangular) {
 
   //Get the transcription from the server
   Restangular.one('audiofiles.json', 6).getList('transcriptions').then(function(transcriptions) {
-    console.log(transcriptions);
     $scope.fullTranscription = transcriptions;
     $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+
   });
 
 
   //Get the next list of words to display on the screen
   $scope.getNextWords = function(transcriptions) {
-    var displayWordEnd = displayWordStart + step;
+    var displayWordEnd = $scope.displayWordStart + step;
 
     // Try to avoid out of bounds exception
-    if (displayWordStart > transcriptions[0].length -1) {
+    if ($scope.displayWordStart > transcriptions[0].length -1) {
       return [];
     }
 
@@ -28,10 +28,10 @@ function TranscriptionCtrl($scope, Restangular) {
       displayWordEnd = transcriptions[0].length -1;
     }
 
-    var words = transcriptions[0].content.slice(displayWordStart, displayWordEnd);
-    displayWordStart = displayWordEnd;
-    displayWordEnd = displayWordStart + step;
-    nextTimeToDisplay = transcriptions[0].content[displayWordStart].start;
+    var words = transcriptions[0].content.slice($scope.displayWordStart, displayWordEnd);
+    $scope.displayWordStart = displayWordEnd;
+    displayWordEnd = $scope.displayWordStart + step;
+    nextTimeToDisplay = transcriptions[0].content[$scope.displayWordStart].start;
 
     return words;
   }
@@ -42,6 +42,14 @@ function TranscriptionCtrl($scope, Restangular) {
       if(nextTimeToDisplay != 0 && e.target.currentTime > nextTimeToDisplay) {
         $scope.transcription = $scope.getNextWords($scope.fullTranscription);
       }
+    });
+
+  });
+
+  $("#mediafile").on("seeking", function (e) {
+    $scope.$apply( function() {
+      $scope.displayWordStart = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
+      $scope.transcription = $scope.getNextWords($scope.fullTranscription);
     });
 
   });
