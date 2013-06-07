@@ -1,9 +1,21 @@
 function TranscriptionCtrl($scope, Restangular) {
 
+  //Init some sane defaults
   var displayWordStart = 0;
   var step = 50;
   var nextTimeToDisplay = 0;
 
+  $scope.transcription = [];
+
+  //Get the transcription from the server
+  Restangular.one('audiofiles.json', 6).getList('transcriptions').then(function(transcriptions) {
+    console.log(transcriptions);
+    $scope.fullTranscription = transcriptions;
+    $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+  });
+
+
+  //Get the next list of words to display on the screen
   $scope.getNextWords = function(transcriptions) {
     var displayWordEnd = displayWordStart + step;
 
@@ -20,21 +32,12 @@ function TranscriptionCtrl($scope, Restangular) {
     displayWordStart = displayWordEnd;
     displayWordEnd = displayWordStart + step;
     nextTimeToDisplay = transcriptions[0].content[displayWordStart].start;
-    console.log("Next word to display " + nextTimeToDisplay);
+
     return words;
   }
 
-  $scope.transcription = [];
-
-  Restangular.one('audiofiles.json', 6).getList('transcriptions').then(function(transcriptions) {
-    console.log(transcriptions);
-    $scope.fullTranscription = transcriptions;
-    $scope.transcription = $scope.getNextWords($scope.fullTranscription);
-  });
-
-
+  //Non angular events
   $("#mediafile").on("timeupdate", function (e) {
-
     $scope.$apply( function() {
       if(nextTimeToDisplay != 0 && e.target.currentTime > nextTimeToDisplay) {
         $scope.transcription = $scope.getNextWords($scope.fullTranscription);
@@ -44,3 +47,4 @@ function TranscriptionCtrl($scope, Restangular) {
   });
 
 }
+
