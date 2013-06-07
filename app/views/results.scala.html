@@ -15,7 +15,7 @@
           <h2>Transcription</h2>
 
           <p>
-          <span ng-repeat="jsonWord in transcription" ngModel="transcription">{{jsonWord.word}} </span>
+          <span ng-repeat="jsonWord in transcription" ngModel="transcription" data-start="{{jsonWord.start}}">{{jsonWord.word}} </span>
           </p>
 
           </article>

@@ -42,8 +42,17 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
   //Non angular events
   $("#mediafile").on("timeupdate", function (e) {
     $scope.$apply( function() {
+
+      //instead of searching through the whole thing, we should keep
+      //an index of the latest hightlighted word
+      var currentWordIndex = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
+      var currentWord = $scope.fullTranscription[0].content[currentWordIndex];
+      console.log(currentWord);
+      $('#content span[data-start="' + currentWord.start + '"]').prevAll().addClass('current');
+
       if(nextTimeToDisplay != 0 && e.target.currentTime > nextTimeToDisplay) {
         $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+
       }
     });
 
