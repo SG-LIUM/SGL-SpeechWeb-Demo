@@ -1,7 +1,8 @@
-function TranscriptionCtrl($scope, Restangular, BinarySearch) {
+function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
 
   //Init some sane defaults
   $scope.displayWordStart = 0;
+  $scope.fullTranscription = [];
   var step = 50;
   var nextTimeToDisplay = 0;
 
@@ -31,7 +32,9 @@ function TranscriptionCtrl($scope, Restangular, BinarySearch) {
     var words = transcriptions[0].content.slice($scope.displayWordStart, displayWordEnd);
     $scope.displayWordStart = displayWordEnd;
     displayWordEnd = $scope.displayWordStart + step;
-    nextTimeToDisplay = transcriptions[0].content[$scope.displayWordStart].start;
+    if(transcriptions[0].content.length >= $scope.displayWordStart) {
+      nextTimeToDisplay = transcriptions[0].content[$scope.displayWordStart].start;
+    }
 
     return words;
   }
@@ -48,8 +51,10 @@ function TranscriptionCtrl($scope, Restangular, BinarySearch) {
 
   $("#mediafile").on("seeking", function (e) {
     $scope.$apply( function() {
-      $scope.displayWordStart = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
-      $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+      if(typeof $scope.fullTranscription[0] !== 'undefined') {
+        $scope.displayWordStart = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
+        $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+      }
     });
 
   });
