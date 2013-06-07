@@ -50,10 +50,10 @@ object AudioFileApiController extends BaseApiController {
   }
 
 
-  @ApiOperation(value = "Start a transcription", responseClass = "void", httpMethod = "POST")
+  @ApiOperation(value = "Start the transcriptions", responseClass = "void", httpMethod = "POST")
   @ApiErrors(Array(
     new ApiError(code = 404, reason = "AudioFile not found")))
-  def startTranscription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
+  def startTranscriptions(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
       val progress = env.transcriptionApi.startTranscription(audioFile)
       JsonResponse(Ok(Json.obj(
@@ -76,10 +76,10 @@ object AudioFileApiController extends BaseApiController {
     }
   }
 
-  @ApiOperation(value = "Get the transcription", responseClass = "void", httpMethod = "GET")
+  @ApiOperation(value = "Get the transcriptions", responseClass = "void", httpMethod = "GET")
   @ApiErrors(Array(
     new ApiError(code = 404, reason = "AudioFile not found")))
-  def getTranscription(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
+  def getTranscriptions(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
     env.audioFileApi.getAudioFileById(id).map { audioFile =>
       val transcriptionFinished = env.transcriptionApi.getTranscription(audioFile)
       transcriptionFinished.map { t =>

@@ -19,8 +19,8 @@ OPTIONS /*wholepath                                           controllers.AudioF
 
 GET     /api-docs.json/audiofiles                             controllers.ApiHelpController.getResource(path = "/api-docs.json/audiofiles")
 POST    /audiofiles.json                                      controllers.AudioFileApiController.addAudioFile
-POST    /audiofiles.json/:id/transcriptions                   controllers.AudioFileApiController.startTranscription(id: Int)
-GET     /audiofiles.json/:id/transcriptions                   controllers.AudioFileApiController.getTranscription(id: Int)
+POST    /audiofiles.json/:id/transcriptions                   controllers.AudioFileApiController.startTranscriptions(id: Int)
+GET     /audiofiles.json/:id/transcriptions                   controllers.AudioFileApiController.getTranscriptions(id: Int)
 
 #TODO: Consider creating a transcription resources
 GET     /audiofiles.json/:id/transcriptionProgress           controllers.AudioFileApiController.getTranscriptionProgress(id: Int)
