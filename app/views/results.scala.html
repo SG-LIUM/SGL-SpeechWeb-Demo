@@ -15,7 +15,7 @@
           <h2>Transcription</h2>
 
           <p>
-          <span ng-repeat="jsonWord in transcriptions[0].content">{{jsonWord.word}} </span>
+          <span ng-repeat="jsonWord in transcription" ngModel="transcription">{{jsonWord.word}} </span>
           </p>
 
           </article>
@@ -29,7 +29,7 @@
 
           <section>
           <h3>Your file</h3>
-          <video width="512" height="288" controls preload>
+          <video width="512" height="288" id="mediafile" controls preload>
             <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
             <source type="video/mp4" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.mp4#t=2406" />
             <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
@@ -47,9 +47,6 @@
 
 <script>
 // jQuery method
-$('video').mediaelementplayer();
-$("video").on("timeupdate", function (e) {
-  console.debug("Current time of videoplay: " + e.target.currentTime );
-});
+$('#mediafile').mediaelementplayer();
 </script>
 }
