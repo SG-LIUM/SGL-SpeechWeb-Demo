@@ -15,8 +15,8 @@ object ReadsWrites {
   implicit val genderWrites = new Writes[Gender] {
     def writes(g: Gender): JsValue = {
       JsString(g match {
-        case Male => "male"
-        case Female => "female"
+        case Male => "m"
+        case Female => "f"
       })
     }
   }
@@ -33,12 +33,9 @@ object ReadsWrites {
   implicit val wordWrites = new Writes[Word] {
     def writes(w: Word): JsValue = {
       Json.obj(
-        "show"      -> w.show,
-        "start"     -> w.start,
-        "duration"  -> w.duration,
+        "start"     -> "%.2f".format(w.start),
         "word"      -> w.word,
-        "score"     -> w.score,
-        "speaker"   -> w.speaker
+        "spk"       -> w.speaker
       )
     }
   }
