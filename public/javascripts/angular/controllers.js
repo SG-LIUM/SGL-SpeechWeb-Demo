@@ -51,8 +51,6 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
       //Seach the word through the words that are displayed
       var currentDisplayedWordIndex = BinarySearch.search($scope.transcription, e.target.currentTime, function(item) { return item.start; })
 
-      console.log(currentDisplayedWordIndex);
-
       //Check boundaries
       if(currentDisplayedWordIndex >= 0 && currentDisplayedWordIndex < $scope.transcription.length) {
         if (currentDisplayedWordIndex == $scope.transcription.length - 1) {
