@@ -2,6 +2,7 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
 
   //Init some sane defaults
   $scope.displayWordStart = 0;
+  $scope.currentHighlightedIndex = 0;
   $scope.fullTranscription = [];
   var step = 50;
   var nextTimeToDisplay = 0;
@@ -25,11 +26,15 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
       return [];
     }
 
+    // Same here
     if (displayWordEnd > transcriptions[0].length -1) {
       displayWordEnd = transcriptions[0].length -1;
     }
 
+    //Get the words
     var words = transcriptions[0].content.slice($scope.displayWordStart, displayWordEnd);
+
+    //Reset the counters
     $scope.displayWordStart = displayWordEnd;
     displayWordEnd = $scope.displayWordStart + step;
     if(transcriptions[0].content.length >= $scope.displayWordStart) {
@@ -43,12 +48,20 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
   $("#mediafile").on("timeupdate", function (e) {
     $scope.$apply( function() {
 
-      //instead of searching through the whole thing, we should keep
-      //an index of the latest hightlighted word
-      var currentWordIndex = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
-      var currentWord = $scope.fullTranscription[0].content[currentWordIndex];
-      console.log(currentWord);
-      $('#content span[data-start="' + currentWord.start + '"]').prevAll().addClass('current');
+      //Seach the word through the words that are displayed
+      var currentDisplayedWordIndex = BinarySearch.search($scope.transcription, e.target.currentTime, function(item) { return item.start; })
+
+      console.log(currentDisplayedWordIndex);
+
+      //Check boundaries
+      if(currentDisplayedWordIndex >= 0 && currentDisplayedWordIndex < $scope.transcription.length) {
+        if (currentDisplayedWordIndex == $scope.transcription.length - 1) {
+          $('#content span').addClass('current');
+        } else {
+          var currentWord = $scope.transcription[currentDisplayedWordIndex + 1];
+          $('#content span[data-start="' + currentWord.start + '"]').prevAll().addClass('current');
+        }
+      }
 
       if(nextTimeToDisplay != 0 && e.target.currentTime > nextTimeToDisplay) {
         $scope.transcription = $scope.getNextWords($scope.fullTranscription);

@@ -4,7 +4,7 @@
 
 angular.module('searchServices', []).
     factory('BinarySearch', function(){
-      //Word derived from
+      //Work derived from
       //http://www.nczonline.net/blog/2009/09/01/computer-science-in-javascript-binary-search/
       //Copyright 2009 Nicholas C. Zakas, MIT-Licensed
       return {
@@ -17,7 +17,7 @@ angular.module('searchServices', []).
               middle      = Math.floor((stopIndex + startIndex)/2);
 
           var found = function(index, collection, toFind) {
-            if (index <= 0 || index >= collection.length) {
+            if (index <= 0 || index >= collection.length -1) {
               return true;
             }
 
