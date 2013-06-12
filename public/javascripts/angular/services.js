@@ -32,8 +32,8 @@ angular.module('searchServices', []).
 
           }
 
-          //The value is out of range, return not found
-          if(value < accessFunction(items[0]) || value > accessFunction(items[items.length - 1])) {
+          //No items or the value is out of range, return not found
+          if(items.length == 0 || value < accessFunction(items[0]) || value > accessFunction(items[items.length - 1])) {
             return -1;
           }
 

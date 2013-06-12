@@ -11,6 +11,7 @@ describe('search services', function() {
 
         it('returns -1 when not found', function(){
             expect(searchService.search([], 0)).toEqual(-1);
+            expect(searchService.search([], 0, function(item) { return item.start; })).toEqual(-1);
             expect(searchService.search(content, 0)).toEqual(-1);
             expect(searchService.search(content, 0, function(item) { return item.start; })).toEqual(-1);
             expect(searchService.search(content, -200, function(item) { return item.start; })).toEqual(-1);
