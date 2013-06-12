@@ -16,6 +16,10 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
 
   });
 
+  $scope.moveVideo = function(eventObject) {
+    var time = eventObject.currentTarget.attributes["data-start"].value;
+    $('#mediafile')["0"].player.setCurrentTime(time);
+  }
 
   //Get the next list of words to display on the screen
   $scope.getNextWords = function(transcriptions) {
