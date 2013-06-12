@@ -38,6 +38,9 @@ angular.module('searchServices', []).
                   stopIndex = middle - 1;
               } else if (value > accessFunction(items[middle])){
                   startIndex = middle + 1;
+              } else if (value != accessFunction(items[middle])) {
+                  //value is not < or > and is not equal: we are comparing apples and bananas
+                  return -1;
               }
 
               //recalculate middle
