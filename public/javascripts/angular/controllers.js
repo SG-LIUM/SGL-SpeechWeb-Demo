@@ -1,10 +1,12 @@
 function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
 
   //Init some sane defaults
-  $scope.displayWordStart = 0;
+  $scope.nextWordToDisplay = 0;
   $scope.currentHighlightedIndex = 0;
+  $scope.currentWordStart = 0;
+  $scope.currentWordEnd = 0;
   $scope.fullTranscription = [];
-  var step = 50;
+  $scope.step = 50;
   var nextTimeToDisplay = 0;
 
   $scope.transcription = [];
@@ -23,26 +25,26 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
 
   //Get the next list of words to display on the screen
   $scope.getNextWords = function(transcriptions) {
-    var displayWordEnd = $scope.displayWordStart + step;
+    $scope.currentWordEnd = $scope.nextWordToDisplay + $scope.step;
+    $scope.currentWordStart = $scope.nextWordToDisplay;
 
     // Try to avoid out of bounds exception
-    if ($scope.displayWordStart > transcriptions[0].length -1) {
+    if ($scope.currentWordStart > transcriptions[0].length -1) {
       return [];
     }
 
     // Same here
-    if (displayWordEnd > transcriptions[0].length -1) {
-      displayWordEnd = transcriptions[0].length -1;
+    if ($scope.currentWordEnd > transcriptions[0].length -1) {
+      $scope.currentWordEnd = transcriptions[0].length -1;
     }
 
     //Get the words
-    var words = transcriptions[0].content.slice($scope.displayWordStart, displayWordEnd);
+    var words = transcriptions[0].content.slice($scope.currentWordStart, $scope.currentWordEnd);
 
     //Reset the counters
-    $scope.displayWordStart = displayWordEnd;
-    displayWordEnd = $scope.displayWordStart + step;
-    if(transcriptions[0].content.length >= $scope.displayWordStart) {
-      nextTimeToDisplay = transcriptions[0].content[$scope.displayWordStart].start;
+    $scope.nextWordToDisplay = $scope.currentWordEnd;
+    if(transcriptions[0].content.length >= $scope.nextWordToDisplay) {
+      nextTimeToDisplay = transcriptions[0].content[$scope.nextWordToDisplay].start;
     }
 
     return words;
@@ -61,10 +63,12 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
           $('#content span').addClass('current');
         } else {
           var currentWord = $scope.transcription[currentDisplayedWordIndex + 1];
+          $('#content span').removeClass('current');
           $('#content span[data-start="' + currentWord.start + '"]').prevAll().addClass('current');
         }
       }
 
+      //Next page
       if(nextTimeToDisplay != 0 && e.target.currentTime > nextTimeToDisplay) {
         $scope.transcription = $scope.getNextWords($scope.fullTranscription);
 
@@ -76,8 +80,13 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
   $("#mediafile").on("seeking", function (e) {
     $scope.$apply( function() {
       if(typeof $scope.fullTranscription[0] !== 'undefined') {
-        $scope.displayWordStart = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
-        $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+        var nextWordPosition = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; });
+
+        //Change page only if the next word is not currently displayed
+        if(nextWordPosition < $scope.currentWordStart || nextWordPosition >= $scope.currentWordStart + $scope.step) {
+            $scope.nextWordToDisplay = BinarySearch.search($scope.fullTranscription[0].content, e.target.currentTime, function(item) { return item.start; })
+            $scope.transcription = $scope.getNextWords($scope.fullTranscription);
+        }
       }
     });
 
