@@ -16,6 +16,7 @@ angular.module('searchServices', []).
               stopIndex   = items.length - 1,
               middle      = Math.floor((stopIndex + startIndex)/2);
 
+
           var found = function(index, collection, toFind) {
             if (index <= 0 || index >= collection.length -1) {
               return true;
@@ -29,6 +30,11 @@ angular.module('searchServices', []).
               return false;
             }
 
+          }
+
+          //The value is out of range, return not found
+          if(value < accessFunction(items[0]) || value > accessFunction(items[items.length - 1])) {
+            return -1;
           }
 
           while(!found(middle, items, value) && startIndex < stopIndex){
