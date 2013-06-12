@@ -6,7 +6,7 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
   $scope.currentWordStart = 0;
   $scope.currentWordEnd = 0;
   $scope.fullTranscription = [];
-  $scope.step = 50;
+  $scope.step = 100;
   var nextTimeToDisplay = 0;
 
   $scope.transcription = [];
@@ -15,7 +15,6 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
   Restangular.one('audiofiles.json', 6).getList('transcriptions').then(function(transcriptions) {
     $scope.fullTranscription = transcriptions;
     $scope.transcription = $scope.getNextWords($scope.fullTranscription);
-
   });
 
   $scope.moveVideo = function(eventObject) {
