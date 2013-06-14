@@ -12,7 +12,9 @@ object ApplicationBuild extends Build {
     jdbc,
     anorm,
     "com.wordnik" %% "swagger-play2-utils" % "1.2.4",
-    "commons-io" % "commons-io" % "2.4"
+    "commons-io" % "commons-io" % "2.4",
+    "com.typesafe.slick" %% "slick" % "1.0.1",
+    "org.xerial" % "sqlite-jdbc" % "3.7.2"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
