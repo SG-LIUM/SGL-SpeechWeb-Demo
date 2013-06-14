@@ -15,6 +15,12 @@ import scala.language.postfixOps
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
+import scala.slick.session.Database
+
+import scala.slick.session.Database
+import fr.lium.tables.AudioFiles
+import scala.slick.driver.SQLiteDriver.simple._
+import Database.threadLocalSession
 
 import akka.actor.{ ActorSystem, Props, ActorRef }
 import akka.pattern.{ ask, pipe }
@@ -23,9 +29,15 @@ import akka.util.Timeout
 case class AudioFileApi(
     baseDirectory: File,
     actorSystem: ActorSystem,
-    audioFileBasename: String) {
+    audioFileBasename: String,
+    database: Database) {
 
   def createAudioFile(tmpFile: File, newFileName: String): Future[Try[AudioFile]] = {
+
+    database.withSession {
+      //(AudioFiles.ddl).create
+      //AudioFiles.insert(101, "test")
+    }
 
     //Create the next directory using an Actor
     //It will avoid race conditions

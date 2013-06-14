@@ -7,6 +7,8 @@ import java.io.File
 
 import fr.lium.api.{AudioFileApi, TranscriptionApi, WordApi}
 
+import scala.slick.session.Database
+
 final class Env(
     config: Config,
     actorSystem: ActorSystem) {
@@ -14,12 +16,18 @@ final class Env(
   lazy val audioFileApi = new AudioFileApi(
     baseDirectory = new File(config.getString("lium.baseDir")),
     actorSystem = actorSystem,
-    audioFileBasename = config.getString("lium.audioFileBasename"))
+    audioFileBasename = config.getString("lium.audioFileBasename"),
+    database
+  )
 
   lazy val wordApi = WordApi
 
   lazy val transcriptionApi = new TranscriptionApi(wordApi, Some(new File(config.getString("lium.sampleFile"))))
 
+  lazy val databaseName = config.getString("lium.databaseName")
+  lazy val database: Database = Database.forURL(
+    config.getString("lium.databaseUrl") format databaseName,
+    driver = config.getString("lium.databaseDriver"))
 }
 
 object Env {
