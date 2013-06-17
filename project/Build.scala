@@ -18,7 +18,7 @@ object ApplicationBuild extends Build {
     "org.xerial" % "sqlite-jdbc" % "3.7.2")
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    registerTask("create-schema","tasks.CreateSchema", "Create basic SQL schema" ),
+    registerTask("drop-create-schema","tasks.DropCreateSchema", "Drop and create basic SQL schema" ),
     // Add your own project settings here
     scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
     resolvers := Seq(
