@@ -19,6 +19,7 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     registerTask("drop-create-schema","tasks.DropCreateSchema", "Drop and create basic SQL schema" ),
+    registerTask("load-fixtures","tasks.LoadFixtures", "Insert sample data" ),
     // Add your own project settings here
     scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
     resolvers := Seq(
