@@ -5,7 +5,7 @@ import java.io.File
 
 //Input
 case class AudioFile(
-  id: Int,
+  id: Option[Int],
   file: File)
 
 //Output

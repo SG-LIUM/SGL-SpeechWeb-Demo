@@ -49,7 +49,7 @@ case class AudioFileApi(
         d <- tryD
         newFile <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + d + File.separator + audioFileBasename +
           FileUtils.getFileExtension(newFileName).getOrElse("")))
-      } yield AudioFile(d, newFile)
+      } yield AudioFile(Some(d), newFile)
     }
 
   }
@@ -61,7 +61,7 @@ case class AudioFileApi(
     if (dir.exists && dir.isDirectory) {
       val maybeFile: Option[File] = dir.listFiles.toList.filter(f ⇒ f.getName startsWith audioFileBasename).headOption
       maybeFile map { f =>
-        AudioFile(id, f)
+        AudioFile(Some(id), f)
       }
     } else {
       None
