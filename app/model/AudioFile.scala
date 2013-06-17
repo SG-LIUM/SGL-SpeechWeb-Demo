@@ -6,7 +6,7 @@ import java.io.File
 //Input
 case class AudioFile(
   id: Option[Int],
-  file: File)
+  fileName: String)
 
 //Output
 case class AudioFileTranscriptions(

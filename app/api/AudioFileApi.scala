@@ -32,24 +32,18 @@ case class AudioFileApi(
     audioFileBasename: String,
     database: Database) {
 
-  def createAudioFile(tmpFile: File, newFileName: String): Future[Try[AudioFile]] = {
+  def createAudioFile(tmpFile: File, newFileName: String): Option[AudioFile] = {
+
+    val fileName = audioFileBasename + FileUtils.getFileExtension(newFileName).getOrElse("")
 
     database.withSession {
-      //(AudioFiles.ddl).create
-      //AudioFiles.insert(101, "test")
-    }
-
-    //Create the next directory using an Actor
-    //It will avoid race conditions
-    val dirCreationActor: ActorRef = actorSystem.actorOf(Props(new DirCreationActor(baseDirectory)), name = "dirCreationActor")
-    val dirId: Future[Try[Int]] = ask(dirCreationActor, "create")(5 seconds).mapTo[Try[Int]]
-
-    dirId.map { tryD ⇒
       for {
-        d <- tryD
-        newFile <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + d + File.separator + audioFileBasename +
-          FileUtils.getFileExtension(newFileName).getOrElse("")))
-      } yield AudioFile(Some(d), newFile)
+        audioFile <- Try(AudioFiles.autoInc.insert(fileName)).toOption
+        id <- audioFile.id
+        dir = new File(baseDirectory + File.separator + id).mkdir()
+        moved <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + id + File.separator + fileName)).toOption
+      } yield AudioFile(audioFile.id, fileName)
+
     }
 
   }
@@ -61,7 +55,7 @@ case class AudioFileApi(
     if (dir.exists && dir.isDirectory) {
       val maybeFile: Option[File] = dir.listFiles.toList.filter(f ⇒ f.getName startsWith audioFileBasename).headOption
       maybeFile map { f =>
-        AudioFile(Some(id), f)
+        AudioFile(Some(id), f.getName())
       }
     } else {
       None
