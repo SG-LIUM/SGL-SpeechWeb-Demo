@@ -10,6 +10,8 @@ import com.typesafe.config._
 
 class CreateSchema extends Runnable {
 
+  System.setProperty("config.file", "conf/application.conf")
+
   val conf = ConfigFactory.load()
 
   def run {
