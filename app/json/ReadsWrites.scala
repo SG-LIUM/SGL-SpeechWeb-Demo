@@ -3,7 +3,7 @@ package json
 import play.api.libs.json._
 
 import fr.lium.model.{AudioFile, Diarization, Female, Gender, Male, Speaker, Status, Transcribing, TranscriptionFinished,
-TranscriptionInProgress, Uploaded, Word}
+TranscriptionInProgress, Unknown, Uploaded, Word}
 
 object ReadsWrites {
 
@@ -31,6 +31,7 @@ object ReadsWrites {
       JsString(g match {
         case Male => "m"
         case Female => "f"
+        case Unknown => "u"
       })
     }
   }

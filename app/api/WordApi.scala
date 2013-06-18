@@ -1,14 +1,14 @@
 package fr.lium
 package api
 
-import fr.lium.model.{Female, Male, Speaker, Word}
+import fr.lium.model.{Female, Male, Speaker, Unknown, Word}
 import fr.lium.util.conversion.parseFloatOption
 
 import java.io.File
 import scala.io.Source
 
 
-case object WordApi {
+object WordApi {
 
   def getWordsFromFile(file: File): List[Word] =
     getWordsFromLines(Source.fromFile(file).getLines.toList)
@@ -34,6 +34,7 @@ case object WordApi {
               case (gender, channel, spkId)=> Some(Speaker(spkId, channel, gender match {
                 case "M" => Male
                 case "F" => Female
+                case _ => Unknown
               }))
             }))
         case _ => None
