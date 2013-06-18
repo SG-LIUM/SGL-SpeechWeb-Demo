@@ -1,7 +1,6 @@
 package fr.lium
 package api
 
-import fr.lium.actor.DirCreationActor
 import fr.lium.util.FileUtils
 import fr.lium.model.AudioFile
 
