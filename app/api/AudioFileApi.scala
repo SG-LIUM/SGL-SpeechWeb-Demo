@@ -2,7 +2,8 @@ package fr.lium
 package api
 
 import fr.lium.util.FileUtils
-import fr.lium.model.AudioFile
+import fr.lium.model.{AudioFile, Uploaded, Status}
+import fr.lium.model.Conversions._
 
 import java.io.File
 
@@ -35,9 +36,10 @@ case class AudioFileApi(
 
     val fileName = audioFileBasename + FileUtils.getFileExtension(newFileName).getOrElse("")
 
+
     database.withSession {
       for {
-        audioFile <- Try(AudioFiles.autoInc.insert(fileName)).toOption
+        audioFile <- Try(AudioFiles.autoInc.insert((fileName, Uploaded))).toOption
         id <- audioFile.id
         dir = new File(baseDirectory + File.separator + id).mkdir()
         moved <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + id + File.separator + fileName)).toOption
