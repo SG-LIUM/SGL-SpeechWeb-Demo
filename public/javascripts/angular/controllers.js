@@ -12,7 +12,7 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch) {
   $scope.transcription = [];
 
   //Get the transcription from the server
-  Restangular.one('audiofiles.json', 6).getList('transcriptions').then(function(transcriptions) {
+  Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
     $scope.fullTranscription = transcriptions;
     $scope.transcription = $scope.getNextWords($scope.fullTranscription);
   });
