@@ -36,10 +36,9 @@ class AudioFileApiSpec extends Specification
 
       val tmpFile = new File("/tmp/testaudio/toto")
       ApacheFileUtils.touch(tmpFile)
-      val future: Future[Try[AudioFile]] = env.audioFileApi.createAudioFile(tmpFile, "toto.wav")
-      val result = Await.result(future, timeout.duration).asInstanceOf[Try[AudioFile]]
+      val result: Option[AudioFile] = env.audioFileApi.createAudioFile(tmpFile, "toto.wav")
 
-      result.get must beEqualTo(AudioFile(Some(1), new File("/tmp/testaudio/1/" + env.basename + ".wav")))
+      result.get must beEqualTo(AudioFile(Some(1), env.basename + ".wav"))
 
       //Let's clean the mess
       ApacheFileUtils.deleteDirectory(env.baseDir)
