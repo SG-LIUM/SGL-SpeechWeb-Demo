@@ -16,7 +16,8 @@ Once `Play!` is installed just launch `play run` at the root of the project. Whe
 
 
 ## LIUM_SpkDiarization
-_TODO_
+
+The diarization tool used is available on the [official Wiki](http://lium3.univ-lemans.fr/diarization/doku.php). A version is packaged in ./bin/LIUM_SpkDiarization-4.2.jar. So you don't need to download anything.
 
 ## CMU Sphinx
 _TODO_
