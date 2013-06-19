@@ -40,7 +40,7 @@ case class AudioFileApi(
     database.withSession {
       for {
         audioFile <- Try(AudioFiles.autoInc.insert((fileName, Uploaded)))
-        id <- Try(audioFile.id.get)
+        id <- audioFile.id asTry badArg("Fail to get autoinc id from DB")
         dir = new File(baseDirectory + File.separator + id).mkdir()
         moved <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + id + File.separator + fileName))
       } yield AudioFile(audioFile.id, fileName)
