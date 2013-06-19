@@ -7,7 +7,7 @@ import java.io.File
 import play.api.test.FakeApplication
 
 import fr.lium.api.AudioFileApi
-import tasks.DropCreateSchema
+import tasks.{DropCreateSchema, LoadFixtures}
 
 final class TestEnv() {
 
@@ -18,6 +18,7 @@ final class TestEnv() {
   lazy val baseDir = new File("/tmp/testaudio/")
   lazy val basename = "audio"
   lazy val dropCreateSchema = new DropCreateSchema
+  lazy val loadFixtures = new LoadFixtures
 
   def audioFileApi()(implicit app: FakeApplication) = {
     new AudioFileApi(baseDir, basename, database)

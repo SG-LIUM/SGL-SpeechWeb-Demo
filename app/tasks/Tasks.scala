@@ -37,7 +37,11 @@ class LoadFixtures extends Runnable with Env {
 
   def run {
     env.database.withSession {
-      AudioFiles.autoInc.insert(("audio.wav", Uploaded))
+      statements()
     }
+  }
+
+  def statements() = {
+      AudioFiles.autoInc.insert(("audio.wav", Uploaded))
   }
 }

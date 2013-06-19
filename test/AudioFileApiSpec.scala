@@ -27,11 +27,12 @@ class AudioFileApiSpec extends Specification
   val env = Env.current
   implicit val timeout = Timeout(DurationInt(5) seconds)
 
-  env.database.withSession { env.dropCreateSchema.statements() }
 
   "AudioFileApi createAudioFile" should {
 
     "create a new dir and move the tmp file to it" in new WithApplication {
+
+      env.database.withSession { env.dropCreateSchema.statements() }
 
       ApacheFileUtils.deleteDirectory(env.baseDir)
       ApacheFileUtils.forceMkdir(env.baseDir)
@@ -50,19 +51,27 @@ class AudioFileApiSpec extends Specification
 
   "AudioFileApi getAudioFileById" should {
 
-    "return an already existing audiofile" in new WithApplication {
+    env.database.withSession { env.dropCreateSchema.statements() }
 
+    "not return a non existing audiofile" in new WithApplication {
+      env.audioFileApi.getAudioFileById(1).toOption must beNone
+
+    }
+
+    "return an already existing audiofile" in new WithApplication {
       ApacheFileUtils.deleteDirectory(env.baseDir)
       ApacheFileUtils.forceMkdir(env.baseDir)
       ApacheFileUtils.forceMkdir(new File(env.baseDir.getAbsolutePath() + File.separator + "1"))
 
       ApacheFileUtils.touch(new File("/tmp/testaudio/1/" + env.basename + ".wav"))
 
-      env.audioFileApi.getAudioFileById(1).toOption must beSome
-
+      //Load the fixtures to populate the DB
+      env.database.withSession { env.loadFixtures.statements() }
+      env.audioFileApi.getAudioFileById(1).pp.toOption must beSome
       //Let's clean the mess
       ApacheFileUtils.deleteDirectory(env.baseDir)
     }
+
 
   }
 
