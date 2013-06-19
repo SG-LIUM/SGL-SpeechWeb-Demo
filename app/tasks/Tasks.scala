@@ -3,7 +3,7 @@ package tasks
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.threadLocalSession
 
-import fr.lium.tables.AudioFiles
+import fr.lium.tables.{AudioFiles, Transcriptions}
 import fr.lium.model.Uploaded
 import fr.lium.model.Conversions._
 
@@ -29,7 +29,9 @@ class DropCreateSchema extends Runnable with Env {
 
   def statements() = {
       Try((AudioFiles.ddl).drop)
+      Try((Transcriptions.ddl).drop)
       (AudioFiles.ddl).create
+      (Transcriptions.ddl).create
   }
 }
 
@@ -42,6 +44,6 @@ class LoadFixtures extends Runnable with Env {
   }
 
   def statements() = {
-      AudioFiles.autoInc.insert(("audio.wav", Uploaded))
+      val audioFile = AudioFiles.autoInc.insert(("audio.wav", Uploaded))
   }
 }

@@ -23,7 +23,6 @@ case class AudioFileApi(
 
     val fileName = audioFileBasename + FileUtils.getFileExtension(newFileName).getOrElse("")
 
-
     database.withSession {
       for {
         audioFile <- Try(AudioFiles.autoInc.insert((fileName, Uploaded)))
