@@ -32,17 +32,17 @@ case class AudioFileApi(
     audioFileBasename: String,
     database: Database) {
 
-  def createAudioFile(tmpFile: File, newFileName: String): Option[AudioFile] = {
+  def createAudioFile(tmpFile: File, newFileName: String): Try[AudioFile] = {
 
     val fileName = audioFileBasename + FileUtils.getFileExtension(newFileName).getOrElse("")
 
 
     database.withSession {
       for {
-        audioFile <- Try(AudioFiles.autoInc.insert((fileName, Uploaded))).toOption
-        id <- audioFile.id
+        audioFile <- Try(AudioFiles.autoInc.insert((fileName, Uploaded)))
+        id <- Try(audioFile.id.get)
         dir = new File(baseDirectory + File.separator + id).mkdir()
-        moved <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + id + File.separator + fileName)).toOption
+        moved <- FileUtils.moveFileToFile(tmpFile, new File(baseDirectory + File.separator + id + File.separator + fileName))
       } yield AudioFile(audioFile.id, fileName)
 
     }
