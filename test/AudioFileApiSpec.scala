@@ -67,7 +67,7 @@ class AudioFileApiSpec extends Specification
 
       //Load the fixtures to populate the DB
       env.database.withSession { env.loadFixtures.statements() }
-      env.audioFileApi.getAudioFileById(1).pp.toOption must beSome
+      env.audioFileApi.getAudioFileById(1).toOption must beSome
       //Let's clean the mess
       ApacheFileUtils.deleteDirectory(env.baseDir)
     }
