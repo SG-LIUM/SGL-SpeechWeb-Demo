@@ -15,7 +15,6 @@ final class Env(
 
   lazy val audioFileApi = new AudioFileApi(
     baseDirectory = new File(config.getString("lium.baseDir")),
-    actorSystem = actorSystem,
     audioFileBasename = config.getString("lium.audioFileBasename"),
     database
   )

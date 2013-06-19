@@ -4,31 +4,18 @@ package api
 import fr.lium.util.FileUtils
 import fr.lium.model.{AudioFile, Uploaded, Status}
 import fr.lium.model.Conversions._
+import fr.lium.tables.AudioFiles
 
 import java.io.File
 
-import scala.util.matching.Regex
 import scala.util.{ Try, Success, Failure }
 
-import scala.language.postfixOps
-
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.Future
 import scala.slick.session.Database
-
-import scala.slick.session.Database
-import fr.lium.tables.AudioFiles
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.threadLocalSession
 
-import akka.actor.{ ActorSystem, Props, ActorRef }
-import akka.pattern.{ ask, pipe }
-import akka.util.Timeout
-
 case class AudioFileApi(
     baseDirectory: File,
-    actorSystem: ActorSystem,
     audioFileBasename: String,
     database: Database) {
 
@@ -48,18 +35,16 @@ case class AudioFileApi(
     }
 
   }
+  def getAudioFileById(id: Int): Try[AudioFile] = {
+    database.withSession {
 
-  def getAudioFileById(id: Int): Option[AudioFile] = {
+      val dir = new File(baseDirectory + File.separator + id + File.separator)
 
-    val dir = new File(baseDirectory + File.separator + id + File.separator)
-
-    if (dir.exists && dir.isDirectory) {
-      val maybeFile: Option[File] = dir.listFiles.toList.filter(f ⇒ f.getName startsWith audioFileBasename).headOption
-      maybeFile map { f =>
-        AudioFile(Some(id), f.getName())
+      if (dir.exists && dir.isDirectory) {
+        AudioFiles.findById(id)
+      } else {
+        Failure(new Exception("AudioFile directory doesn't exist"))
       }
-    } else {
-      None
     }
 
   }

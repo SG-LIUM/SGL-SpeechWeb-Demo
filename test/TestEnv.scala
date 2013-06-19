@@ -20,7 +20,7 @@ final class TestEnv() {
   lazy val dropCreateSchema = new DropCreateSchema
 
   def audioFileApi()(implicit app: FakeApplication) = {
-    new AudioFileApi(baseDir, play.api.libs.concurrent.Akka.system, basename, database)
+    new AudioFileApi(baseDir, basename, database)
   }
 
 }

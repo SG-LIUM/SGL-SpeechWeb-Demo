@@ -58,7 +58,7 @@ class AudioFileApiSpec extends Specification
 
       ApacheFileUtils.touch(new File("/tmp/testaudio/1/" + env.basename + ".wav"))
 
-      env.audioFileApi.getAudioFileById(1) must beSome
+      env.audioFileApi.getAudioFileById(1).toOption must beSome
 
       //Let's clean the mess
       ApacheFileUtils.deleteDirectory(env.baseDir)
