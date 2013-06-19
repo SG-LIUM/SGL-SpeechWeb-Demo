@@ -27,6 +27,8 @@ class AudioFileApiSpec extends Specification
   val env = Env.current
   implicit val timeout = Timeout(DurationInt(5) seconds)
 
+  env.database.withSession { env.dropCreateSchema.statements() }
+
   "AudioFileApi createAudioFile" should {
 
     "create a new dir and move the tmp file to it" in new WithApplication {
@@ -36,7 +38,7 @@ class AudioFileApiSpec extends Specification
 
       val tmpFile = new File("/tmp/testaudio/toto")
       ApacheFileUtils.touch(tmpFile)
-      val result: Option[AudioFile] = env.audioFileApi.createAudioFile(tmpFile, "toto.wav")
+      val result: Try[AudioFile] = env.audioFileApi.createAudioFile(tmpFile, "toto.wav")
 
       result.get must beEqualTo(AudioFile(Some(1), env.basename + ".wav"))
 

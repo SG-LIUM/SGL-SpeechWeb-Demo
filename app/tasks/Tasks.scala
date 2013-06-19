@@ -23,9 +23,13 @@ class DropCreateSchema extends Runnable with Env {
 
   def run {
     env.database.withSession {
+      statements()
+    }
+  }
+
+  def statements() = {
       Try((AudioFiles.ddl).drop)
       (AudioFiles.ddl).create
-    }
   }
 }
 
