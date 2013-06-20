@@ -4,7 +4,7 @@ import scala.slick.driver.SQLiteDriver.simple._
 import Database.threadLocalSession
 
 import fr.lium.tables.{AudioFiles, Transcriptions}
-import fr.lium.model.Uploaded
+import fr.lium.model.{InProgress, Uploaded}
 import fr.lium.model.Conversions._
 
 import com.typesafe.config._
@@ -47,6 +47,6 @@ class LoadFixtures extends Runnable with Env {
 
   def statements() = {
       val audioFile = AudioFiles.autoInc.insert(("audio.wav", Uploaded))
-      audioFile.id map { id => Transcriptions.autoInc.insert((config.getString("lium.sampleFile"), "progress", id)) }
+      audioFile.id map { id => Transcriptions.autoInc.insert((config.getString("lium.sampleFile"), InProgress.toString, id)) }
   }
 }
