@@ -9,11 +9,7 @@ object ReadsWrites {
 
   implicit val statusWrites = new Writes[Status] {
     def writes(s: Status): JsValue = {
-      JsString(s match {
-        case Uploaded => "uploaded"
-        case Diarization => "diarization"
-        case Transcribing => "transcribing"
-      })
+      JsString(s.value)
     }
   }
 
