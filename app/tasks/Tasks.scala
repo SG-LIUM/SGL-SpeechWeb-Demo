@@ -12,16 +12,17 @@ import scala.util.Try
 
 trait Env {
 
-  System.setProperty("config.file", "conf/application.conf")
 
-  val conf = ConfigFactory.load()
-  val env = new TaskEnv(conf)
+  val config = ConfigFactory.load()
+  val env = new TaskEnv(config)
 
+  def setConfFile = System.setProperty("config.file", "conf/application.conf")
 }
 
 class DropCreateSchema extends Runnable with Env {
 
   def run {
+    setConfFile
     env.database.withSession {
       statements()
     }
@@ -38,6 +39,7 @@ class DropCreateSchema extends Runnable with Env {
 class LoadFixtures extends Runnable with Env {
 
   def run {
+    setConfFile
     env.database.withSession {
       statements()
     }
@@ -45,5 +47,6 @@ class LoadFixtures extends Runnable with Env {
 
   def statements() = {
       val audioFile = AudioFiles.autoInc.insert(("audio.wav", Uploaded))
+      audioFile.id map { id => Transcriptions.autoInc.insert((config.getString("lium.sampleFile"), "progress", id)) }
   }
 }
