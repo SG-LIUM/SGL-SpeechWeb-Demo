@@ -1,13 +1,9 @@
 function UploadCtrl($scope) {
 
   $scope.uploadComplete = function (content, completed) {
-    if (completed && content.length > 0) {
-      $scope.response = JSON.parse(content); // Presumed content is a json string!
-      $scope.response.style = {
-        color: $scope.response.color,
-        "font-weight": "bold"
-      };
-
+    if (completed) {
+        console.log(content);
+        $scope.response = content; // Presumed content is a json string!
     }
   };
 
