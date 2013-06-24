@@ -2,4 +2,23 @@
 
 @main("Demo", "demo") {
 
+<div id="main-wrapper" ng-controller="UploadCtrl">
+  <div class="container">
+    <div class="row">
+        <h2>Upload your file</h2>
+        <div>
+            <form action="@routes.AudioFileApiController.addAudioFile()" ng-upload>
+                <input type="file" name="file">
+
+                <p>
+                    <input type="submit" class="btn" value="Submit"
+                        upload-submit="uploadComplete(content, completed)" />
+                </p>
+            </form>
+            <div class="alert alert-info">Server Response: {{response | json}}</div>
+        </div>
+    </div>
+  </div>
+</div>
+
 }
