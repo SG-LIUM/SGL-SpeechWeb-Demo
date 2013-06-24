@@ -15,14 +15,12 @@ trait Env {
 
   val config = ConfigFactory.load()
   val env = new TaskEnv(config)
-
-  def setConfFile = System.setProperty("config.file", "conf/application.conf")
 }
 
 class DropCreateSchema extends Runnable with Env {
 
   def run {
-    setConfFile
+    System.setProperty("config.file", "conf/application.conf")
     env.database.withSession {
       statements()
     }
@@ -39,7 +37,7 @@ class DropCreateSchema extends Runnable with Env {
 class LoadFixtures extends Runnable with Env {
 
   def run {
-    setConfFile
+    System.setProperty("config.file", "conf/application.conf")
     env.database.withSession {
       statements()
     }
