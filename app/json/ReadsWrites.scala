@@ -2,8 +2,7 @@ package fr.lium
 package json
 import play.api.libs.json._
 
-import fr.lium.model.{AudioFile, Diarization, Female, Gender, Male, Speaker, Status, Transcribing, TranscriptionFinished,
-TranscriptionInProgress, Unknown, Uploaded, Word}
+import fr.lium.model.{AudioFile, Diarization, Female, Gender, Male, Speaker, Status, Transcribing, Transcription, UnknownGender, Uploaded, Word}
 
 object ReadsWrites {
 
@@ -27,7 +26,7 @@ object ReadsWrites {
       JsString(g match {
         case Male => "m"
         case Female => "f"
-        case Unknown => "u"
+        case UnknownGender => "u"
       })
     }
   }
@@ -51,17 +50,9 @@ object ReadsWrites {
     }
   }
 
-  implicit val transcriptionInProgressWrites = new Writes[TranscriptionInProgress] {
-    def writes(t: TranscriptionInProgress): JsValue = {
-      Json.obj(
-        "audioFile" -> Json.toJson(t.file),
-        "system"    -> t.system,
-        "progress"  -> t.progress)
-    }
-  }
 
-  implicit val transcriptionFinishedWrites = new Writes[TranscriptionFinished] {
-    def writes(t: TranscriptionFinished): JsValue = {
+  implicit val transcriptionWrites = new Writes[Transcription] {
+    def writes(t: Transcription): JsValue = {
       Json.obj(
         "system"    -> t.system,
         "audioFile" -> Json.toJson(t.file),

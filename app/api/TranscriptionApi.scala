@@ -3,33 +3,33 @@ package api
 
 import java.io.File
 
-import fr.lium.model.{AudioFile, TranscriptionFinished, TranscriptionInProgress}
+import fr.lium.model.{AudioFile, Transcription}
 
 case class TranscriptionApi(wordApi: WordApi.type, sampleFile: Option[File] = None) {
 
-  def startTranscription(file: AudioFile): TranscriptionInProgress = {
+  def startTranscription(file: AudioFile): Transcription = {
 
     //TODO
     //We should for sure do something here, like starting the transcription ;)
 
-    new TranscriptionInProgress(file)
+    new Transcription(file)
   }
 
-  def getTranscriptionProgress(file: AudioFile): TranscriptionInProgress = {
+  def getTranscriptionProgress(file: AudioFile): Transcription = {
 
     //TODO
     //We should for sure do something here
 
-    new TranscriptionInProgress(file, 20)
+    new Transcription(file)
   }
 
-  def getTranscription(file: AudioFile): Option[TranscriptionFinished] = {
+  def getTranscription(file: AudioFile): Option[Transcription] = {
 
     //TODO
     //We should for sure do something here
 
     sampleFile map { f =>
-      TranscriptionFinished(file, None, wordApi.getWordsFromFile(f))
+      Transcription(file = file, transcription = (Some(wordApi.getWordsFromFile(f))))
     }
   }
 

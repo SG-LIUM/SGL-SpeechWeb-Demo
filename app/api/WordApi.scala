@@ -1,7 +1,7 @@
 package fr.lium
 package api
 
-import fr.lium.model.{Female, Male, Speaker, Unknown, Word}
+import fr.lium.model.{Female, Male, Speaker, UnknownGender, Word}
 import fr.lium.util.conversion.parseFloatOption
 
 import java.io.File
@@ -34,7 +34,7 @@ object WordApi {
               case (gender, channel, spkId)=> Some(Speaker(spkId, channel, gender match {
                 case "M" => Male
                 case "F" => Female
-                case _ => Unknown
+                case _ => UnknownGender
               }))
             }))
         case _ => None

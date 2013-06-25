@@ -3,13 +3,10 @@ package model
 
 import java.io.File
 
-case class TranscriptionFinished(
+case class Transcription(
   file: AudioFile,
+  status: Status = InProgress,
   system: Option[String] = None,
-  transcription: List[Word],
+  transcription: Option[List[Word]] = None,
   filename: Option[File] = None)
 
-case class TranscriptionInProgress(
-  file: AudioFile,
-  progress: Int = 0,
-  system: Option[String] = None)
