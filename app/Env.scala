@@ -21,7 +21,7 @@ final class Env(
 
   lazy val wordApi = WordApi
 
-  lazy val transcriptionApi = new TranscriptionApi(wordApi, Some(new File(config.getString("lium.sampleFile"))))
+  lazy val transcriptionApi = new TranscriptionApi(wordApi, database)
 
   lazy val databaseName = config.getString("lium.databaseName")
   lazy val database: Database = Database.forURL(
