@@ -33,8 +33,6 @@ case class TranscriptionApi(
 
   def getTranscription(file: AudioFile): Try[Transcription] = {
 
-    //TODO
-    //We should for sure do something here
     database.withSession {
         val dbTranscription = Transcriptions.findByAudioFile(file)
 
