@@ -33,11 +33,16 @@ object Transcriptions extends Table[(Option[Int], String, String, Int)]("transcr
       a <- AudioFiles if a.id === t.audioFileId
     } yield (t, a)
 
-    val maybeTranscription: Option[TranscriptionInProgress] = query.firstOption.map{ t => new TranscriptionInProgress(new AudioFile(t._2._1,
-    t._2._2, t._2._3 match {
-      case InProgress.value => InProgress
-      case Finished.value => Finished
-    })) }
+    val maybeTranscription: Option[TranscriptionInProgress] =
+      query.firstOption map {
+        case (_, (a, b, c)) => new TranscriptionInProgress(
+          new AudioFile(a, b, c match {
+            case InProgress.value => InProgress
+            case Finished.value   => Finished
+            case _                => Unknown
+          })
+        )
+      }
 
     maybeTranscription asTry badArg("Transcription not found.")
   }

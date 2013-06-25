@@ -25,3 +25,7 @@ case object Finished extends Status {
 case object InProgress extends Status {
   val value = "inprogress"
 }
+
+case object Unknown extends Status {
+  val value = "unknown"
+}
