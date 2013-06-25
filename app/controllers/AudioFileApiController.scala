@@ -33,8 +33,12 @@ object AudioFileApiController extends BaseApiController {
   def addAudioFile() = Action(parse.multipartFormData) { request ⇒
     request.body.file("file").map { audiofile ⇒
       val f = env.audioFileApi.createAudioFile(audiofile.ref.file, audiofile.filename)
-      f.map { audioFile => JsonResponse(Ok(Json.toJson(audioFile))) } getOrElse
-        (JsonResponse(InternalServerError(Json.obj("message" -> ("Ooops! It seems we had a problem storing the file.")))))
+      f match {
+        case Success(audioFile) => JsonResponse(Ok(Json.toJson(audioFile)))
+        case Failure(e) => JsonResponse(InternalServerError(
+          Json.obj("message" -> ("Ooops! It seems we had a problem storing the file." + e.getMessage()))
+        ))
+      }
 
     }.getOrElse {
       JsonResponse(Status(405)(Json.obj("message" -> "Invalid input")))
