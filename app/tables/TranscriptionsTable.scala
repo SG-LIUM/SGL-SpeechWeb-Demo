@@ -1,7 +1,7 @@
 package fr.lium
 package tables
 
-import fr.lium.model.{ AudioFile, InProgress, Finished, Transcription, Unknown }
+import fr.lium.model._
 
 import scala.util.{ Try, Success, Failure }
 
@@ -26,35 +26,31 @@ object Transcriptions extends Table[(Option[Int], String, String, Int)]("transcr
   // A reified foreign key relation that can be navigated to create a join
   def audioFile = foreignKey("AUDIO_FILE_PK", audioFileId, AudioFiles)(_.id)
 
-  def findById(id: Int)(implicit session: scala.slick.session.Session): Try[Transcription] = {
+  def findById(id: Int)(implicit session: scala.slick.session.Session): Try[DbTranscription] = {
 
     val query = for {
       t <- Transcriptions if t.id === id
       a <- AudioFiles if a.id === t.audioFileId
     } yield (t, a)
 
-    val maybeTranscription: Option[Transcription] =
+    val maybeTranscription: Option[DbTranscription] =
       query.firstOption map {
-        case (_, (a, b, c)) => new Transcription(
-          new AudioFile(a, b, c match {
-            case InProgress.value => InProgress
-            case Finished.value   => Finished
-            case _                => Unknown
-          })
-        )
+        case ((d, e, f, g), (a, b, c)) => new DbTranscription(
+          new AudioFile(a, b, AudioFile.status(c)),
+          DbTranscription.status(f))
       }
 
     maybeTranscription asTry badArg("Transcription not found.")
   }
 
 
-  def findByAudioFile(audioFile: AudioFile)(implicit session: scala.slick.session.Session): Try[Transcription] = {
+  def findByAudioFile(audioFile: AudioFile)(implicit session: scala.slick.session.Session): Try[DbTranscription] = {
     val query = for {
       t <- Transcriptions if t.audioFileId === audioFile.id
     } yield (t.filename)
 
     val maybeTranscription = query.firstOption map { filename =>
-      new Transcription(audioFile)
+      new DbTranscription(audioFile, filename = Some(new File(filename)))
     }
 
     maybeTranscription asTry badArg("Transcription not found.")
