@@ -76,16 +76,17 @@ object AudioFileApiController extends BaseApiController {
   @ApiErrors(Array(
     new ApiError(code = 404, reason = "AudioFile not found")))
   def getTranscriptions(@ApiParam(value = "ID of the audiofile")@PathParam("id") id: Int) = Action { implicit request =>
-    env.audioFileApi.getAudioFileById(id).map { audioFile =>
-      val transcriptionFinished = env.transcriptionApi.getTranscription(audioFile)
-      transcriptionFinished.map { t =>
-        JsonResponse(Ok(Json.toJson(List(t))))
-      }.getOrElse {
-        JsonResponse(NotFound(Json.obj("message" -> ("Transcription not found. It may not be finished. Check " +
-          routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL() + " to check the progress."))))
+    env.audioFileApi.getAudioFileById(id) match {
+      case Success(audioFile) => {
+        val transcriptionFinished = env.transcriptionApi.getTranscription(audioFile)
+        transcriptionFinished.map { t =>
+          JsonResponse(Ok(Json.toJson(List(t))))
+        }.getOrElse {
+          JsonResponse(NotFound(Json.obj("message" -> ("Transcription not found. It may not be finished. Check " +
+            routes.AudioFileApiController.getTranscriptionProgress(id).absoluteURL() + " to check the progress."))))
+        }
       }
-    }.getOrElse {
-      JsonResponse(NotFound(Json.obj("message" -> "AudioFile not found")))
+      case Failure(e) => JsonResponse(NotFound(Json.obj("message" -> ("AudioFile not found. " + e.getMessage()))))
     }
   }
 }
