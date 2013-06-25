@@ -22,6 +22,12 @@ The diarization tool used is available on the [official Wiki](http://lium3.univ-
 ## CMU Sphinx
 _TODO_
 
+## Loading Fixtures
+
+By default, a local SQLite database is used. To create it and load the default fixtures, just run:
+
+    ./reload-db.sh
+
 # Developers
 
 To enter the Play! (SBT) console just type `play` at the root of the project. Then you'll be able to run multiple commands:
