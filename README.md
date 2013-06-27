@@ -14,6 +14,11 @@ All what you need is a JDK and Play! Framework. You will find how to install Pla
 
 Once `Play!` is installed just launch `play run` at the root of the project. When all the required libraries will have been downloaded, you should be able to access to the documentation of the API by accessing [http://localhost:9000](http://localhost:9000) in your browser.
 
+## Locale
+
+Your JVM use the C locale. To do this, before launching `play`, be sure to set you locale accordingly:
+
+    export LC_LANG=C
 
 ## LIUM_SpkDiarization
 
