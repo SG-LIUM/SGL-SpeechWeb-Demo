@@ -31,10 +31,10 @@ case class TranscriptionApi(
     new Transcription(file)
   }
 
-  def getTranscription(file: AudioFile): Try[Transcription] = {
+  def getTranscriptions(file: AudioFile): List[Transcription] = {
 
     database.withSession {
-        val dbTranscription = Transcriptions.findByAudioFile(file)
+      val dbTranscription = Transcriptions.findByAudioFile(file)
 
       dbTranscription.map { d =>
         Transcription(file, Finished, None, d.filename.map { f => wordApi.getWordsFromFile(f) })

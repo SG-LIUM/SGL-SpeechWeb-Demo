@@ -44,16 +44,15 @@ object Transcriptions extends Table[(Option[Int], String, String, Int)]("transcr
   }
 
 
-  def findByAudioFile(audioFile: AudioFile)(implicit session: scala.slick.session.Session): Try[DbTranscription] = {
+  def findByAudioFile(audioFile: AudioFile)(implicit session: scala.slick.session.Session): List[DbTranscription] = {
+
     val query = for {
       t <- Transcriptions if t.audioFileId === audioFile.id
     } yield (t.filename, t.status)
 
-    val maybeTranscription = query.firstOption map {
+    query.list map {
       case (filename, status) => new DbTranscription(audioFile, DbTranscription.status(status), filename = Some(new File(filename)))
     }
-
-    maybeTranscription asTry badArg("Transcription not found.")
 
   }
 
