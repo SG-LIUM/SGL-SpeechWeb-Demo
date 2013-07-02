@@ -13,6 +13,7 @@ case class Transcription(
 
 case class DbTranscription(
   file: AudioFile,
+  system: Option[String] = None,
   status: Status = InProgress,
   filename: Option[File] = None)
 

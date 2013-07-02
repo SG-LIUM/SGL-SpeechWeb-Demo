@@ -49,7 +49,7 @@ class LoadFixtures extends Runnable with Env {
 
   def statements(database: Database) = {
       val audioFile = AudioFiles.autoInc.insert(("audio.wav", Uploaded))
-      audioFile.id map { id => Transcriptions.autoInc.insert((config.getString("lium.sampleFile"), InProgress.toString, id)) }
+      audioFile.id map { id => Transcriptions.autoInc.insert((config.getString("lium.sampleFile"), None, InProgress.toString, id)) }
 
       //Insert some sample data for the ASH combination project
       val sampleAudioFile = new File("data/ASH/audio/BFMTV_BFMStory_2011-03-17_175900.wav")
@@ -68,10 +68,10 @@ class LoadFixtures extends Runnable with Env {
       }
 
       id map { id =>
-        Transcriptions.autoInc.insert(("data/ASH/ctm/combination/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
-        Transcriptions.autoInc.insert(("data/ASH/ctm/LIA/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
-        Transcriptions.autoInc.insert(("data/ASH/ctm/RASR/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
-        Transcriptions.autoInc.insert(("data/ASH/ctm/SPH/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/combination/BFMTV_BFMStory_2011-03-17_175900.ctm", Some("ASH"), Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/LIA/BFMTV_BFMStory_2011-03-17_175900.ctm", Some("LIA"), Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/RASR/BFMTV_BFMStory_2011-03-17_175900.ctm", Some("RASR"), Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/SPH/BFMTV_BFMStory_2011-03-17_175900.ctm", Some("SPH"), Finished.toString, id))
       }
   }
 }

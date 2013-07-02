@@ -8,20 +8,22 @@ import scala.util.{ Try, Success, Failure }
 import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 
-object Transcriptions extends Table[(Option[Int], String, String, Int)]("transcriptions") {
+object Transcriptions extends Table[(Option[Int], String, Option[String], String, Int)]("transcriptions") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc) // This is the primary key column
 
-  val autoInc = filename ~ status ~ audioFileId returning id
+  val autoInc = filename ~ system ~ status ~ audioFileId returning id
 
   def status = column[String]("STATUS")
 
   def filename = column[String]("FILENAME")
 
+  def system = column[Option[String]]("SYSTEM", O.Nullable)
+
   def audioFileId = column[Int]("AUDIO_FILE_ID")
 
 
   // Every table needs a * projection with the same type as the table's type parameter
-  def * = id.? ~ filename ~ status ~ audioFileId
+  def * = id.? ~ filename ~ system ~ status ~ audioFileId
 
   // A reified foreign key relation that can be navigated to create a join
   def audioFile = foreignKey("AUDIO_FILE_PK", audioFileId, AudioFiles)(_.id)
@@ -35,9 +37,10 @@ object Transcriptions extends Table[(Option[Int], String, String, Int)]("transcr
 
     val maybeTranscription: Option[DbTranscription] =
       query.firstOption map {
-        case ((d, e, f, g), (a, b, c)) => new DbTranscription(
-          new AudioFile(a, b, AudioFile.status(c)),
-          DbTranscription.status(f))
+        case ((id, filename, system, status, audioFileId), (aId, aName, aStatus)) => new DbTranscription(
+          new AudioFile(aId, aName, AudioFile.status(aStatus)),
+          system,
+          DbTranscription.status(status))
       }
 
     maybeTranscription asTry badArg("Transcription not found.")
@@ -48,10 +51,10 @@ object Transcriptions extends Table[(Option[Int], String, String, Int)]("transcr
 
     val query = for {
       t <- Transcriptions if t.audioFileId === audioFile.id
-    } yield (t.filename, t.status)
+    } yield (t.filename, t.system, t.status)
 
     query.list map {
-      case (filename, status) => new DbTranscription(audioFile, DbTranscription.status(status), filename = Some(new File(filename)))
+      case (filename, system, status) => new DbTranscription(audioFile, system, DbTranscription.status(status), filename = Some(new File(filename)))
     }
 
   }

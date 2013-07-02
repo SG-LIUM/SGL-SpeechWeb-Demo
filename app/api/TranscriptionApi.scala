@@ -37,7 +37,7 @@ case class TranscriptionApi(
       val dbTranscription = Transcriptions.findByAudioFile(file)
 
       dbTranscription.map { d =>
-        Transcription(file, Finished, None, d.filename.map { f => wordApi.getWordsFromFile(f) })
+        Transcription(file, Finished, d.system, d.filename.map { f => wordApi.getWordsFromFile(f) })
       }
     }
 
