@@ -1,12 +1,12 @@
 package fr.lium
 package util
 
-package object conversion {
-  def parseIntOption(str: String): Option[Int] = try {
-    Some(java.lang.Integer.parseInt(str))
-  }
+import scala.util.Try
 
-  def parseFloatOption(str: String): Option[Float] = try {
-    Some(java.lang.Float.parseFloat(str))
-  }
+package object conversion {
+  def parseIntOption(str: String): Option[Int] =
+    Try(java.lang.Integer.parseInt(str)).toOption
+
+  def parseFloatOption(str: String): Option[Float] =
+    Try(java.lang.Float.parseFloat(str)).toOption
 }
