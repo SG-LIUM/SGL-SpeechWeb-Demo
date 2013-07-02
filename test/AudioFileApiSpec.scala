@@ -91,7 +91,7 @@ class AudioFileApiSpec extends Specification
       ApacheFileUtils.touch(new File("/tmp/testaudio/1/" + env.basename + ".wav"))
 
       //Load the fixtures to populate the DB
-      env.database.withSession { env.loadFixtures.statements() }
+      env.database.withSession { env.loadFixtures.statements(env.database) }
       env.audioFileApi.getAudioFileById(1).toOption must beSome
       //Let's clean the mess
       ApacheFileUtils.deleteDirectory(env.baseDir)
