@@ -5,6 +5,7 @@ import play.api.mvc._
 
 import fr.lium.Env
 import fr.lium.json.ReadsWrites._
+import fr.lium.util.FileUtils
 
 import com.wordnik.swagger.core._
 import com.wordnik.swagger.annotations._
@@ -32,7 +33,7 @@ object AudioFileApiController extends BaseApiController {
     new ApiParamImplicit(value = "Audio file to attach", required = true, dataType = "file", paramType = "body")))
   def addAudioFile() = Action(parse.multipartFormData) { request ⇒
     request.body.file("file").map { audiofile ⇒
-      val f = env.audioFileApi.createAudioFile(audiofile.ref.file, audiofile.filename)
+      val f = env.audioFileApi.createAudioFile(audiofile.ref.file, FileUtils.getFileExtension(audiofile.filename))
       f match {
         case Success(audioFile) => JsonResponse(Ok(Json.toJson(audioFile)))
         case Failure(e) => JsonResponse(InternalServerError(
