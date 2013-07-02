@@ -39,9 +39,40 @@ class AudioFileApiSpec extends Specification
 
       val tmpFile = new File("/tmp/testaudio/toto")
       ApacheFileUtils.touch(tmpFile)
-      val result: Try[AudioFile] = env.audioFileApi.createAudioFile(tmpFile, "toto.wav")
+      val result: Try[AudioFile] = env.audioFileApi.createAudioFile(tmpFile, Some(".wav"))
 
       result.get must beEqualTo(AudioFile(Some(1), env.basename + ".wav"))
+
+      val targetFile =  new File(env.baseDir + File.separator + "1" + File.separator + env.basename + ".wav")
+      //The target file should have been created
+      targetFile.exists() must beTrue
+
+      //The file should have been moved by default
+      tmpFile.exists() must beFalse
+
+      //Let's clean the mess
+      ApacheFileUtils.deleteDirectory(env.baseDir)
+    }
+
+    "create a new dir and copy the tmp file to it" in new WithApplication {
+
+      env.database.withSession { env.dropCreateSchema.statements() }
+
+      ApacheFileUtils.deleteDirectory(env.baseDir)
+      ApacheFileUtils.forceMkdir(env.baseDir)
+
+      val tmpFile = new File("/tmp/testaudio/toto")
+      ApacheFileUtils.touch(tmpFile)
+      val result: Try[AudioFile] = env.audioFileApi.createAudioFile(tmpFile, Some(".wav"), false)
+
+      result.get must beEqualTo(AudioFile(Some(1), env.basename + ".wav"))
+
+      val targetFile =  new File(env.baseDir + File.separator + "1" + File.separator + env.basename + ".wav")
+      //The target file should have been created
+      targetFile.exists() must beTrue
+
+      //The file should have been copied by default
+      tmpFile.exists() must beTrue
 
       //Let's clean the mess
       ApacheFileUtils.deleteDirectory(env.baseDir)
