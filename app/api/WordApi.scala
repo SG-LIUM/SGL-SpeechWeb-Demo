@@ -6,12 +6,16 @@ import fr.lium.util.conversion.parseFloatOption
 
 import java.io.File
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
 
 object WordApi {
 
   def getWordsFromFile(file: File): List[Word] =
-    getWordsFromLines(Source.fromFile(file).getLines.toList)
+    Try(getWordsFromLines(Source.fromFile(file).getLines.toList)) match {
+      case Success(w) => w
+      case Failure(_) => Nil
+    }
 
   def getWordsFromLines(lines: String): List[Word] =
     getWordsFromLines(lines.split("\n").toList)
