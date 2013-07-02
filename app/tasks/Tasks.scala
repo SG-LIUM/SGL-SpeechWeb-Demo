@@ -59,7 +59,7 @@ class LoadFixtures extends Runnable with Env {
 
         val api = new AudioFileApi(new File(config.getString("lium.baseDir")), config.getString("lium.audioFileBasename"), database)
 
-        val audioFileAsh = api.createAudioFile(sampleAudioFile, FileUtils.getFileExtension(sampleAudioFile))
+        val audioFileAsh = api.createAudioFile(sampleAudioFile, FileUtils.getFileExtension(sampleAudioFile), false)
         audioFileAsh.toOption.flatMap { _.id }
       } else {
 
@@ -68,10 +68,10 @@ class LoadFixtures extends Runnable with Env {
       }
 
       id map { id =>
-        Transcriptions.autoInc.insert(("data/ASH/combination/BFMTV_BFMStory_2011:03:17_175900.ctm", Finished.toString, id))
-        Transcriptions.autoInc.insert(("data/LIA/combination/BFMTV_BFMStory_2011:03:17_175900.ctm", Finished.toString, id))
-        Transcriptions.autoInc.insert(("data/RASR/combination/BFMTV_BFMStory_2011:03:17_175900.ctm", Finished.toString, id))
-        Transcriptions.autoInc.insert(("data/SPH/combination/BFMTV_BFMStory_2011:03:17_175900.ctm", Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/combination/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/LIA/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/RASR/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
+        Transcriptions.autoInc.insert(("data/ASH/ctm/SPH/BFMTV_BFMStory_2011-03-17_175900.ctm", Finished.toString, id))
       }
   }
 }

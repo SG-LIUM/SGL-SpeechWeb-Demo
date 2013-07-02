@@ -19,7 +19,7 @@ final class Env(
     database
   )
 
-  lazy val wordApi = WordApi
+  lazy val wordApi = new WordApi(config.getString("lium.fileEncoding"))
 
   lazy val transcriptionApi = new TranscriptionApi(wordApi, database)
 

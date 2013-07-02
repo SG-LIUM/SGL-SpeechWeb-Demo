@@ -8,13 +8,18 @@ import java.io.File
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
+import play.api.Logger
 
-object WordApi {
+
+case class WordApi(encoding: String = "ISO-8859-1") {
 
   def getWordsFromFile(file: File): List[Word] =
-    Try(getWordsFromLines(Source.fromFile(file).getLines.toList)) match {
+    Try(getWordsFromLines(Source.fromFile(file, encoding).getLines.toList)) match {
       case Success(w) => w
-      case Failure(_) => Nil
+      case Failure(e) => {
+        Logger.error("Problem with file '" + file + "' : " + e.getMessage())
+        Nil
+      }
     }
 
   def getWordsFromLines(lines: String): List[Word] =

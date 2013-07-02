@@ -12,7 +12,7 @@ import scala.slick.driver.SQLiteDriver.simple._
 import Database.threadLocalSession
 
 case class TranscriptionApi(
-  wordApi: WordApi.type,
+  wordApi: WordApi,
   database: Database) {
 
   def startTranscription(file: AudioFile): Transcription = {
