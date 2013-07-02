@@ -32,12 +32,14 @@ case class WordApi(encoding: String = "ISO-8859-1") {
     val v: List[String] = line.split(" ").toList
 
     v match {
+        // Default CTM format with 4 fields added at the end:
+        // score, gender, channel, spkId
         case List(show, _, start, duration, word, score, gender, channel, spkId) => Some(
           Word(show,
             parseFloatOption(start) getOrElse(0),
             parseFloatOption(duration) getOrElse(0),
             word,
-            parseFloatOption(score) getOrElse(0),
+            parseFloatOption(score),
             (gender, channel, spkId) match {
               case ("N/A","N/A","N/A") => None
               case (gender, channel, spkId)=> Some(Speaker(spkId, channel, gender match {
@@ -46,6 +48,21 @@ case class WordApi(encoding: String = "ISO-8859-1") {
                 case _ => UnknownGender
               }))
             }))
+        // Default CTM format with one more field at the end: score
+        case List(show, _, start, duration, word, score) => Some(
+          Word(show,
+            parseFloatOption(start) getOrElse(0),
+            parseFloatOption(duration) getOrElse(0),
+            word,
+            parseFloatOption(score)))
+        // Default CTM format
+        case List(show, _, start, duration, word) => Some(
+          Word(show,
+            parseFloatOption(start) getOrElse(0),
+            parseFloatOption(duration) getOrElse(0),
+            word,
+            None,
+            None))
         case _ => None
     }
   }

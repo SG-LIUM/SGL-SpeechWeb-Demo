@@ -6,5 +6,5 @@ case class Word(
   start: Float,
   duration: Float,
   word: String,
-  score: Float,
-  speaker: Option[Speaker])
+  score: Option[Float] = None,
+  speaker: Option[Speaker] = None)
