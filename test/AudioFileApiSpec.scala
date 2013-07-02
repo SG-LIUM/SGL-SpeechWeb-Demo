@@ -9,14 +9,10 @@ import play.api.libs.Files
 import java.io.File
 
 import scala.util.Try
-import scala.concurrent.{Await, Future}
 
 import fr.lium.api.AudioFileApi
 import fr.lium.util.FileUtils
 import fr.lium.model.AudioFile
-
-import akka.util.Timeout
-import scala.concurrent.duration.DurationInt
 
 import org.apache.commons.io.{FileUtils => ApacheFileUtils}
 
@@ -25,8 +21,6 @@ class AudioFileApiSpec extends Specification
   with SampleDirectories {
 
   val env = Env.current
-  implicit val timeout = Timeout(DurationInt(5) seconds)
-
 
   "AudioFileApi createAudioFile" should {
 
