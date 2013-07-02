@@ -4,8 +4,11 @@
 #
 # mergeSegToCtm.py
 #
-# Enhance the Bck file by adding extra fields with the diarisation
+# Enhance the CTM file by adding extra fields with the diarisation
 # information
+#
+# First argument is the seg file
+# Second argument is the ctm file
 #
 import sys
 
