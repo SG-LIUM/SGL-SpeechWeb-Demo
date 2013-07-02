@@ -39,6 +39,8 @@ object FileUtils {
     }
   }
 
+  def getFileExtension(file: File): Option[String] = getFileExtension(file.getName())
+
   def getFileExtension(fileName: String): Option[String] =
     if (fileName.contains('.'))
       Some(fileName.substring(fileName.lastIndexOf(".")))
