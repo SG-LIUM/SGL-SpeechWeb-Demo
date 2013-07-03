@@ -7,6 +7,7 @@ GET     /                           controllers.Application.index
 GET     /docs                       controllers.Application.docs
 GET     /demo                       controllers.Application.demo
 GET     /demo/results               controllers.Application.results
+GET     /demo/ash                   controllers.Application.ash
 GET     /about                      controllers.Application.about
 
 

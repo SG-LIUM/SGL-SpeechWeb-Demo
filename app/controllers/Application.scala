@@ -25,4 +25,8 @@ object Application extends Controller {
     Ok(views.html.results())
   }
 
+  def ash = Action {
+    Ok(views.html.ash())
+  }
+
 }

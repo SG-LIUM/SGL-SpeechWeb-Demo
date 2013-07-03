@@ -1,0 +1,54 @@
+@()
+
+@main("Hash demo", "demo") {
+
+<!-- Main Wrapper -->
+<div id="main-wrapper" ng-controller="TranscriptionCtrl">
+  <div class="container">
+    <div class="row">
+      <div class="6u skel-cell-mainContent">
+
+        <!-- Content -->
+        <article class="last">
+
+            <h2>ASH Transcription</h2>
+
+            <p>
+            <span ng-repeat="jsonWord in transcription" ngModel="transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)">{{jsonWord.word}} </span>
+            </p>
+
+        </article>
+
+      </div>
+      <div class="6u">
+
+        <section>
+            <h3>Your file</h3>
+            <audio id="mediafile" controls preload>
+                <source type="audio/wav" src="http://localhost/tmp/BFMTV_BFMStory_2011-03-17_175900.wav" />
+            </audio>
+        </section>
+
+      </div>
+
+    </div>
+    <div class="row">
+        <div class="3u" id="SPH">
+            <h3>SPH Transcription</h3>
+        </div>
+        <div class="3u" id="LIA">
+            <h3>LIA Transcription</h3>
+        </div>
+        <div class="3u" id="RASR">
+            <h3>RASR Transcription</h3>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// jQuery method
+$('#mediafile').mediaelementplayer();
+</script>
+}
