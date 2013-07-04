@@ -1,6 +1,38 @@
 'use strict';
 
 /* Services */
+angular.module('transcriptionServices', []).
+    factory('Indexes', function(){
+        return {
+            //Get the next list of words to display on the screen
+            getNextWords : function(transcription, nextWordToDisplay, step) {
+                var newWords = {};
+                newWords.currentWordEnd = nextWordToDisplay + step;
+                newWords.currentWordStart = nextWordToDisplay;
+
+                // Try to avoid out of bounds exception
+                if (newWords.currentWordStart > transcription.length -1) {
+                return [];
+                }
+
+                // Same here
+                if (newWords.currentWordEnd > transcription.length -1) {
+                newWords.currentWordEnd = transcription.length -1;
+                }
+
+                //Get the words
+                newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
+
+                //Reset the counters
+                newWords.nextWordToDisplay = newWords.currentWordEnd;
+                if(transcription.content.length >= newWords.nextWordToDisplay) {
+                newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
+                }
+
+                return newWords;
+            }
+        }
+});
 
 angular.module('searchServices', []).
     factory('BinarySearch', function(){
