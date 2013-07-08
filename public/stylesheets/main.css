@@ -1,4 +1,21 @@
 .current {
-  color: red;
+  color: orange;
   text-decoration: underline;
+}
+
+.suppr {
+  color: red;
+  text-decoration: line-through;
+}
+
+.inser {
+  color: green;
+}
+
+.subst {
+  color: blue;
+}
+
+.none {
+
 }

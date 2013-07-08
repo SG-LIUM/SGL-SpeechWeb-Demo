@@ -10,23 +10,35 @@ angular.module('transcriptionServices', []).
                 newWords.currentWordEnd = nextWordToDisplay + step;
                 newWords.currentWordStart = nextWordToDisplay;
 
-                // Try to avoid out of bounds exception
-                if (newWords.currentWordStart > transcription.length -1) {
-                return [];
+                // Try to avoid out of bounds exception 
+                //NOTE: Est-t-il possible d'aller dans ce if sachant que nextWordToDisplay==-1/-2/-3 si clique en dehors
+                if (newWords.currentWordStart > transcription.content.length -1) {
+                  return [];
                 }
 
                 // Same here
-                if (newWords.currentWordEnd > transcription.length -1) {
-                newWords.currentWordEnd = transcription.length -1;
+                if (newWords.currentWordEnd > transcription.content.length -1) {
+                  newWords.currentWordEnd = transcription.content.length -1;
                 }
-
+				
                 //Get the words
+                //return [] if newWords.currentWordStart<0 (if nextWordToDisplay<0 >> if the BinarySearch failed)
                 newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
-
+		
                 //Reset the counters
-                newWords.nextWordToDisplay = newWords.currentWordEnd;
-                if(transcription.content.length >= newWords.nextWordToDisplay) {
-                newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
+                if(nextWordToDisplay==-2){
+                  newWords.nextWordToDisplay = 0;
+                  newWords.nextTimeToDisplay = transcription.content[0].start;
+                }
+            	else if(nextWordToDisplay==-3){
+            	  newWords.nextWordToDisplay = transcription.length -1;
+                  newWords.nextTimeToDisplay = -1;
+                }
+                else{
+                  newWords.nextWordToDisplay = newWords.currentWordEnd;
+                  if(transcription.content.length >= newWords.nextWordToDisplay) {
+                    newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
+                  }
                 }
 
                 return newWords;
@@ -65,8 +77,14 @@ angular.module('searchServices', []).
           }
 
           //No items or the value is out of range, return not found
-          if(items.length == 0 || value < accessFunction(items[0]) || value > accessFunction(items[items.length - 1])) {
+          if(items.length == 0) {
             return -1;
+          }
+          else if(value < accessFunction(items[0])){
+            return -2;
+          }
+          else if(value > accessFunction(items[items.length - 1])){
+            return -3;
           }
 
           while(!found(middle, items, value) && startIndex < stopIndex){
