@@ -34,7 +34,7 @@
     </div>
     <div class="row">
         <div class="3u" id="content1">
-            <h3>SPH Transcription</h3>
+            <h3>LIA Transcription</h3>
             
             <p>
               <span ng-repeat="jsonWord in displayedTranscriptionS[1].transcription" ngModel="displayedTranscriptionS[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)">{{jsonWord.word}} </span>
@@ -42,7 +42,7 @@
             
         </div>
         <div class="3u" id="content2">
-            <h3>LIA Transcription</h3>
+            <h3>RASR Transcription</h3>
             
             <p>
               <span ng-repeat="jsonWord in displayedTranscriptionS[2].transcription" ngModel="displayedTranscriptionS[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)">{{jsonWord.word}} </span>
@@ -50,7 +50,7 @@
             
         </div>
         <div class="3u" id="content3">
-            <h3>RASR Transcription</h3>
+            <h3>SPH Transcription</h3>
             
             <p>
               <span ng-repeat="jsonWord in displayedTranscriptionS[3].transcription" ngModel="displayedTranscriptionS[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)">{{jsonWord.word}} </span>

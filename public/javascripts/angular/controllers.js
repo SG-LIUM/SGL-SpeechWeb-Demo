@@ -9,104 +9,27 @@ function UploadCtrl($scope) {
 
 }
 
-function TranscriptionCtrl($scope, $log, Restangular, BinarySearch, Indexes) {
+function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes, GetFile, GetSentenceBoundaries, Dtw) {
 
-  //Point in the DTW
-  function PointDtwTranscription(cost,operation,matrixLine,matrixCol) {
-    this.cost = cost;
-    this.operation = operation;
-    this.indexHyp = matrixLine-1;
-    this.indexRef = matrixCol-1;
-  }
-
-  //DTW for full transcriptions
-  function DtwTranscription(hypothesis,reference) {
-
-    this.hypothesis = hypothesis.content;
-    this.reference = reference.content;
-    this.iM=this.hypothesis.unshift({});
-    this.jM=this.tableReference.unshift({});
-    this.matrix=new Array(this.iM);
-    for (var i = 0; i < this.iM; i++){
-    	this.matrix[i]=new Array(this.jM);
-    }
-	
-    this.calculate=function(){
-    	this.matrix[0][0]=new PointDtwTranscription(0,'',0,0);
-    	for (var i = 1 ; i < this.iM ;  i++) {
-    		this.matrix[i][0]=new PointDtwTranscription(i,'suppr',i,0);
-		}
-		for (var j = 1 ; j < this.jM ;  j++) {
-    		this.matrix[0][j]=new PointDtwTranscription(j,'inser',0,j);
-		}
-		
-		var origins=new Array(3);
-    	var cost;
-    	var ope;
-		for (var i = 1 ; i < this.iM ;  i++) {
-			for (var j = 1 ; j < this.jM ;  j++) {	
-    			if(this.hypothesis[i].word==this.reference[j].word){
-    				cost=0;
-    				ope='none';
-    			}
-    			else{
-    				cost=1;
-    				ope='subst'
-    			}
-    			origins[0]=new PointDtwTranscription(this.matrix[i-1][j].cost+1,'suppr',i,j);
-    			origins[1]=new PointDtwTranscription(this.matrix[i-1][j-1].cost+cost,ope,i,j);
-    			origins[2]=new PointDtwTranscription(this.matrix[i][j-1].cost+1,'inser',i,j);
-    			origins.sort(function (a, b) {
-  					return a.cost-b.cost;
-				});
-    			this.matrix[i][j]=origins[0];
-			}
-		}
-    }
-    
-    this.path=function(){
-    	var path=new Array();
-    	var i=this.iM-1;
-    	var j=this.jM-1;
-    	var point;
-    	do{
-    		point=this.matrix[i][j];
-    		path.unshift(point);
-    		if(point.operation=='inser'){
-    			j-=1;
-    		}
-    		else if(point.operation=='suppr'){
-    			i-=1;
-    		}
-    		else if(point.operation=='subst' || point.operation=='none'){
-    			i-=1;
-    			j-=1;
-    		}
-    	}while(!(i==0&&j==0));
-    	return path;
-    }
-  }
-
-  function updateTranscriptionsWithDtw(transcriptions){
-  	var reference=transcriptions[0];
-  	for(var i=1;i<transcriptions.length;i++){
-	  var dtw=new DtwTranscription(transcriptions[i],reference);
+  function updateTranscriptionsWithDtw(){
+  	for(var i=1;i<$scope.fullTranscription.length;i++){
+	  var dtw=new DtwTranscription($scope.fullTranscription[i],$scope.fullTranscription[0]);
 	  dtw.calculate();
 	  var path=dtw.path();
 	  for(p in path){
 	    if(p.operation=='inser'){
 	      var start=reference[p.indexRef].start;
 	      var spk=reference[p.indexRef].spk;
-	      ranscriptions[i].splice(p.indexHyp, 0, {"start":start,"word":"+++","spk":spk,"ope":"inser"});
+	      $scope.fullTranscription[i].splice(p.indexHyp, 0, {"start":start,"word":"+++","spk":spk,"ope":"inser"});
 	    }
 	    else if(p.operation=='suppr'){
-	      transcriptions[i][p.indexHyp].ope="suppr";
+	      $scope.fullTranscription[i][p.indexHyp].ope="suppr";
 	    }
 	    else if(p.operation=='subst'){
-	      transcriptions[i][p.indexHyp].ope="subst";
+	      $scope.fullTranscription[i][p.indexHyp].ope="subst";
 	    }
 	    else{
-	      transcriptions[i][p.indexHyp].ope="none";
+	      $scope.fullTranscription[i][p.indexHyp].ope="none";
 	    }
 	  }
 	}
@@ -117,7 +40,7 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch, Indexes) {
 	this.nextWordToDisplay=0;
 	this.currentHighlightedIndex=0;
 	this.currentWordStart=0;
-	this.currentWordEnd=0;
+	this.currentWordEnd=this.currentWordEnd+step;
 	this.step=step;
 	this.nextTimeToDisplay=0;
 	this.transcription=[];
@@ -146,10 +69,20 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch, Indexes) {
     $scope.displayedTranscriptionS=new Array(transcriptions.length);
     for(var i=0;i<$scope.displayedTranscriptionS.length;i++){
     	$scope.displayedTranscriptionS[i]=new DisplayedTranscription(globalStep);
+    	//$scope.updateTranscription(transcriptions,i);
     }
-    //$scope.updateTranscriptions(transcriptions);
-    //We force the seeking function to execute so the nextWordToDisplay value is correct
-    $('#mediafile')["0"].player.setCurrentTime(140);
+    //We make sure that the nextWordToDisplay value is correct
+    timeStart=146.39;
+    $('#mediafile')["0"].player.setCurrentTime(timeStart);
+    for(var i=0;i<$scope.displayedTranscriptionS.length;i++){
+    	$scope.displayedTranscriptionS[i].nextWordToDisplay = BinarySearch.search($scope.fullTranscription[i].content, timeStart, function(item) { return item.start; });
+    	$scope.updateTranscription(transcriptions,i);
+    }
+    
+    GetFile.get({fileId: 'etape.dev.g.seg'}, function(data) {
+    	console.log(GetSentenceBoundaries.getSentenceBoundaries(data));
+    });
+    
   });
 
   $scope.moveVideo = function(eventObject) {
@@ -176,7 +109,6 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch, Indexes) {
 	  
         //Seach the word through the words that are displayed
         var currentDisplayedWordIndex = BinarySearch.search($scope.displayedTranscriptionS[i].transcription, e.target.currentTime, function(item) { return item.start; })
-
         //Check boundaries
         if(currentDisplayedWordIndex >= 0 && currentDisplayedWordIndex < $scope.displayedTranscriptionS[i].transcription.length) {
           if (currentDisplayedWordIndex == $scope.displayedTranscriptionS[i].transcription.length - 1) {
@@ -204,8 +136,7 @@ function TranscriptionCtrl($scope, $log, Restangular, BinarySearch, Indexes) {
     
         if(typeof $scope.fullTranscription[i] !== 'undefined') {
           var nextWordPosition = BinarySearch.search($scope.fullTranscription[i].content, e.target.currentTime, function(item) { return item.start; });
-		
-		  //Change page only if the next word is not currently displayed
+          //Change page only if the next word is not currently displayed
           if(nextWordPosition < $scope.displayedTranscriptionS[i].currentWordStart || nextWordPosition >= $scope.displayedTranscriptionS[i].currentWordStart + $scope.displayedTranscriptionS[i].step) {
         	$scope.displayedTranscriptionS[i].nextWordToDisplay = nextWordPosition;
             $scope.updateTranscription($scope.fullTranscription,i);

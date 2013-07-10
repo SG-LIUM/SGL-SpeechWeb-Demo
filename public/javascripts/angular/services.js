@@ -60,7 +60,6 @@ angular.module('searchServices', []).
               stopIndex   = items.length - 1,
               middle      = Math.floor((stopIndex + startIndex)/2);
 
-
           var found = function(index, collection, toFind) {
             if (index <= 0 || index >= collection.length -1) {
               return true;
@@ -68,15 +67,23 @@ angular.module('searchServices', []).
 
             var value = accessFunction(collection[index]);
 
-            if(toFind >= value && toFind < accessFunction(collection[index+1])) {
-              return true;
-            } else {
-              return false;
+            //NOTE: rajout d'un if pour gérer le cas ou 2 item se suivant on le même start (qui génère une boucle infini)
+            if(toFind==accessFunction(collection[index+1])){
+            	return value==toFind;
             }
+            else{
+            	if(toFind >= value && toFind < accessFunction(collection[index+1])) {
+                  return true;
+                } else {
+                  return false;
+                }
+            }
+            
 
           }
 
           //No items or the value is out of range, return not found
+          //NOTE: rajout de différente sortie pour différencier quand on clique en dehors de la vidéo (avant ou après -> gestion différente)
           if(items.length == 0) {
             return -1;
           }
@@ -88,7 +95,6 @@ angular.module('searchServices', []).
           }
 
           while(!found(middle, items, value) && startIndex < stopIndex){
-
               //adjust search area
               if (value < accessFunction(items[middle])){
                   stopIndex = middle - 1;
@@ -108,3 +114,109 @@ angular.module('searchServices', []).
     }
 });
 
+
+angular.module('fileParsing', ['ngResource'])
+	.factory('GetFile', function($resource){
+        return $resource('/assets/file/:fileId',{},{get  : {method:'GET', isArray: true}}  );
+    })
+    .factory('GetSentenceBoundaries', function(){
+        return {
+        	getSentenceBoundaries : function (segfileContent){
+        	
+   				var s="";
+   				var bounds=new Array();
+    			for(var i=0;i<segfileContent.length;i++){
+    	 			s=s+segfileContent[i][0];
+    			}
+    			var reg=new RegExp("\n+", "g");
+    			var reg2=new RegExp(" +", "g");
+    			var tab=s.split(reg);
+    			
+    			for(var i=0;i<tab.length;i++){
+    	 			var tab2=tab[i].split(reg2);
+    	 			bounds.push({"start":tab2[1],"end":tab2[2]});
+    			}
+    			return bounds;
+        	}
+        }
+});
+
+
+angular.module('dtwServices', []).
+	factory('Dtw', function(){
+        return {
+          //Point in the DTW
+        	pointDtwTranscription : function (cost,operation,matrixLine,matrixCol){
+        	    this.cost = cost;
+    			    this.operation = operation;
+    			    this.indexHyp = matrixLine-1;
+    			    this.indexRef = matrixCol-1;	
+        	},
+          //DTW for full transcriptions
+  			  dtwTranscription : function (hypothesis,reference) {
+    				  this.hypothesis = hypothesis.content;
+        			this.reference = reference.content;
+        			this.iM=this.hypothesis.unshift({});
+        			this.jM=this.reference.unshift({});
+        			this.matrix=new Array(this.iM);
+        			for (var i = 0; i < this.iM; i++){
+        				this.matrix[i]=new Array(this.jM);
+        			}
+    	
+              this.calculate=function(){
+              	this.matrix[0][0]=new PointDtwTranscription(0,'',0,0);
+              	for (var i = 1 ; i < this.iM ;  i++) {
+              		this.matrix[i][0]=new PointDtwTranscription(i,'suppr',i,0);
+          		  }
+          		  for (var j = 1 ; j < this.jM ;  j++) {
+              		this.matrix[0][j]=new PointDtwTranscription(j,'inser',0,j);
+          		  }
+          		
+          		  var origins=new Array(3);
+              	var cost;
+              	var ope;
+            		for (var i = 1 ; i < this.iM ;  i++) {
+            			for (var j = 1 ; j < this.jM ;  j++) {	
+                			if(this.hypothesis[i].word==this.reference[j].word){
+                				cost=0;
+                				ope='none';
+                			}
+                			else{
+                				cost=1;
+                				ope='subst'
+                			}
+                			origins[0]=new PointDtwTranscription(this.matrix[i-1][j].cost+1,'suppr',i,j);
+                			origins[1]=new PointDtwTranscription(this.matrix[i-1][j-1].cost+cost,ope,i,j);
+                			origins[2]=new PointDtwTranscription(this.matrix[i][j-1].cost+1,'inser',i,j);
+                			origins.sort(function (a, b) {
+              					return a.cost-b.cost;
+            				});
+                			this.matrix[i][j]=origins[0];
+            			}
+            		}
+              }
+              
+              this.path=function(){
+              	var path=new Array();
+              	var i=this.iM-1;
+              	var j=this.jM-1;
+              	var point;
+              	do{
+              		point=this.matrix[i][j];
+              		path.unshift(point);
+              		if(point.operation=='inser'){
+              			j-=1;
+              		}
+              		else if(point.operation=='suppr'){
+              			i-=1;
+              		}
+              		else if(point.operation=='subst' || point.operation=='none'){
+              			i-=1;
+              			j-=1;
+              		}
+              	}while(!(i==0&&j==0));
+              	return path;
+              }
+          }
+        }
+});
