@@ -1,6 +1,7 @@
 'use strict';
 
 /* Services */
+
 angular.module('transcriptionServices', []).
     factory('Indexes', function(){
         return {
@@ -11,18 +12,18 @@ angular.module('transcriptionServices', []).
                 newWords.currentWordStart = nextWordToDisplay;
 
                 // Try to avoid out of bounds exception 
-                //NOTE: Est-t-il possible d'aller dans ce if sachant que nextWordToDisplay==-1/-2/-3 si clique en dehors
-                if (newWords.currentWordStart > transcription.content.length -1) {
-                  return [];
-                }
+                //NOTE: La displayedTransciption contient plus d'info qu'un simple tableau vide -> fait planter si on passe dedans. En revanche si les paramètres sont invalid, le slice renvoi []
+                //if (newWords.currentWordStart > transcription.content.length -1) {
+                //  return [];
+                //}
 
                 // Same here
                 if (newWords.currentWordEnd > transcription.content.length -1) {
-                  newWords.currentWordEnd = transcription.content.length -1;
+                  newWords.currentWordEnd = transcription.content.length;
                 }
 				
                 //Get the words
-                //return [] if newWords.currentWordStart<0 (if nextWordToDisplay<0 >> if the BinarySearch failed)
+                //return [] if newWords.currentWordStart<0 (if nextWordToDisplay<0 >> if the BinarySearch failed) or the parameters are invalid
                 newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
 		
                 //Reset the counters
@@ -36,8 +37,12 @@ angular.module('transcriptionServices', []).
                 }
                 else{
                   newWords.nextWordToDisplay = newWords.currentWordEnd;
-                  if(transcription.content.length >= newWords.nextWordToDisplay) {
+                  if(newWords.nextWordToDisplay < transcription.content.length) {
                     newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
+                  }
+                  else {
+                  	// We decide that the last word will be displayed for 0.5 sec
+                  	newWords.nextTimeToDisplay = transcription.content[transcription.content.length-1].start+0.5;
                   }
                 }
 
@@ -67,7 +72,7 @@ angular.module('searchServices', []).
 
             var value = accessFunction(collection[index]);
 
-            //NOTE: rajout d'un if pour gérer le cas ou 2 item se suivant on le même start (qui génère une boucle infini)
+            //NOTE: rajout d'un if pour gérer le cas où 2 items se suivant ont le même 'start' (qui génère une boucle infini)
             if(toFind==accessFunction(collection[index+1])){
             	return value==toFind;
             }
@@ -83,7 +88,7 @@ angular.module('searchServices', []).
           }
 
           //No items or the value is out of range, return not found
-          //NOTE: rajout de différente sortie pour différencier quand on clique en dehors de la vidéo (avant ou après -> gestion différente)
+          //NOTE: rajout de différentes sorties pour différencier quand on clique en dehors de la vidéo (avant ou après -> gestion différente)
           if(items.length == 0) {
             return -1;
           }
@@ -134,8 +139,13 @@ angular.module('fileParsing', ['ngResource'])
     			
     			for(var i=0;i<tab.length;i++){
     	 			var tab2=tab[i].split(reg2);
-    	 			bounds.push({"start":tab2[1],"end":tab2[2]});
+    	 			bounds.push({"start":parseInt(tab2[1])/100,"end":parseInt(tab2[2])/100});
     			}
+    			
+    			bounds.sort(function (a, b) {
+              		return a.start-b.start;
+            	});
+    			
     			return bounds;
         	}
         }
@@ -145,38 +155,41 @@ angular.module('fileParsing', ['ngResource'])
 angular.module('dtwServices', []).
 	factory('Dtw', function(){
         return {
-          //Point in the DTW
-        	pointDtwTranscription : function (cost,operation,matrixLine,matrixCol){
-        	    this.cost = cost;
-    			    this.operation = operation;
-    			    this.indexHyp = matrixLine-1;
-    			    this.indexRef = matrixCol-1;	
-        	},
-          //DTW for full transcriptions
-  			  dtwTranscription : function (hypothesis,reference) {
-    				  this.hypothesis = hypothesis.content;
-        			this.reference = reference.content;
-        			this.iM=this.hypothesis.unshift({});
-        			this.jM=this.reference.unshift({});
-        			this.matrix=new Array(this.iM);
-        			for (var i = 0; i < this.iM; i++){
-        				this.matrix[i]=new Array(this.jM);
-        			}
-    	
-              this.calculate=function(){
-              	this.matrix[0][0]=new PointDtwTranscription(0,'',0,0);
-              	for (var i = 1 ; i < this.iM ;  i++) {
-              		this.matrix[i][0]=new PointDtwTranscription(i,'suppr',i,0);
-          		  }
-          		  for (var j = 1 ; j < this.jM ;  j++) {
-              		this.matrix[0][j]=new PointDtwTranscription(j,'inser',0,j);
-          		  }
+            //DTW for full transcriptions
+  			dtwTranscription : function (hypothesis,indexStartHyp,reference,indexStartRef) {
+  				this.indexStartHyp=indexStartHyp;
+  				this.indexStartRef=indexStartRef;
+    			this.hypothesis = hypothesis.slice(0);;
+        		this.reference = reference.slice(0);;
+        		this.iM=this.hypothesis.unshift({});
+        		this.jM=this.reference.unshift({});
+        		this.matrix=new Array(this.iM);
+        		for (var i = 0; i < this.iM; i++){
+        			this.matrix[i]=new Array(this.jM);
+        		}
+        		
+        		//Point in the DTW
+        		this.PointDtwTranscription=function (dtw,cost,operation,matrixLine,matrixCol){
+        	    	this.cost = cost;
+    				this.operation = operation;
+    				this.indexFullHyp = dtw.indexStartHyp+matrixLine-1;
+    				this.indexFullRef = dtw.indexStartRef+matrixCol -1;
+        		}
+        	
+                this.calculate=function(){
+              		this.matrix[0][0]=new this.PointDtwTranscription(this,0,'',0,0);
+              		for (var i = 1 ; i < this.iM ;  i++) {
+              			this.matrix[i][0]=new this.PointDtwTranscription(this,i,'suppr',i,0);
+          		  	}
+          		  	for (var j = 1 ; j < this.jM ;  j++) {
+              			this.matrix[0][j]=new this.PointDtwTranscription(this,j,'inser',0,j);
+          		  	}	
           		
-          		  var origins=new Array(3);
-              	var cost;
-              	var ope;
+          			var origins=new Array(3);
+              		var cost;
+              		var ope;
             		for (var i = 1 ; i < this.iM ;  i++) {
-            			for (var j = 1 ; j < this.jM ;  j++) {	
+            			for (var j = 1 ; j < this.jM ; j++) {	
                 			if(this.hypothesis[i].word==this.reference[j].word){
                 				cost=0;
                 				ope='none';
@@ -185,38 +198,38 @@ angular.module('dtwServices', []).
                 				cost=1;
                 				ope='subst'
                 			}
-                			origins[0]=new PointDtwTranscription(this.matrix[i-1][j].cost+1,'suppr',i,j);
-                			origins[1]=new PointDtwTranscription(this.matrix[i-1][j-1].cost+cost,ope,i,j);
-                			origins[2]=new PointDtwTranscription(this.matrix[i][j-1].cost+1,'inser',i,j);
+                			origins[0]=new this.PointDtwTranscription(this,this.matrix[i-1][j].cost+1,'suppr',i,j);
+                			origins[1]=new this.PointDtwTranscription(this,this.matrix[i-1][j-1].cost+cost,ope,i,j);
+                			origins[2]=new this.PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
                 			origins.sort(function (a, b) {
               					return a.cost-b.cost;
             				});
                 			this.matrix[i][j]=origins[0];
             			}
             		}
-              }
+                }
               
-              this.path=function(){
-              	var path=new Array();
-              	var i=this.iM-1;
-              	var j=this.jM-1;
-              	var point;
-              	do{
-              		point=this.matrix[i][j];
-              		path.unshift(point);
-              		if(point.operation=='inser'){
+                this.path=function(){
+              	  var path=new Array();
+              	  var i=this.iM-1;
+              	  var j=this.jM-1;
+              	  var point;
+              	  do{
+              		  point=this.matrix[i][j];
+              		  path.unshift(point);
+              		  if(point.operation=='inser'){
               			j-=1;
-              		}
-              		else if(point.operation=='suppr'){
+              		  }
+              		  else if(point.operation=='suppr'){
               			i-=1;
-              		}
-              		else if(point.operation=='subst' || point.operation=='none'){
+              		  }
+              		  else if(point.operation=='subst' || point.operation=='none'){
               			i-=1;
               			j-=1;
-              		}
-              	}while(!(i==0&&j==0));
-              	return path;
-              }
+              		  }
+              	  }while(!(i==0&&j==0));
+                  return path;
+                }
           }
-        }
+    }
 });
