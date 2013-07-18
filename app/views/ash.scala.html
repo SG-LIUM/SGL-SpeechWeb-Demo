@@ -4,9 +4,11 @@
 
 <!-- Main Wrapper -->
 <div id="main-wrapper" ng-controller="TranscriptionCtrl">
-  <div class="container">
-  <a href="http://localhost:9000/demo/results"> Speaker Diarization </a>
-  <br/>
+    <div class="container">
+    <a href="http://localhost:9000/demo/results"> Speaker Diarization </a>
+    <br/>
+    <p> <span class="message">{{transcriptionInfo.message}} </span><span ng-click="startVideo(transcriptionInfo.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionInfo.clickableMessage}}</span> </p>
+          
     <div class="row">
       <div class="6u skel-cell-mainContent">
 
@@ -16,53 +18,70 @@
 
             <h2>ASH Transcription</h2>
 
-			<p> <span class="message">{{message}} </span><span ng-click="startVideo(fullTranscription[0].content[0].start)" class="clickableMessage">{{clickableMessage}}</span> </p>
-            <p>
-              <span ng-repeat="jsonWord in displayedTranscriptionS[0].transcription" ngModel="displayedTranscriptionS[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+			<p style="text-align: justify; text-justify: newspaper">
+              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[0].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
 
         </article>
-
+    
       </div>
-      <div class="6u">
+      <div class="6u skel-cell-mainContent">
 
-        <section>
-            <h3>Your file</h3>
-            <audio id="mediafile" controls preload>
-                <source type="audio/wav" src="http://localhost/tmp/BFMTV_BFMStory_2011-03-17_175900.wav" />
-            </audio>
-        </section>
+        <!-- Content -->   
+        
+        <article class="last" id="content3">
 
+            <h2>Comparison with SPH</h2>
+
+			<p style="text-align: justify; text-justify: newspaper">
+              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[3].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionInfo.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionInfo.hideCorespondingWordInReferenceWord(jsonWord)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+            </p>
+
+        </article>
+        
       </div>
-
+      
     </div>
     <div class="row">
         <div class="3u" id="content1">
-            <h3>LIA Transcription</h3>
+            <h3>LIA Transcription (auxiliary system of ASH)</h3>
             
             <p>
-              <span ng-repeat="jsonWord in displayedTranscriptionS[1].transcription" ngModel="displayedTranscriptionS[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[1].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionInfo.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionInfo.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
             
         </div>
         <div class="3u" id="content2">
-            <h3>RASR Transcription</h3>
+            <h3>RASR Transcription (auxiliary system of ASH)</h3>
             
             <p>
-              <span ng-repeat="jsonWord in displayedTranscriptionS[2].transcription" ngModel="displayedTranscriptionS[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[2].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionInfo.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionInfo.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
             
         </div>
-        <div class="3u" id="content3">
-            <h3>SPH Transcription</h3>
-            
-            <p>
-              <span ng-repeat="jsonWord in displayedTranscriptionS[3].transcription" ngModel="displayedTranscriptionS[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
-            </p>
-            
+        <div class="3u">
+          <h3>Your file</h3>
+          <audio width="600" id="mediafile" controls preload>
+            <source type="audio/wav" src="http://localhost/tmp/BFMTV_BFMStory_2011-03-17_175900.wav" />
+          </audio>
         </div>
 
     </div>
+    <div class="row">
+      <div class="6u skel-cell-mainContent">
+        <article class="last">
+
+            <h3>Caption</h3>
+            <p>We choose the ASH system as a reference for the comparison.</p>
+            <p><span class="subst">hypothesisWord(->referenceWord) </span>: the hypothesisWord(SPH,LIA or RASR) must be substituted with the referenceWord to match with the reference(ASH).<br>
+            <span class="suppr">-hypothesisWord- </span>: the hypothesisWord(SPH,LIA or RASR) must be deleted to match with the reference(ASH).<br>
+            <span class="inser">+referenceWord+</span>: the referenceWord(ASH) must be inserted into the hypothesis(SPH,LIA or RASR) to match with the reference(ASH).</p>
+
+        </article>
+    
+      </div>
+    </div>
+    
   </div>
 </div>
 

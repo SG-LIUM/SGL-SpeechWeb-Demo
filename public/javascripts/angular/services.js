@@ -12,7 +12,7 @@ angular.module('transcriptionServices', []).
                 newWords.currentWordStart = nextWordToDisplay;
 
                 // Try to avoid out of bounds exception 
-                //NOTE: La displayedTransciption contient plus d'info qu'un simple tableau vide -> fait planter si on passe dedans. En revanche si les paramètres sont invalid, le slice renvoi []
+                //NOTE: La displayedTransciption contient plus d'info qu'un simple tableau vide -> fait planter si on passe dedans. En revanche si les paramètres sont invalides, le slice renvoi []
                 //if (newWords.currentWordStart > transcription.content.length -1) {
                 //  return [];
                 //}
@@ -27,6 +27,7 @@ angular.module('transcriptionServices', []).
                 newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
 		
                 //Reset the counters
+                //NOTE: Différentes gestion si on est en dehors de la vidéo(et si on est avant ou après)
                 if(nextWordToDisplay==-2){
                   newWords.nextWordToDisplay = 0;
                   newWords.nextTimeToDisplay = transcription.content[0].start;
@@ -41,6 +42,7 @@ angular.module('transcriptionServices', []).
                     newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
                   }
                   else {
+                    //NOTE: valeur de 0.5 sec choisie car on ne dispose pas de la longueur des mots (on ne peut pas déduire celle du dernier de la transcription)
                   	// We decide that the last word will be displayed for 0.5 sec
                   	newWords.nextTimeToDisplay = transcription.content[transcription.content.length-1].start+0.5;
                   }
@@ -84,7 +86,6 @@ angular.module('searchServices', []).
                 }
             }
             
-
           }
 
           //No items or the value is out of range, return not found
@@ -149,87 +150,4 @@ angular.module('fileParsing', ['ngResource'])
     			return bounds;
         	}
         }
-});
-
-
-angular.module('dtwServices', []).
-	factory('Dtw', function(){
-        return {
-            //DTW for full transcriptions
-  			dtwTranscription : function (hypothesis,indexStartHyp,reference,indexStartRef) {
-  				this.indexStartHyp=indexStartHyp;
-  				this.indexStartRef=indexStartRef;
-    			this.hypothesis = hypothesis.slice(0);;
-        		this.reference = reference.slice(0);;
-        		this.iM=this.hypothesis.unshift({});
-        		this.jM=this.reference.unshift({});
-        		this.matrix=new Array(this.iM);
-        		for (var i = 0; i < this.iM; i++){
-        			this.matrix[i]=new Array(this.jM);
-        		}
-        		
-        		//Point in the DTW
-        		this.PointDtwTranscription=function (dtw,cost,operation,matrixLine,matrixCol){
-        	    	this.cost = cost;
-    				this.operation = operation;
-    				this.indexFullHyp = dtw.indexStartHyp+matrixLine-1;
-    				this.indexFullRef = dtw.indexStartRef+matrixCol -1;
-        		}
-        	
-                this.calculate=function(){
-              		this.matrix[0][0]=new this.PointDtwTranscription(this,0,'',0,0);
-              		for (var i = 1 ; i < this.iM ;  i++) {
-              			this.matrix[i][0]=new this.PointDtwTranscription(this,i,'suppr',i,0);
-          		  	}
-          		  	for (var j = 1 ; j < this.jM ;  j++) {
-              			this.matrix[0][j]=new this.PointDtwTranscription(this,j,'inser',0,j);
-          		  	}	
-          		
-          			var origins=new Array(3);
-              		var cost;
-              		var ope;
-            		for (var i = 1 ; i < this.iM ;  i++) {
-            			for (var j = 1 ; j < this.jM ; j++) {	
-                			if(this.hypothesis[i].word==this.reference[j].word){
-                				cost=0;
-                				ope='none';
-                			}
-                			else{
-                				cost=1;
-                				ope='subst'
-                			}
-                			origins[0]=new this.PointDtwTranscription(this,this.matrix[i-1][j].cost+1,'suppr',i,j);
-                			origins[1]=new this.PointDtwTranscription(this,this.matrix[i-1][j-1].cost+cost,ope,i,j);
-                			origins[2]=new this.PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
-                			origins.sort(function (a, b) {
-              					return a.cost-b.cost;
-            				});
-                			this.matrix[i][j]=origins[0];
-            			}
-            		}
-                }
-              
-                this.path=function(){
-              	  var path=new Array();
-              	  var i=this.iM-1;
-              	  var j=this.jM-1;
-              	  var point;
-              	  do{
-              		  point=this.matrix[i][j];
-              		  path.unshift(point);
-              		  if(point.operation=='inser'){
-              			j-=1;
-              		  }
-              		  else if(point.operation=='suppr'){
-              			i-=1;
-              		  }
-              		  else if(point.operation=='subst' || point.operation=='none'){
-              			i-=1;
-              			j-=1;
-              		  }
-              	  }while(!(i==0&&j==0));
-                  return path;
-                }
-          }
-    }
 });

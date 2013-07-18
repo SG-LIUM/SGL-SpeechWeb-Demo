@@ -16,9 +16,9 @@
 
           <h2>Transcription</h2>
 
-		  <p> <span class="message">{{message}} </span><span ng-click="startVideo(fullTranscription[0].content[0].start)" class="clickableMessage">{{clickableMessage}}</span> </p>
+		  <p> <span class="message">{{transcriptionInfo.message}} </span><span ng-click="startVideo(transcriptionInfo.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionInfo.clickableMessage}}</span> </p>
           <p>
-          <span ng-repeat="jsonWord in displayedTranscriptionS[0].transcription" ngModel="displayedTranscriptionS[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)">{{jsonWord.word}} </span>
+          <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[0].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)">{{jsonWord.word}} </span>
           </p>
 
           </article>
@@ -44,6 +44,13 @@
         </div>
 
       </div>
+    </div>
+    <div class="row">
+        <br/>
+        <canvas width="1125" height="70" class="canvas" id="canva0" ng-click="clickProgress()">
+          <p>updates are necessary</p>
+        </canvas>
+        <p><span id="progressTime0">--:--</span></p>	  
     </div>
   </div>
 </div>

@@ -1,73 +1,56 @@
+/* styles for displayed words */
 .current {
   color: orange;
   text-decoration: underline;
-  #font-style:italic;
   cursor: pointer;
 }
-
 .suppr {
   color: red;
-  #text-decoration: line-through;
-  font-weight:bold;
   cursor: pointer;
 }
-
 .inser {
   color: green;
-  font-weight:bold;
   cursor: pointer;
 }
-
+.showInser {
+  color: green;
+  font-weight:bold;
+}
 .subst {
   color: blue;
+  cursor: pointer;
+}
+.showSubst {
+  color: blue;
   font-weight:bold;
+}
+.none {
+  cursor: pointer;
+}
+.untreatedDtw {
+  color: #E0E0E0;
   cursor: pointer;
 }
 
-.none {
-	cursor: pointer;
-}
-
-.untreatedDtw {
-	color: #E0E0E0;
-	font-style:normal;
-	cursor: pointer;
-}
-
+/* styles for user messages */
 .message {
-	color: red;
-	font-weight:bold;
-	font-size:150%;
+  color: red;
+  font-weight:bold;
+  font-size:150%;
 }
-
 .clickableMessage {
-	color: red;
-	font-weight:bold;
-	font-size:150%;
-    text-decoration: underline;
-    cursor: pointer;
+  color: red;
+  font-weight:bold;
+  font-size:150%;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-#####
-
-.progressBarControl {
-	width: 250px;
-	height: 500px;
-	border: 1px solid #aaa;
-	border-radius: 2px;
-	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-	margin-bottom: 5px;
-	display: inline-block;
-
-	cursor: pointer;
-}
-
+/* styles for speaker diarization bar*/
 .canvas {
-	width: 250px;
-	height: 500px;
-	background: blue;
-	
-	cursor: pointer;
+  background: #F8F8F8 ;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 15px;
+  box-shadow: 15px 15px 1px rgba(0, 0, 0, 0.1);
 }
-
-
