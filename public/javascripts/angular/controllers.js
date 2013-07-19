@@ -281,18 +281,18 @@ function TranscriptionInfo(transcriptionTable,BinarySearch,Indexes){
   }
   this.showCorespondingWordInReferenceWord=function(word){
     if(word.wordClass=="subst"){
-      this.fullTranscription[0].content[word.corespondingWordIndex].wordClass="showSubst";
+      $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showSubst');
     }
     else if(word.wordClass=="inser"){
-      this.fullTranscription[0].content[word.corespondingWordIndex].wordClass="showInser";
+      $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showInser');
     }
   }
   this.hideCorespondingWordInReferenceWord=function(word){
     if(word.wordClass=="subst"){
-      this.fullTranscription[0].content[word.corespondingWordIndex].wordClass="none";
+      $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showSubst');
     }
     else if(word.wordClass=="inser"){
-      this.fullTranscription[0].content[word.corespondingWordIndex].wordClass="none";
+      $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showInser');
     }
   }
   
@@ -498,7 +498,7 @@ function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Index
     	$scope.transcriptionInfo.updateTranscriptionsWithDtw($scope.sentenceBounds);
     	//We make sure that the nextWordToDisplay value is correct
     	$scope.startVideo(146.39,$scope.transcriptionInfo);
-    });	
+    });
   });
 
   //Non angular events
@@ -539,13 +539,13 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   $("#mediafile").on("timeupdate", function (e) {
     $scope.$apply( function() {
       $scope.transcriptionInfo.timeUpdateDisplay(e.target.currentTime);
+      $scope.speakerBar.update(e.target.currentTime);
     });
   });
 
   $("#mediafile").on("seeking", function (e) {
     $scope.$apply( function() {
       $scope.transcriptionInfo.seekingUpdateDisplay(e.target.currentTime);
-      $scope.speakerBar.update(e.target.currentTime);
     });
   });
   
