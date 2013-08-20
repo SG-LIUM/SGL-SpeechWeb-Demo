@@ -1,23 +1,21 @@
 /*** CLASSES ***/
-//This class contains information concerning a DTW between two transcriptions. hypothesis and reference are parts of a complete transcription. The indexes are the places where those parts start in the complete transcriptions.
+//This class represent all that concern a DTW between two transcriptions. hypothesis and reference are parts of a complete transcription. The index are the places where those parts start in the complete transcriptions.
 function DtwTranscription(hypothesis,indexStartHyp,reference,indexStartRef) {
 
   //This sub-class regroups the information of a point in the DTW matrix
   function PointDtwTranscription(dtw,cost,operation,matrixLine,matrixCol){
     this.cost = cost;
     this.operation = operation;
-    //We substract 1 because the hypothesis and the reference begin at line and column 1 in the DTW matrix (not 0)
     this.indexFullHyp = dtw.indexStartHyp+matrixLine-1;
     this.indexFullRef = dtw.indexStartRef+matrixCol -1;
   }
 
-  //Instance Variables:
+  //VI:
   this.indexStartHyp=indexStartHyp;
   this.indexStartRef=indexStartRef;
   //We use slice(0) to copy those value and not modified them
   this.hypothesis = hypothesis.slice(0);
   this.reference = reference.slice(0);
-  //The hypothesis and the reference begin at line and column 1 in the DTW matrix so we use unshift to add an empty object at the reference start and the hypothesis start (to be aligned with the [0,0] point). unshift returns the resulting size of the new table.
   this.iM=this.hypothesis.unshift({});
   this.jM=this.reference.unshift({});
   this.matrix=new Array(this.iM);
@@ -29,10 +27,10 @@ function DtwTranscription(hypothesis,indexStartHyp,reference,indexStartRef) {
   //Fill the matrix with points	
   this.calculate=function(){
     this.matrix[0][0]=new PointDtwTranscription(this,0,'',0,0);
-    for (var i = 1 ; i < this.iM ; i++) {
+    for (var i = 1 ; i < this.iM ;  i++) {
       this.matrix[i][0]=new PointDtwTranscription(this,i,'suppr',i,0);
     }
-    for (var j = 1 ; j < this.jM ; j++) {
+    for (var j = 1 ; j < this.jM ;  j++) {
       this.matrix[0][j]=new PointDtwTranscription(this,j,'inser',0,j);
     }	
     var origins=new Array(3);
@@ -51,16 +49,15 @@ function DtwTranscription(hypothesis,indexStartHyp,reference,indexStartRef) {
         origins[0]=new PointDtwTranscription(this,this.matrix[i-1][j].cost+1,'suppr',i,j);
         origins[1]=new PointDtwTranscription(this,this.matrix[i-1][j-1].cost+cost,ope,i,j);
 		origins[2]=new PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
-		//We keep the cheapest origin
         origins.sort(function (a, b) {
-              		  return a.cost-b.cost;
+              					return a.cost-b.cost;
             		});
         this.matrix[i][j]=origins[0];
       }
     }
   }
-  //Return the shortest path           
-  this.givePath=function(){
+  //Return the shorter path           
+  this.path=function(){
     var path=new Array();
     var i=this.iM-1;
     var j=this.jM-1;
@@ -83,66 +80,66 @@ function DtwTranscription(hypothesis,indexStartHyp,reference,indexStartRef) {
   }
 }
 
-//This class contains information concerning the transcriptions. transcriptionTable is an array which contains the words json data of the different transcriptions.
-function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
+//This class represent all that concern the transcription. transcriptionTable is an array which contains the json data of the different transcriptions
+function TranscriptionInfo(transcriptionTable,BinarySearch,Indexes){
 
-  //This sub-class regroups the information of a displayed part of a transcription. The step is the number of words currently displayed.
+  //This sub-class regroups the information which concern the displayed part of a transcription
   function DisplayedTranscription(step) {
-	this.nextWordToDisplay=0; 						//in the complete transcription
-	this.currentHighlightedIndex=0;					//in the displayed part
-	this.currentWordStart=0;						//in the complete transcription
-	this.currentWordEnd=this.currentWordEnd+step;	//in the complete transcription
+	this.nextWordToDisplay=0;
+	this.currentHighlightedIndex=0;
+	this.currentWordStart=0;
+	this.currentWordEnd=this.currentWordEnd+step;
 	this.step=step;
 	this.nextTimeToDisplay=0;
-	this.transcription=[];							//the words to display
+	this.transcription=[];
   }
-  //This sub-class represents a word object that will have to be inserted in a transcription (they are inserted at the end because of the shift).
+  //This sub-class represents a word object that will have to be inserted in a transcription
   function WordToAdd(wordStructure,position){
 	this.wordStructure=wordStructure;
 	this.position=position;
   }
   
-  //Instance Variables:
+  //VI:
   this.fullTranscription = transcriptionTable; //We admit that the first transcription(index 0) is the reference. The other (if there is) are hypothesis
   this.globalStep=50;
-  this.displayedTranscriptions =new Array(this.fullTranscription.length);
-  for(var i=0;i<this.displayedTranscriptions.length;i++){
-    this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep);
+  this.displayedTranscriptionS =new Array(this.fullTranscription.length);
+  for(var i=0;i<this.displayedTranscriptionS.length;i++){
+    this.displayedTranscriptionS[i]=new DisplayedTranscription(this.globalStep);
   }
   this.message="";
   this.clickableMessage="";
   
   //Methods:
-  //Update the content of the displayed transcription n°transcriptionNum.
-  this.updateDisplayedTranscription = function(transcriptionNum) {
-    var nextWords = Indexes.getNextWords(this.fullTranscription[transcriptionNum], this.displayedTranscriptions[transcriptionNum].nextWordToDisplay, this.displayedTranscriptions[transcriptionNum].step);
-    this.displayedTranscriptions[transcriptionNum].transcription = nextWords.words;
-    this.displayedTranscriptions[transcriptionNum].currentWordEnd = nextWords.currentWordEnd;
-    this.displayedTranscriptions[transcriptionNum].currentWordStart = nextWords.currentWordStart;
-    this.displayedTranscriptions[transcriptionNum].nextWordToDisplay = nextWords.nextWordToDisplay;
-    this.displayedTranscriptions[transcriptionNum].nextTimeToDisplay = nextWords.nextTimeToDisplay;
+  //Update the content of the complete transcription n°transcriptionNum that will be displayed
+  this.updateTranscription = function(transcriptionNum) {
+    var nextWords = Indexes.getNextWords(this.fullTranscription[transcriptionNum], this.displayedTranscriptionS[transcriptionNum].nextWordToDisplay, this.displayedTranscriptionS[transcriptionNum].step);
+    this.displayedTranscriptionS[transcriptionNum].transcription = nextWords.words;
+    this.displayedTranscriptionS[transcriptionNum].currentWordEnd = nextWords.currentWordEnd;
+    this.displayedTranscriptionS[transcriptionNum].currentWordStart = nextWords.currentWordStart;
+    this.displayedTranscriptionS[transcriptionNum].nextWordToDisplay = nextWords.nextWordToDisplay;
+    this.displayedTranscriptionS[transcriptionNum].nextTimeToDisplay = nextWords.nextTimeToDisplay;
   }
-  //Update the display of the transcriptions at a specific time (currentTime)
+  //Update the display of the transcription at a specific time (currentTime)
   this.timeUpdateDisplay = function(currentTime) {
-    for(var i=0;i<this.displayedTranscriptions.length;i++){ 
+    for(var i=0;i<this.displayedTranscriptionS.length;i++){ 
 	  //Search the word through the words that are displayed
-      var currentDisplayedWordIndex = BinarySearch.search(this.displayedTranscriptions[i].transcription, currentTime, function(item) { return item.start; });
+      var currentDisplayedWordIndex = BinarySearch.search(this.displayedTranscriptionS[i].transcription, currentTime, function(item) { return item.start; });
       if(currentDisplayedWordIndex== -3){
-        currentDisplayedWordIndex=this.displayedTranscriptions[i].transcription.length - 1;
+        currentDisplayedWordIndex=this.displayedTranscriptionS[i].transcription.length - 1;
       }
       //Check boundaries
-      if(currentDisplayedWordIndex >= 0 && currentDisplayedWordIndex < this.displayedTranscriptions[i].transcription.length) {
-        if (currentDisplayedWordIndex == this.displayedTranscriptions[i].transcription.length - 1) {
+      if(currentDisplayedWordIndex >= 0 && currentDisplayedWordIndex < this.displayedTranscriptionS[i].transcription.length) {
+        if (currentDisplayedWordIndex == this.displayedTranscriptionS[i].transcription.length - 1) {
           $('#content'+i+' span').addClass('current');
         } else {
-          var currentWord = this.displayedTranscriptions[i].transcription[currentDisplayedWordIndex + 1];
+          var currentWord = this.displayedTranscriptionS[i].transcription[currentDisplayedWordIndex + 1];
           $('#content'+i+' span').removeClass('current');
           $('#content'+i+' span[data-start="' + currentWord.start + '"]').prevAll().addClass('current');
         }
       }
       //Next page
-      if(this.displayedTranscriptions[i].nextTimeToDisplay != 0 && currentTime > this.displayedTranscriptions[i].nextTimeToDisplay && this.displayedTranscriptions[i].nextTimeToDisplay!=-1) {
-        this.updateDisplayedTranscription(i);
+      if(this.displayedTranscriptionS[i].nextTimeToDisplay != 0 && currentTime > this.displayedTranscriptionS[i].nextTimeToDisplay && this.displayedTranscriptionS[i].nextTimeToDisplay!=-1) {
+        this.updateTranscription(i);
       }
       // We add the arbitrary 0.5 sec value that we chose in the Indexe service.
       if(currentTime>this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start+0.5){
@@ -161,22 +158,22 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   }
   //Update the display when seeking in the media
   this.seekingUpdateDisplay = function(seekingTime){
-    for(var i=0;i<this.displayedTranscriptions.length;i++){ 
+    for(var i=0;i<this.displayedTranscriptionS.length;i++){ 
       if(typeof this.fullTranscription[i] !== 'undefined') {
         var nextWordPosition = BinarySearch.search(this.fullTranscription[i].content, seekingTime, function(item) { return item.start; });
         //Change page only if the next word is not currently displayed
-        if(nextWordPosition < this.displayedTranscriptions[i].currentWordStart || nextWordPosition >= this.displayedTranscriptions[i].currentWordStart + this.displayedTranscriptions[i].step) {
-          this.displayedTranscriptions[i].nextWordToDisplay = nextWordPosition;
-          this.updateDisplayedTranscription(i);
+        if(nextWordPosition < this.displayedTranscriptionS[i].currentWordStart || nextWordPosition >= this.displayedTranscriptionS[i].currentWordStart + this.displayedTranscriptionS[i].step) {
+          this.displayedTranscriptionS[i].nextWordToDisplay = nextWordPosition;
+          this.updateTranscription(i);
         }
       }
     }
   }
   //Init the displayed transcription
   this.initDisplay = function(timeStart){
-    for(var i=0;i<this.displayedTranscriptions.length;i++){
-      this.displayedTranscriptions[i].nextWordToDisplay = BinarySearch.search(this.fullTranscription[i].content, timeStart, function(item) { return item.start; });
-      this.updateDisplayedTranscription(i);
+    for(var i=0;i<this.displayedTranscriptionS.length;i++){
+      this.displayedTranscriptionS[i].nextWordToDisplay = BinarySearch.search(this.fullTranscription[i].content, timeStart, function(item) { return item.start; });
+      this.updateTranscription(i);
     }
   }
   //Add all the word in the complete transcription with the index transcriptionNum
@@ -242,7 +239,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
     	}
     	var dtw=new DtwTranscription(hypSlice,indexStartHyp,refSlice,indexStartRef);
 	  	dtw.calculate();
-	  	var path=dtw.givePath();
+	  	var path=dtw.path();
 	    for(var k=0;k<path.length;k++){
 	      if(path[k].operation=='inser'){
 	    	var word =this.fullTranscription[0].content[path[k].indexFullRef].word;
@@ -284,7 +281,6 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   }
   this.showCorespondingWordInReferenceWord=function(word){
     if(word.wordClass=="subst"){
-    //showInser rajoute la couleur au cas ou on est dans du current. etc
       $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showSubst');
     }
     else if(word.wordClass=="inser"){
@@ -442,9 +438,9 @@ function SpeakerBar(transcriptionData,transcriptionNum){
 
 /*** FUNCTIONS ***/
 
-function startVideo(timeStart,transcriptionsData){
+function startVideo(timeStart,transcriptionInfo){
   $('#mediafile')["0"].player.setCurrentTime(timeStart);
-  transcriptionsData.initDisplay(timeStart);
+  transcriptionInfo.initDisplay(timeStart);
 }
 
 function moveVideo(eventObject) {
@@ -486,7 +482,7 @@ function UploadCtrl($scope) {
 function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes, GetFile, GetSentenceBoundaries) {
 
   $scope.startVideo=function(timeStart){
-  	startVideo(timeStart,$scope.transcriptionsData);
+  	startVideo(timeStart,$scope.transcriptionInfo);
   }
   
   $scope.moveVideo=function(eventObject){
@@ -495,26 +491,26 @@ function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Index
   
   //Get the transcription from the server
   Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
-  	$scope.transcriptionsData=new TranscriptionsData(transcriptions,BinarySearch,Indexes);
+  	$scope.transcriptionInfo=new TranscriptionInfo(transcriptions,BinarySearch,Indexes);
     GetFile.get({fileId: 'etape.dev.g.seg'}, function(data) {
     	//We get the bounds of the sentences we will use for the DTWs
     	$scope.sentenceBounds=GetSentenceBoundaries.getSentenceBoundaries(data);	
-    	$scope.transcriptionsData.updateTranscriptionsWithDtw($scope.sentenceBounds);
+    	$scope.transcriptionInfo.updateTranscriptionsWithDtw($scope.sentenceBounds);
     	//We make sure that the nextWordToDisplay value is correct
-    	$scope.startVideo(146.39,$scope.transcriptionsData);
+    	$scope.startVideo(146.39,$scope.transcriptionInfo);
     });
   });
 
   //Non angular events
   $("#mediafile").on("timeupdate", function (e) {
     $scope.$apply( function() {
-      $scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
+      $scope.transcriptionInfo.timeUpdateDisplay(e.target.currentTime);
     });
   });
 
   $("#mediafile").on("seeking", function (e) {
     $scope.$apply( function() {
-      $scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
+      $scope.transcriptionInfo.seekingUpdateDisplay(e.target.currentTime);
     });
   });
 
@@ -523,7 +519,7 @@ function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Index
 function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   
   $scope.startVideo=function(timeStart){
-  	startVideo(timeStart,$scope.transcriptionsData);
+  	startVideo(timeStart,$scope.transcriptionInfo);
   }
   
   $scope.moveVideo=function(eventObject){
@@ -532,8 +528,8 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   
   //Get the transcription from the server
   Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
-  	$scope.transcriptionsData=new TranscriptionsData(transcriptions,BinarySearch,Indexes);
-  	$scope.speakerBar=new SpeakerBar($scope.transcriptionsData.fullTranscription[0],0);
+  	$scope.transcriptionInfo=new TranscriptionInfo(transcriptions,BinarySearch,Indexes);
+  	$scope.speakerBar=new SpeakerBar($scope.transcriptionInfo.fullTranscription[0],0);
   	$scope.speakerBar.updateSpeakers();
   	$scope.speakerBar.drawSpeakers();
     $scope.startVideo(2406.40);
@@ -542,14 +538,14 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   //Non angular events
   $("#mediafile").on("timeupdate", function (e) {
     $scope.$apply( function() {
-      $scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
+      $scope.transcriptionInfo.timeUpdateDisplay(e.target.currentTime);
       $scope.speakerBar.update(e.target.currentTime);
     });
   });
 
   $("#mediafile").on("seeking", function (e) {
     $scope.$apply( function() {
-      $scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
+      $scope.transcriptionInfo.seekingUpdateDisplay(e.target.currentTime);
     });
   });
   
@@ -561,3 +557,8 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   });
 
 }
+
+
+
+
+
