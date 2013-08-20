@@ -15,7 +15,7 @@ dist
 /.settings
 /data/*
 *.ctm
-*.seg
+
 *.avi
 *.webm
 *.mp4
