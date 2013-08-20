@@ -7,7 +7,7 @@
     <div class="container">
     <a href="http://localhost:9000/demo/results"> Speaker Diarization </a>
     <br/>
-    <p> <span class="message">{{transcriptionInfo.message}} </span><span ng-click="startVideo(transcriptionInfo.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionInfo.clickableMessage}}</span> </p>
+    <p> <span class="message">{{transcriptionsData.message}} </span><span ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionsData.clickableMessage}}</span> </p>
           
     <div class="row">
       <div class="6u skel-cell-mainContent">
@@ -19,7 +19,7 @@
             <h2>ASH Transcription</h2>
 
 			<p style="text-align: justify; text-justify: newspaper">
-              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[0].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
 
         </article>
@@ -34,7 +34,7 @@
             <h2>Comparison with SPH</h2>
 
 			<p style="text-align: justify; text-justify: newspaper">
-              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[3].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionInfo.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionInfo.hideCorespondingWordInReferenceWord(jsonWord)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[3].transcription" ngModel="transcriptionsData.displayedTranscriptions[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
 
         </article>
@@ -47,7 +47,7 @@
             <h3>LIA Transcription (auxiliary system of ASH)</h3>
             
             <p>
-              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[1].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionInfo.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionInfo.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[1].transcription" ngModel="transcriptionsData.displayedTranscriptions[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
             
         </div>
@@ -55,7 +55,7 @@
             <h3>RASR Transcription (auxiliary system of ASH)</h3>
             
             <p>
-              <span ng-repeat="jsonWord in transcriptionInfo.displayedTranscriptionS[2].transcription" ngModel="transcriptionInfo.displayedTranscriptionS[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionInfo.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionInfo.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[2].transcription" ngModel="transcriptionsData.displayedTranscriptions[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
             
         </div>
