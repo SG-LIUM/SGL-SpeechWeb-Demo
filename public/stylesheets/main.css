@@ -8,15 +8,9 @@
   color: red;
   cursor: pointer;
 }
-.supprCaption {
-  color: red;
-}
 .inser {
   color: green;
   cursor: pointer;
-}
-.inserCaption {
-  color: green;
 }
 .showInser {
   color: green;
@@ -25,9 +19,6 @@
 .subst {
   color: blue;
   cursor: pointer;
-}
-.substCaption {
-  color: blue;
 }
 .showSubst {
   color: blue;
