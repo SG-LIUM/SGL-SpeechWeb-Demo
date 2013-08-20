@@ -97,8 +97,8 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
 	this.transcription=[];							//the words to display
   }
   //This sub-class represents a word object that will have to be inserted in a transcription (they are inserted at the end because of the shift).
-  function WordToAdd(wordStructure,position){
-	this.wordStructure=wordStructure;
+  function WordToAdd(wordObject,position){
+	this.wordObject=wordObject;
 	this.position=position;
   }
   
@@ -127,6 +127,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
     for(var i=0;i<this.displayedTranscriptions.length;i++){ 
 	  //Search the word through the words that are displayed
       var currentDisplayedWordIndex = BinarySearch.search(this.displayedTranscriptions[i].transcription, currentTime, function(item) { return item.start; });
+      //This check makes currentDisplayedWordIndex reach the last word because the binary search don't find the last index.
       if(currentDisplayedWordIndex== -3){
         currentDisplayedWordIndex=this.displayedTranscriptions[i].transcription.length - 1;
       }
@@ -179,37 +180,42 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       this.updateDisplayedTranscription(i);
     }
   }
-  //Add all the word in the complete transcription with the index transcriptionNum
-  this.addWords=function(wordsToAddInTranscription){
+  //Add all the word in the complete transcriptions with the index transcriptionNum
+  this.addWords=function(wordsToAddInTranscriptions){
     for(var i=1;i<this.fullTranscription.length;i++){
-  		var wordsToAdd=wordsToAddInTranscription[i];
+  		var wordsToAdd=wordsToAddInTranscriptions[i];
   		var shift=0;
   		for(var a=0;a<wordsToAdd.length;a++){
-  	  	  this.fullTranscription[i].content.splice(wordsToAdd[a].position+shift, 0, wordsToAdd[a].wordStructure);
+  	  	  this.fullTranscription[i].content.splice(wordsToAdd[a].position+shift, 0, wordsToAdd[a].wordObject);
   	  	  shift++;
   	    }
   	}
   }
   //Calculates the DTW between the references and the hypothesis and insert the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
   this.updateTranscriptionsWithDtw=function(segments){
+    //This array will be used for further checks.
     var formerIndexEnd=new Array(this.fullTranscription.length);
     for(var i=0;i<formerIndexEnd.length;i++){
       formerIndexEnd[i]=-1;
     }
-    var wordsToAddInTranscription=new Array(this.fullTranscription.length);
-    for(var i=1;i<wordsToAddInTranscription.length;i++){
-      wordsToAddInTranscription[i]=new Array();
+    //The insertions will all be done at the end because of the shift produced.
+    var wordsToAddInTranscriptions=new Array(this.fullTranscription.length);
+    for(var i=1;i<wordsToAddInTranscriptions.length;i++){
+      wordsToAddInTranscriptions[i]=new Array();
     }
     for(var j=0;j<segments.length;j++){
   	  var indexStartRef = BinarySearch.search(this.fullTranscription[0].content, segments[j].start, function(item) { return item.start; });
   	  var indexEndRef   = BinarySearch.search(this.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });
+  	  //Check if the sentence is outside the reference.
       if(indexStartRef==-3 || indexStartRef==-1 || indexEndRef==-2 || indexEndRef==-1){
     	var refSlice=[];
       }
       else{
+        //Check if a part of the sentence is before the reference.
     	if(indexStartRef==-2){
     	  indexStartRef=0;
     	}
+    	//Check if a part of the sentence is after the reference.
     	if(indexEndRef==-3){
     	  indexEndRef=this.fullTranscription[0].content.length-1;
     	}	
@@ -221,6 +227,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
     	var refSlice = this.fullTranscription[0].content.slice(indexStartRef,indexEndRef+1);
       }
       for(var i=1;i<this.fullTranscription.length;i++){
+        //We repeat the previous operations for the sentence cutting for each hypothesis 
     	var indexStartHyp = BinarySearch.search(this.fullTranscription[i].content, segments[j].start, function(item) { return item.start; });
     	var indexEndHyp   = BinarySearch.search(this.fullTranscription[i].content, segments[j].end  , function(item) { return item.start; });
     	if(indexStartHyp==-3 || indexStartHyp==-1 || indexEndHyp==-2 || indexEndHyp==-1){
@@ -233,16 +240,17 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
     	  if(indexEndHyp==-3){
     		indexEndHyp=this.fullTranscription[i].content.length-1;
     	  }	
-    	  //We avoid index overlap
     	  if(indexStartHyp==formerIndexEnd[i]){
     		indexStartHyp++;
     	  }
     	  formerIndexEnd[i]=indexEndHyp;
     	  var hypSlice= this.fullTranscription[i].content.slice(indexStartHyp,indexEndHyp+1);
     	}
+    	//We make a dtw for each sentence in each hypothesis
     	var dtw=new DtwTranscription(hypSlice,indexStartHyp,refSlice,indexStartRef);
 	  	dtw.calculate();
 	  	var path=dtw.givePath();
+	  	//We add the resulting information to our json data making the correspondence betwin hypothesis and reference.
 	    for(var k=0;k<path.length;k++){
 	      if(path[k].operation=='inser'){
 	    	var word =this.fullTranscription[0].content[path[k].indexFullRef].word;
@@ -254,8 +262,9 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
 	      	else{
 	      	  var start=this.fullTranscription[i].content[insertionIndex].start/2;
 	      	}
-	      	var wordStructure={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
-	      	wordsToAddInTranscription[i].push(new WordToAdd(wordStructure,insertionIndex));
+	      	var wordObject={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
+	      	//We store the words to add in the end.
+	      	wordsToAddInTranscriptions[i].push(new WordToAdd(wordObject,insertionIndex));
 	      	this.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
 	      }
 	      else if(path[k].operation=='suppr'){
@@ -280,17 +289,18 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       }	
   	}
   	//We add all the insertion at once because of the shift it causes
-  	this.addWords(wordsToAddInTranscription);
+  	this.addWords(wordsToAddInTranscriptions);
   }
+  //Change the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
   this.showCorespondingWordInReferenceWord=function(word){
     if(word.wordClass=="subst"){
-    //showInser rajoute la couleur au cas ou on est dans du current. etc
       $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showSubst');
     }
     else if(word.wordClass=="inser"){
       $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showInser');
     }
   }
+  //Restore the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
   this.hideCorespondingWordInReferenceWord=function(word){
     if(word.wordClass=="subst"){
       $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showSubst');
@@ -305,6 +315,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   //We add/modify information to the transcriptions
   for(var i=0;i<this.fullTranscription.length;i++){
     for(var j=0;j<this.fullTranscription[i].content.length;j++){
+      //The untreatedDtw style show the text but indicate the user that it could not have been treated and compared whith the other transcriptions.
       this.fullTranscription[i].content[j].wordClass="untreatedDtw";
       this.fullTranscription[i].content[j].start=parseFloat(this.fullTranscription[i].content[j].start);
     }
@@ -382,19 +393,19 @@ function SpeakerBar(transcriptionData,transcriptionNum){
   this.updateSpeakers=function(){
     var hashSpeakers=new Object();
   	var defaultColor=this.colors[this.colors.length-1];
-    var wordStructures=this.transcriptionData.content;
+    var wordObjects=this.transcriptionData.content;
     //NOTE: Comme on ne dispose pas de l'information de durée du dernier mot, on décide de ne pas le traiter
-    for(var i=0;i<wordStructures.length-1;i++){
-      if(typeof hashSpeakers[wordStructures[i].spk.id]=='undefined'){
-        hashSpeakers[wordStructures[i].spk.id]=new SpeakerData(wordStructures[i].spk.id,defaultColor);
-        hashSpeakers[wordStructures[i].spk.id].addSpeakingPeriod(wordStructures[i].start,wordStructures[i+1].start);
+    for(var i=0;i<wordObjects.length-1;i++){
+      if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
+        hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk.id,defaultColor);
+        hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
       }
       else{
-        if(hashSpeakers[wordStructures[i].spk.id].speakingPeriods[hashSpeakers[wordStructures[i].spk.id].speakingPeriods.length-1][1]==wordStructures[i].start){
-          hashSpeakers[wordStructures[i].spk.id].speakingPeriods[hashSpeakers[wordStructures[i].spk.id].speakingPeriods.length-1][1]=wordStructures[i+1].start;
+        if(hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]==wordObjects[i].start){
+          hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]=wordObjects[i+1].start;
         }
         else{
-          hashSpeakers[wordStructures[i].spk.id].addSpeakingPeriod(wordStructures[i].start,wordStructures[i+1].start);
+          hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
         }
       }
     }

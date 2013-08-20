@@ -47,7 +47,7 @@ angular.module('transcriptionServices', []).
                   }
                   else {
                     //NOTE: valeur de 0.5 sec choisie arbitrairement car on ne dispose pas de la longueur de temps des mots (et on ne peut pas du coup déduire celle du dernier de la transcription)
-                  	// We decide that the last word will be displayed for 0.5 seconds
+                  	//We decide that the last word will be displayed for 0.5 seconds
                   	newWords.nextTimeToDisplay = transcription.content[transcription.content.length-1].start+0.5;
                   }
                 }
@@ -93,7 +93,7 @@ angular.module('searchServices', []).
           }
 
           //No items or the value is out of range, return not found
-          // We return different values to determine if we are searching before or after the items (ie if we click outside of the video, we want to know if it's before or after).
+          //We return different values to determine if we are searching before or after the items (ie if we click outside of the video, we want to know if it's before or after).
           //NOTE: rajout de différentes sorties
           if(items.length == 0) {
             return -1;
