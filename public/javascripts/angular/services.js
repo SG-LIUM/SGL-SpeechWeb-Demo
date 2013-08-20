@@ -23,27 +23,31 @@ angular.module('transcriptionServices', []).
                 }
 				
                 //Get the words
-                //return [] if newWords.currentWordStart<0 (if nextWordToDisplay<0 >> if the BinarySearch failed) or the parameters are invalid
+                //return [] if newWords.currentWordStart<0 (if nextWordToDisplay<0 ie if the BinarySearch failed) or the parameters are invalid
                 newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
 		
                 //Reset the counters
-                //NOTE: Différentes gestion si on est en dehors de la vidéo(et si on est avant ou après)
+                //NOTE: rajout d'une gestion différente quand on est en dehors de la vidéo.
+                //There are different managements when we are outside of the video.
+                //Before:
                 if(nextWordToDisplay==-2){
                   newWords.nextWordToDisplay = 0;
                   newWords.nextTimeToDisplay = transcription.content[0].start;
                 }
+                //After:
             	else if(nextWordToDisplay==-3){
             	  newWords.nextWordToDisplay = transcription.length -1;
                   newWords.nextTimeToDisplay = -1;
                 }
+                //Else we are in the video.
                 else{
                   newWords.nextWordToDisplay = newWords.currentWordEnd;
                   if(newWords.nextWordToDisplay < transcription.content.length) {
                     newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
                   }
                   else {
-                    //NOTE: valeur de 0.5 sec choisie car on ne dispose pas de la longueur des mots (on ne peut pas déduire celle du dernier de la transcription)
-                  	// We decide that the last word will be displayed for 0.5 sec
+                    //NOTE: valeur de 0.5 sec choisie arbitrairement car on ne dispose pas de la longueur de temps des mots (et on ne peut pas du coup déduire celle du dernier de la transcription)
+                  	// We decide that the last word will be displayed for 0.5 seconds
                   	newWords.nextTimeToDisplay = transcription.content[transcription.content.length-1].start+0.5;
                   }
                 }
@@ -74,7 +78,7 @@ angular.module('searchServices', []).
 
             var value = accessFunction(collection[index]);
 
-            //NOTE: rajout d'un if pour gérer le cas où 2 items se suivant ont le même 'start' (qui génère une boucle infini)
+            //NOTE: rajout d'un if pour gérer le cas où 2 items se suivant ont la même valeur(même start) et que l'on cherche cette valeur (ce qui génère une boucle infinie dans la suite)
             if(toFind==accessFunction(collection[index+1])){
             	return value==toFind;
             }
@@ -89,7 +93,8 @@ angular.module('searchServices', []).
           }
 
           //No items or the value is out of range, return not found
-          //NOTE: rajout de différentes sorties pour différencier quand on clique en dehors de la vidéo (avant ou après -> gestion différente)
+          // We return different values to determine if we are searching before or after the items (ie if we click outside of the video, we want to know if it's before or after).
+          //NOTE: rajout de différentes sorties
           if(items.length == 0) {
             return -1;
           }
@@ -121,11 +126,12 @@ angular.module('searchServices', []).
 });
 
 
-angular.module('fileParsing', ['ngResource'])
+angular.module('fileServices', ['ngResource'])
 	.factory('GetFile', function($resource){
-        return $resource('/assets/file/:fileId',{},{get  : {method:'GET', isArray: true}}  );
+        return $resource('/assets/files/:fileId',{},{get  : {method:'GET', isArray: true}}  );
     })
     .factory('GetSentenceBoundaries', function(){
+        //Extracts the sentence boundaries from the content of a .seg file and returns it in an array.
         return {
         	getSentenceBoundaries : function (segfileContent){
         	
