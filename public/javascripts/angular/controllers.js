@@ -109,6 +109,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   for(var i=0;i<this.displayedTranscriptions.length;i++){
     this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep);
   }
+  this.calculationMessage="-> Still calculating...";
   this.message="";
   this.clickableMessage="";
   
@@ -157,7 +158,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       else{
         this.message="";
   		this.clickableMessage="";
-      }    
+      } 
     } 
   }
   //Update the display when seeking in the media
@@ -203,93 +204,111 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
     for(var i=1;i<wordsToAddInTranscriptions.length;i++){
       wordsToAddInTranscriptions[i]=new Array();
     }
-    for(var j=0;j<segments.length;j++){
-  	  var indexStartRef = BinarySearch.search(this.fullTranscription[0].content, segments[j].start, function(item) { return item.start; });
-  	  var indexEndRef   = BinarySearch.search(this.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });
-  	  //Check if the sentence is outside the reference.
-      if(indexStartRef==-3 || indexStartRef==-1 || indexEndRef==-2 || indexEndRef==-1){
-    	var refSlice=[];
-      }
-      else{
-        //Check if a part of the sentence is before the reference.
-    	if(indexStartRef==-2){
-    	  indexStartRef=0;
-    	}
-    	//Check if a part of the sentence is after the reference.
-    	if(indexEndRef==-3){
-    	  indexEndRef=this.fullTranscription[0].content.length-1;
-    	}	
-    	//We avoid index overlap
-    	if(indexStartRef==formerIndexEnd[0]){
-    	  indexStartRef++;
-    	}
-    	formerIndexEnd[0]=indexEndRef;
-    	var refSlice = this.fullTranscription[0].content.slice(indexStartRef,indexEndRef+1);
-      }
-      for(var i=1;i<this.fullTranscription.length;i++){
-        //We repeat the previous operations for the sentence cutting for each hypothesis 
-    	var indexStartHyp = BinarySearch.search(this.fullTranscription[i].content, segments[j].start, function(item) { return item.start; });
-    	var indexEndHyp   = BinarySearch.search(this.fullTranscription[i].content, segments[j].end  , function(item) { return item.start; });
-    	if(indexStartHyp==-3 || indexStartHyp==-1 || indexEndHyp==-2 || indexEndHyp==-1){
-    	  var hypSlice=[];
-    	}
-    	else{
-    	  if(indexStartHyp==-2){
-    	    indexStartHyp=0;
+    
+    var j=0;
+    var limit=segments.length-1;
+    var busy=false;
+    
+    
+    
+    var self = this;
+    //We use this methods to avoid the script to freeze the browser.
+    var processor = setInterval(function(){
+      if(!busy){
+        var indexStartRef = BinarySearch.search(self.fullTranscription[0].content, segments[j].start, function(item) { return item.start; });
+  	    var indexEndRef   = BinarySearch.search(self.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });
+  	    //Check if the sentence is outside the reference.
+        if(indexStartRef==-3 || indexStartRef==-1 || indexEndRef==-2 || indexEndRef==-1){
+    	  var refSlice=[];
+        }
+        else{
+          //Check if a part of the sentence is before the reference.
+    	  if(indexStartRef==-2){
+    	    indexStartRef=0;
     	  }
-    	  if(indexEndHyp==-3){
-    		indexEndHyp=this.fullTranscription[i].content.length-1;
+    	  //Check if a part of the sentence is after the reference.
+    	  if(indexEndRef==-3){
+    	    indexEndRef=self.fullTranscription[0].content.length-1;
     	  }	
-    	  if(indexStartHyp==formerIndexEnd[i]){
-    		indexStartHyp++;
+    	  //We avoid index overlap
+    	  if(indexStartRef==formerIndexEnd[0]){
+    	    indexStartRef++;
     	  }
-    	  formerIndexEnd[i]=indexEndHyp;
-    	  var hypSlice= this.fullTranscription[i].content.slice(indexStartHyp,indexEndHyp+1);
-    	}
-    	//We make a dtw for each sentence in each hypothesis
-    	var dtw=new DtwTranscription(hypSlice,indexStartHyp,refSlice,indexStartRef);
-	  	dtw.calculate();
-	  	var path=dtw.givePath();
-	  	//We add the resulting information to our json data making the correspondence betwin hypothesis and reference.
-	    for(var k=0;k<path.length;k++){
-	      if(path[k].operation=='inser'){
-	    	var word =this.fullTranscription[0].content[path[k].indexFullRef].word;
-	      	var spk  =this.fullTranscription[0].content[path[k].indexFullRef].spk;
-	      	var insertionIndex=path[k].indexFullHyp+1;
-	      	if(insertionIndex>0){
-	      	  var start=(this.fullTranscription[i].content[insertionIndex-1].start+this.fullTranscription[i].content[insertionIndex].start)/2;
-	      	}
-	      	else{
-	      	  var start=this.fullTranscription[i].content[insertionIndex].start/2;
-	      	}
-	      	var wordObject={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
-	      	//We store the words to add in the end.
-	      	wordsToAddInTranscriptions[i].push(new WordToAdd(wordObject,insertionIndex));
-	      	this.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
-	      }
-	      else if(path[k].operation=='suppr'){
-	    	var word=this.fullTranscription[i].content[path[k].indexFullHyp].word;
-	    	this.fullTranscription[i].content[path[k].indexFullHyp].word="-"+word+"-";
-	      	this.fullTranscription[i].content[path[k].indexFullHyp].wordClass="suppr";
-	      	this.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
-	      }
-	      else if(path[k].operation=='subst'){
-	        var current=this.fullTranscription[i].content[path[k].indexFullHyp].word;
-	    	var replacement=this.fullTranscription[0].content[path[k].indexFullRef].word;
-	      	this.fullTranscription[i].content[path[k].indexFullHyp].wordClass="subst";
-	      	this.fullTranscription[i].content[path[k].indexFullHyp].word=current+"(->"+replacement+")";
-	      	this.fullTranscription[i].content[path[k].indexFullHyp].corespondingWordIndex=path[k].indexFullRef;
-	      	this.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
-	      }
-	      else if(path[k].operation=='none'){
-	    	this.fullTranscription[i].content[path[k].indexFullHyp].wordClass="none";
-	        this.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
-	      }
-	  	}
-      }	
-  	}
-  	//We add all the insertion at once because of the shift it causes
-  	this.addWords(wordsToAddInTranscriptions);
+    	  formerIndexEnd[0]=indexEndRef;
+    	  var refSlice = self.fullTranscription[0].content.slice(indexStartRef,indexEndRef+1);
+        }
+        //We repeat the previous operations for the sentence cutting for each hypothesis 
+        for(var i=1;i<self.fullTranscription.length;i++){
+    	  var indexStartHyp = BinarySearch.search(self.fullTranscription[i].content, segments[j].start, function(item) { return item.start; });
+    	  var indexEndHyp   = BinarySearch.search(self.fullTranscription[i].content, segments[j].end  , function(item) { return item.start; });
+    	  if(indexStartHyp==-3 || indexStartHyp==-1 || indexEndHyp==-2 || indexEndHyp==-1){
+    	    var hypSlice=[];
+    	  }
+    	  else{
+    	    if(indexStartHyp==-2){
+    	      indexStartHyp=0;
+    	    }
+    	    if(indexEndHyp==-3){
+     	      indexEndHyp=self.fullTranscription[i].content.length-1;
+    	    }	
+    	    if(indexStartHyp==formerIndexEnd[i]){
+    		  indexStartHyp++;
+    	    }
+    	    formerIndexEnd[i]=indexEndHyp;
+    	    var hypSlice= self.fullTranscription[i].content.slice(indexStartHyp,indexEndHyp+1);
+    	  }
+    	  //We make a dtw for each sentence in each hypothesis
+    	  var dtw=new DtwTranscription(hypSlice,indexStartHyp,refSlice,indexStartRef);
+	  	  dtw.calculate();
+	  	  var path=dtw.givePath();
+	  	  //We add the resulting information to our json data making the correspondence betwin hypothesis and reference.
+	      for(var k=0;k<path.length;k++){
+	        if(path[k].operation=='inser'){
+	    	  var word =self.fullTranscription[0].content[path[k].indexFullRef].word;
+	      	  var spk  =self.fullTranscription[0].content[path[k].indexFullRef].spk;
+	      	  var insertionIndex=path[k].indexFullHyp+1;
+	      	  if(insertionIndex>0){
+	      	    var start=(self.fullTranscription[i].content[insertionIndex-1].start+self.fullTranscription[i].content[insertionIndex].start)/2;
+	      	  }
+	      	  else{
+	      	    var start=self.fullTranscription[i].content[insertionIndex].start/2;
+	      	  }
+	      	  var wordObject={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
+	      	  //We store the words to add in the end.
+	      	  wordsToAddInTranscriptions[i].push(new WordToAdd(wordObject,insertionIndex));
+	      	  self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
+	        }
+	        else if(path[k].operation=='suppr'){
+	    	  var word=self.fullTranscription[i].content[path[k].indexFullHyp].word;
+	    	  self.fullTranscription[i].content[path[k].indexFullHyp].word="-"+word+"-";
+	      	  self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="suppr";
+	      	  self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
+	        }
+	        else if(path[k].operation=='subst'){
+	          var current=self.fullTranscription[i].content[path[k].indexFullHyp].word;
+	    	  var replacement=self.fullTranscription[0].content[path[k].indexFullRef].word;
+	      	  self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="subst";
+	      	  self.fullTranscription[i].content[path[k].indexFullHyp].word=current+"(->"+replacement+")";
+	      	  self.fullTranscription[i].content[path[k].indexFullHyp].corespondingWordIndex=path[k].indexFullRef;
+	      	  self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
+	        }
+	        else if(path[k].operation=='none'){
+	    	  self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="none";
+	          self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
+	        }
+	  	  }
+        }
+        
+        if(++j==limit){ 
+      	  clearInterval(processor);  	
+      	  //We add all the insertion at once because of the shift it causes
+          self.addWords(wordsToAddInTranscriptions);
+          self.calculationMessage="";
+        }
+        busy=false;	
+      }
+  	}, 100);
+  	
   }
   //Change the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
   this.showCorespondingWordInReferenceWord=function(word){
@@ -452,7 +471,6 @@ function SpeakerBar(transcriptionData,transcriptionNum){
 }
 
 /*** FUNCTIONS ***/
-
 function startVideo(timeStart,transcriptionsData){
   $('#mediafile')["0"].player.setCurrentTime(timeStart);
   transcriptionsData.initDisplay(timeStart);
