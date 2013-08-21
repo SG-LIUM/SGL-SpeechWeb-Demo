@@ -109,7 +109,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   for(var i=0;i<this.displayedTranscriptions.length;i++){
     this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep);
   }
-  this.calculationMessage="-> Still calculating...";
+  this.calculationMessage="";
   this.message="";
   this.clickableMessage="";
   
@@ -194,6 +194,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   }
   //Calculates the DTW between the references and the hypothesis and insert the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
   this.updateTranscriptionsWithDtw=function(segments){
+    this.calculationMessage="-> Still calculating...";
     //This array will be used for further checks.
     var formerIndexEnd=new Array(this.fullTranscription.length);
     for(var i=0;i<formerIndexEnd.length;i++){
@@ -208,9 +209,6 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
     var j=0;
     var limit=segments.length-1;
     var busy=false;
-    
-    
-    
     var self = this;
     //We use this methods to avoid the script to freeze the browser.
     var processor = setInterval(function(){
@@ -304,6 +302,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       	  //We add all the insertion at once because of the shift it causes
           self.addWords(wordsToAddInTranscriptions);
           self.calculationMessage="";
+          console.log((self.fullTranscription));
         }
         busy=false;	
       }
@@ -328,49 +327,47 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showInser');
     }
   }
-  
-  // - - - - - - - - -
-  
-  //We add/modify information to the transcriptions
-  for(var i=0;i<this.fullTranscription.length;i++){
-    for(var j=0;j<this.fullTranscription[i].content.length;j++){
-      //The untreatedDtw style show the text but indicate the user that it could not have been treated and compared whith the other transcriptions.
-      this.fullTranscription[i].content[j].wordClass="untreatedDtw";
-      this.fullTranscription[i].content[j].start=parseFloat(this.fullTranscription[i].content[j].start);
+  //We add/modify information to the transcriptions and adjust the hypothesis transcriptions to the reference.
+  this.adjustTranscriptions=function(){
+    for(var i=0;i<this.fullTranscription.length;i++){
+      for(var j=0;j<this.fullTranscription[i].content.length;j++){
+        //The untreatedDtw style show the text but indicate the user that it could not have been treated and compared whith the other transcriptions.
+        this.fullTranscription[i].content[j].wordClass="untreatedDtw";
+        this.fullTranscription[i].content[j].start=parseFloat(this.fullTranscription[i].content[j].start);
+      }
     }
-  }
-  
-  //We adjust the hypothesis transcriptions to the reference
-  var referenceFirstTime=this.fullTranscription[0].content[0].start;
-  var referenceLastTime=this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start;
-  for(var i=1;i<this.fullTranscription.length;i++){
-    var hypothesisFirstIndex=BinarySearch.search(this.fullTranscription[i].content, referenceFirstTime, function(item) { return item.start; });
-	var hypothesisLastIndex =BinarySearch.search(this.fullTranscription[i].content, referenceLastTime,  function(item) { return item.start; });
-    // When the transcriptions doesn't overlap
-    if(hypothesisFirstIndex==-3 || hypothesisFirstIndex==-1 || hypothesisLastIndex==-2 || hypothesisLastIndex==-1){
-      this.fullTranscription[i].content=[];
-    }
-    else{
-      if(hypothesisFirstIndex==-2){
-	    hypothesisFirstIndex=0;
+    
+    var referenceFirstTime=this.fullTranscription[0].content[0].start;
+    var referenceLastTime=this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start;
+    for(var i=1;i<this.fullTranscription.length;i++){
+      var hypothesisFirstIndex=BinarySearch.search(this.fullTranscription[i].content, referenceFirstTime, function(item) { return item.start; });
+	  var hypothesisLastIndex =BinarySearch.search(this.fullTranscription[i].content, referenceLastTime,  function(item) { return item.start; });
+      // When the transcriptions doesn't overlap
+      if(hypothesisFirstIndex==-3 || hypothesisFirstIndex==-1 || hypothesisLastIndex==-2 || hypothesisLastIndex==-1){
+        this.fullTranscription[i].content=[];
       }
-      if(hypothesisLastIndex==-3){
-    	hypothesisLastIndex=this.fullTranscription[i].content.length-1;
+      else{
+        if(hypothesisFirstIndex==-2){
+	      hypothesisFirstIndex=0;
+        }
+        if(hypothesisLastIndex==-3){
+    	  hypothesisLastIndex=this.fullTranscription[i].content.length-1;
+        }
+        if(hypothesisLastIndex<this.fullTranscription[i].content.length-1){
+    	  // Generally, the BinarySearch function take the hypothesis index whose start is slightly under the start we searched
+    	  hypothesisLastIndex++;
+        }
+        //We want the transcriptions to be included in the reference plus a certain margin
+        var margin=1;
+        if(this.fullTranscription[i].content[hypothesisFirstIndex].start<(referenceFirstTime-margin)){
+		  hypothesisFirstIndex++;
+        }
+        if(this.fullTranscription[i].content[hypothesisLastIndex].start>(referenceLastTime+margin)){
+    	  hypothesisLastIndex--;
+        }
+        //if the indexes become incorrect because of the (++) and (--), slice will return []
+        this.fullTranscription[i].content=this.fullTranscription[i].content.slice(hypothesisFirstIndex,hypothesisLastIndex+1);
       }
-      if(hypothesisLastIndex<this.fullTranscription[i].content.length-1){
-    	// Generally, the BinarySearch function take the hypothesis index whose start is slightly under the start we searched
-    	hypothesisLastIndex++;
-      }
-      //We want the transcriptions to be included in the reference plus a certain margin
-      var margin=1;
-      if(this.fullTranscription[i].content[hypothesisFirstIndex].start<(referenceFirstTime-margin)){
-		hypothesisFirstIndex++;
-      }
-      if(this.fullTranscription[i].content[hypothesisLastIndex].start>(referenceLastTime+margin)){
-    	hypothesisLastIndex--;
-      }
-      //if the indexes become incorrect because of the (++) and (--), slice will return []
-      this.fullTranscription[i].content=this.fullTranscription[i].content.slice(hypothesisFirstIndex,hypothesisLastIndex+1);
     }
   }
 }
@@ -462,7 +459,7 @@ function SpeakerBar(transcriptionData,transcriptionNum){
   this.update=function(currentTime){
     var time=currentTime-this.timeStart;
     if(time<0 || time>this.duration){
-      this.timer.textContent = "hors transcripiton";
+      this.timer.textContent = "outside transcripiton";
     }
     else{
       this.timer.textContent = formatTime(time)+'/'+formatTime(this.duration);
@@ -522,17 +519,29 @@ function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Index
   	moveVideo(eventObject);
   }
   
-  //Get the transcription from the server
-  Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
-  	$scope.transcriptionsData=new TranscriptionsData(transcriptions,BinarySearch,Indexes);
-    GetFile.get({fileId: 'etape.dev.g.seg'}, function(data) {
-    	//We get the bounds of the sentences we will use for the DTWs
-    	$scope.sentenceBounds=GetSentenceBoundaries.getSentenceBoundaries(data);	
-    	$scope.transcriptionsData.updateTranscriptionsWithDtw($scope.sentenceBounds);
+  //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
+  GetFile.get({fileId: 'enhanced-transcription.json'}, 
+      function(data) {
+    	$scope.transcriptionsData=new TranscriptionsData(data,BinarySearch,Indexes);
     	//We make sure that the nextWordToDisplay value is correct
     	$scope.startVideo(146.39,$scope.transcriptionsData);
-    });
-  });
+      },
+      function(){
+        Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
+  	      $scope.transcriptionsData=new TranscriptionsData(transcriptions,BinarySearch,Indexes);
+  	      $scope.transcriptionsData.adjustTranscriptions();
+          GetFile.get({fileId: 'etape.dev.g.seg'}, 
+            function(data) {
+    	      //We get the bounds of the sentences we will use for the DTWs
+    	      $scope.sentenceBounds=GetSentenceBoundaries.getSentenceBoundaries(data);	
+    	      $scope.transcriptionsData.updateTranscriptionsWithDtw($scope.sentenceBounds);
+    	      //We make sure that the nextWordToDisplay value is correct
+    	      $scope.startVideo(146.39,$scope.transcriptionsData);
+            }
+          );
+        });
+      }
+  );
 
   //Non angular events
   $("#mediafile").on("timeupdate", function (e) {
