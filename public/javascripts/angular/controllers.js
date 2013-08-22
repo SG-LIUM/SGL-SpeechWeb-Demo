@@ -398,6 +398,7 @@ function SpeakerBar(transcripiton,transcriptionNum){
   }
 
   //Instance Variables:
+  this.transcriptionNum=transcriptionNum;
   this.transcripiton=transcripiton;
   this.timeStart=this.transcripiton.content[0].start;
   this.timeEnd=this.transcripiton.content[this.transcripiton.content.length-1].start;
@@ -408,7 +409,8 @@ function SpeakerBar(transcripiton,transcriptionNum){
   this.canvaHeight=$('#canva'+transcriptionNum)["0"].height;
   this.duration=this.timeEnd-this.timeStart;
   this.colors=new Array();
-  this.colors.push('red','blue','yellow','green','orange','cyan','pink','GreenYellow');
+  //this.colors.push('red','blue','yellow','green','orange','cyan','pink','GreenYellow');
+  this.colors.push('yellow','cyan','pink','GreenYellow','orange','blue','red','green');
   this.speakers = new Array();
      
   //Methods:
@@ -469,8 +471,8 @@ function SpeakerBar(transcripiton,transcriptionNum){
       }
     }
   }
-  //Update the bar corresponding to a specific time.
-  this.update=function(currentTime){
+  //Updates the bar corresponding to a specific time.
+  this.timeUpdate=function(currentTime){
     var time=currentTime-this.timeStart;
     if(time<0 || time>this.duration){
       this.timer.textContent = "outside transcripiton";
@@ -478,7 +480,28 @@ function SpeakerBar(transcripiton,transcriptionNum){
     else{
       this.timer.textContent = formatTime(time)+'/'+formatTime(this.duration);
 	}
+	//We have to draw all the speakers again because if we draw the transparent progressBar over the former one, it will become opaque. It is also useful if the currentTime updated is inferior to the forme time updated.
+	this.drawSpeakers();
+	this.setColor("rgba(161, 161, 161, 0.7)");
+	this.drawSegment(this.timeStart,currentTime-this.timeStart);
   }
+  //Update the video in terms of the spot we clicked on the bar
+  this.clickUpdate=function(event) {
+    var parent = getPosition($('#canva'+this.transcriptionNum)["0"]);  
+    var target = getMousePosition(event); 
+    
+    var x = target.x - parent.x;
+    var y = target.y - parent.y;
+    
+    var wrapperWidth = $('#canva'+this.transcriptionNum)["0"].offsetWidth;
+    
+    var percent  = Math.ceil((x / wrapperWidth) * 100);
+    var duration = this.timeEnd-this.timeStart;
+    
+    $('#mediafile')["0"].player.setCurrentTime(((duration * percent) / 100)+this.timeStart);
+  }
+  
+
 }
 
 /*** FUNCTIONS ***/
@@ -513,6 +536,34 @@ function formatTime(time) {
     return mins + ":" + secs; // mm:ss
   }
 }
+
+//Gives the coordinates of the mouse position.
+function getMousePosition(event) {
+  if (event.pageX) {
+    return {
+             x: event.pageX,
+             y: event.pageY
+           };
+  } else {
+    return { 
+             x: event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft, 
+             y: event.clientY + document.body.scrollTop  + document.documentElement.scrollTop
+           };
+  }
+}
+
+//Gives the absolute position of the element in the page.
+function getPosition(element){
+  var top = 0, left = 0;
+    
+  while (element) {
+    left   += element.offsetLeft;
+    top    += element.offsetTop;
+    element = element.offsetParent;
+  }
+  return { x: left, y: top };
+}
+
 
 /*** CONTROLLERS ***/
 function UploadCtrl($scope) {
@@ -585,9 +636,14 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   	moveVideo(eventObject);
   }
   
+  $scope.clickUpdate=function(event) {
+    $scope.speakerBar.clickUpdate(event);
+  }
+  
   //Get the transcription from the server
   Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
   	$scope.transcriptionsData=new TranscriptionsData(transcriptions,BinarySearch,Indexes);
+  	$scope.transcriptionsData.adjustTranscriptions();
   	$scope.speakerBar=new SpeakerBar($scope.transcriptionsData.fullTranscription[0],0);
   	$scope.speakerBar.updateSpeakers();
   	$scope.speakerBar.drawSpeakers();
@@ -598,7 +654,7 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   $("#mediafile").on("timeupdate", function (e) {
     $scope.$apply( function() {
       $scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
-      $scope.speakerBar.update(e.target.currentTime);
+      $scope.speakerBar.timeUpdate(e.target.currentTime);
     });
   });
 
@@ -606,13 +662,6 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
     $scope.$apply( function() {
       $scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
     });
-  });
-  
-  $("#canva0").on("seeking", function (e) {
-    $scope.$apply( function() {
-    	console.log("seek");
-    });
-
   });
 
 }
