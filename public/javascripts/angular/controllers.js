@@ -388,6 +388,7 @@ function SpeakerBar(transcripiton,transcriptionNum){
     }
     this.color=color;
     this.speakingPeriods=new Array();
+    this.speakingStatus="notSpeaking";
 	
 	//Returns the sum of his speaking periods.
     this.totalTime=function(){
@@ -411,6 +412,15 @@ function SpeakerBar(transcripiton,transcriptionNum){
     this.moveVideoToSpeechStart=function(){
     	var firstSpeechStart=this.speakingPeriods[0][0];
     	$('#mediafile')["0"].player.setCurrentTime(firstSpeechStart);
+  	}
+  	this.updateSpeakingStatus=function(time){
+  	  for(var i=0;i<this.speakingPeriods.length;i++){
+	    if(time>=this.speakingPeriods[i][0] && time<this.speakingPeriods[i][1]){
+	    	this.speakingStatus="speaking";
+	    	return null;
+	    }
+	  }
+	  this.speakingStatus="notSpeaking";
   	}
   }
 
@@ -501,6 +511,9 @@ function SpeakerBar(transcripiton,transcriptionNum){
 	this.drawSpeakers();
 	this.setColor("rgba(161, 161, 161, 0.7)");
 	this.drawSegment(this.timeStart,currentTime-this.timeStart);
+	for(var i=0;i<this.speakers.length;i++){
+		this.speakers[i].updateSpeakingStatus(currentTime);
+	}
   }
   //Update the video in terms of the spot we clicked on the bar
   this.clickUpdate=function(event) {
