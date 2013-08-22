@@ -26,6 +26,35 @@ function DtwTranscription(hypothesis,indexStartHyp,reference,indexStartRef) {
   }
   
   //Methods:
+  this.giveDistance=function(s1,s2){
+    var arrayS1=s1.split("");
+	var arrayS2=s2.split("");
+	var d=new Array(s1.length+1);
+  	for (var k = 0; k < s1.length+1; k++){
+      d[k]=new Array(s2.length+1);
+    }
+    var cout;
+    
+    for(var i=0;i<=arrayS1.length;i++){
+	  d[i][0]=i;
+	}
+	for(var j=0;j<=arrayS2.length;j++){
+	  d[0][j]=j;
+	}
+			
+	for(var i=1;i<=arrayS1.length;i++){
+	  for(var j=1;j<=arrayS2.length;j++){
+	    if(arrayS1[i-1]==arrayS2[j-1]){
+		  cout=0;
+		}
+		else{
+		  cout=1;
+		}
+		d[i][j]=Math.min(d[i-1][j]+1, Math.min(d[i][j-1]+1, d[i-1][j-1]+cout));
+	  }
+	}
+	return d[arrayS1.length][arrayS2.length];
+  }
   //Fill the matrix with points	
   this.calculate=function(){
     this.matrix[0][0]=new PointDtwTranscription(this,0,'',0,0);
@@ -45,6 +74,7 @@ function DtwTranscription(hypothesis,indexStartHyp,reference,indexStartRef) {
           ope='none';
         }
         else{
+          //cost=this.giveDistance(this.hypothesis[i].word,this.reference[j].word);
           cost=1;
           ope='subst'
         }
