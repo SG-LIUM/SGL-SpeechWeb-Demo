@@ -327,7 +327,7 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showInser');
     }
   }
-  //We add/modify information to the transcriptions and adjust the hypothesis transcriptions to the reference.
+  //Add/modify information to the transcriptions and adjust the hypothesis transcriptions to the reference.
   this.adjustTranscriptions=function(){
     for(var i=0;i<this.fullTranscription.length;i++){
       for(var j=0;j<this.fullTranscription[i].content.length;j++){
@@ -372,12 +372,16 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
   }
 }
 
-function SpeakerBar(transcriptionData,transcriptionNum){
+//This class contains information concerning the speaker bar for the Diarization. the constructor needs the complete transcription that the bar will describe and the id of this transcription to identify the bar elements in the page.
+function SpeakerBar(transcripiton,transcriptionNum){
+  
+  //This sub-class regroups the information of a single speaker.
   function SpeakerData(spk,color) {
     this.spk=spk;
     this.color=color;
     this.speakingPeriods=new Array();
 	
+	//Returns the sum of his speaking periods.
     this.totalTime=function(){
       var total=0;
 	  for(var i=0;i<this.speakingPeriods.length;i++){
@@ -385,6 +389,7 @@ function SpeakerBar(transcriptionData,transcriptionNum){
 	  }
 	  return total;
     }
+    //Add a new speaking period.
     this.addSpeakingPeriod=function(start,end){
       var spkPeriod=new Array(2);
 	  spkPeriod[0]=start;
@@ -393,9 +398,10 @@ function SpeakerBar(transcriptionData,transcriptionNum){
     }
   }
 
-  this.transcriptionData=transcriptionData;
-  this.timeStart=this.transcriptionData.content[0].start;
-  this.timeEnd=this.transcriptionData.content[this.transcriptionData.content.length-1].start;
+  //Instance Variables:
+  this.transcripiton=transcripiton;
+  this.timeStart=this.transcripiton.content[0].start;
+  this.timeEnd=this.transcripiton.content[this.transcripiton.content.length-1].start;
   this.canva = $('#canva'+transcriptionNum)["0"].getContext('2d');
   this.timer  = $('#progressTime'+transcriptionNum)["0"];
   this.canva.lineWidth  = "5";
@@ -406,10 +412,12 @@ function SpeakerBar(transcriptionData,transcriptionNum){
   this.colors.push('red','blue','yellow','green','orange','cyan','pink','GreenYellow');
   this.speakers = new Array();
      
+  //Methods:
+  //Fills the speaker array with SpeakerData objects.
   this.updateSpeakers=function(){
     var hashSpeakers=new Object();
   	var defaultColor=this.colors[this.colors.length-1];
-    var wordObjects=this.transcriptionData.content;
+    var wordObjects=this.transcripiton.content;
     //NOTE: Comme on ne dispose pas de l'information de durée du dernier mot, on décide de ne pas le traiter
     for(var i=0;i<wordObjects.length-1;i++){
       if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
@@ -437,14 +445,17 @@ function SpeakerBar(transcriptionData,transcriptionNum){
       }
     }
   }
+  //Sets the current color to fill the canva.
   this.setColor=function(color){
     this.canva.fillStyle = color;
   }
+  //Draws a segment in the canvas.
   this.drawSegment=function(start,width){
     var fractionStart=(start-this.timeStart)/this.duration;
     var fractionWidth=width/this.duration;
     this.canva.fillRect(this.canvaWidth*fractionStart, 0, this.canvaWidth*fractionWidth, this.canvaHeight);
   }
+  //Draws all the speakers in the bar.
   this.drawSpeakers=function() {
     console.log(this.speakers);
     for(var i=0;i<this.speakers.length;i++){
@@ -456,6 +467,7 @@ function SpeakerBar(transcriptionData,transcriptionNum){
       }
     }
   }
+  //Update the bar corresponding to a specific time.
   this.update=function(currentTime){
     var time=currentTime-this.timeStart;
     if(time<0 || time>this.duration){
@@ -468,16 +480,19 @@ function SpeakerBar(transcriptionData,transcriptionNum){
 }
 
 /*** FUNCTIONS ***/
+//Starts the video at at specific time. We give the corresponding transcriptionsData to init its display.
 function startVideo(timeStart,transcriptionsData){
-  $('#mediafile')["0"].player.setCurrentTime(timeStart);
+  $('#mediafile')["0"].player.setCurrentTime(timeStart); //The video have to exist with this id
   transcriptionsData.initDisplay(timeStart);
 }
 
+//Move the video at the time corresponding to the word(event) we click on.
 function moveVideo(eventObject) {
   var time = eventObject.currentTarget.attributes["data-start"].value;
   $('#mediafile')["0"].player.setCurrentTime(time);
 }
 
+//Gives a string representation of a time in second
 function formatTime(time) {
   var hours = Math.floor(time / 3600);
   var mins  = Math.floor((time % 3600) / 60);
@@ -524,7 +539,7 @@ function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Index
       function(data) {
     	$scope.transcriptionsData=new TranscriptionsData(data,BinarySearch,Indexes);
     	//We make sure that the nextWordToDisplay value is correct
-    	$scope.startVideo(146.39,$scope.transcriptionsData);
+    	$scope.startVideo($scope.transcriptionsData.fullTranscription[0].content[0].start);
       },
       function(){
         Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
@@ -536,7 +551,7 @@ function TranscriptionCtrl($scope, $log, $http, Restangular, BinarySearch, Index
     	      $scope.sentenceBounds=GetSentenceBoundaries.getSentenceBoundaries(data);	
     	      $scope.transcriptionsData.updateTranscriptionsWithDtw($scope.sentenceBounds);
     	      //We make sure that the nextWordToDisplay value is correct
-    	      $scope.startVideo(146.39,$scope.transcriptionsData);
+    	      $scope.startVideo($scope.transcriptionsData.fullTranscription[0].content[0].start);
             }
           );
         });
@@ -574,7 +589,7 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   	$scope.speakerBar=new SpeakerBar($scope.transcriptionsData.fullTranscription[0],0);
   	$scope.speakerBar.updateSpeakers();
   	$scope.speakerBar.drawSpeakers();
-    $scope.startVideo(2406.40);
+    $scope.startVideo($scope.transcriptionsData.fullTranscription[0].content[0].start);
   });
 
   //Non angular events
