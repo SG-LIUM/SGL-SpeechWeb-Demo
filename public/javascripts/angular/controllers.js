@@ -376,7 +376,16 @@ function SpeakerBar(transcripiton,transcriptionNum){
   
   //This sub-class regroups the information of a single speaker.
   function SpeakerData(spk,color) {
-    this.spk=spk;
+    this.spkId=spk.id;
+    if(spk.gender=="m"){
+    	this.gender="male";
+    }
+    else if(spk.gender=="f"){
+    	this.gender="female";
+    }
+    else{
+    	this.gender=spk.gender;
+    }
     this.color=color;
     this.speakingPeriods=new Array();
 	
@@ -388,6 +397,10 @@ function SpeakerBar(transcripiton,transcriptionNum){
 	  }
 	  return total;
     }
+    //Gives a string representing the total time of speech.
+    this.totalTimeString=function(){
+      return formatTime(this.totalTime());
+    }
     //Add a new speaking period.
     this.addSpeakingPeriod=function(start,end){
       var spkPeriod=new Array(2);
@@ -395,6 +408,10 @@ function SpeakerBar(transcripiton,transcriptionNum){
 	  spkPeriod[1]=end;
 	  this.speakingPeriods.push(spkPeriod);
     }
+    this.moveVideoToSpeechStart=function(){
+    	var firstSpeechStart=this.speakingPeriods[0][0];
+    	$('#mediafile')["0"].player.setCurrentTime(firstSpeechStart);
+  	}
   }
 
   //Instance Variables:
@@ -423,7 +440,7 @@ function SpeakerBar(transcripiton,transcriptionNum){
     //We don't treat the last word because we need the start of the following word to deduce the word duration.
     for(var i=0;i<wordObjects.length-1;i++){
       if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
-        hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk.id,defaultColor);
+        hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk,defaultColor);
         hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
       }
       else{
@@ -496,11 +513,9 @@ function SpeakerBar(transcripiton,transcriptionNum){
     var wrapperWidth = $('#canva'+this.transcriptionNum)["0"].offsetWidth;
     
     var percent  = Math.ceil((x / wrapperWidth) * 100);
-    var duration = this.timeEnd-this.timeStart;
     
-    $('#mediafile')["0"].player.setCurrentTime(((duration * percent) / 100)+this.timeStart);
+    $('#mediafile')["0"].player.setCurrentTime(((this.duration * percent) / 100)+this.timeStart);
   }
-  
 
 }
 
@@ -517,7 +532,7 @@ function moveVideo(eventObject) {
   $('#mediafile')["0"].player.setCurrentTime(time);
 }
 
-//Gives a string representation of a time in second
+//Gives a string representation of a time in second. Rounded to the lower value.
 function formatTime(time) {
   var hours = Math.floor(time / 3600);
   var mins  = Math.floor((time % 3600) / 60);

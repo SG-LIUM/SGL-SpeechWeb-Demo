@@ -52,6 +52,22 @@
         </canvas>
         <p><span id="progressTime0">--:--</span></p>	  
     </div>
+    
+    <div class="row">
+      <div class="6u skel-cell-mainContent">
+        <article class="last">
+
+            <h3>Caption</h3>
+            
+            <p>Click on the <span style="font-weight:bold;">colored rectangles</span> to start the video at the first speech of the corresponding speaker </p>
+            <ul>
+            <li ng-repeat="speaker in speakerBar.speakers" ngModel="speakerBar.speakers" ><span style="cursor:pointer;color:{{speaker.color}};background:{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span><span style="background:white;padding:2px 10px 2px;">   </span>	name: <span style="font-weight:bold;">{{speaker.spkId}}</span>, gender: <span style="font-weight:bold;">{{speaker.gender}}</span>, :total time of speech=<span style="font-weight:bold;">{{speaker.totalTimeString()}}</span> </li>
+        	</ul>
+        </article>
+    
+      </div>
+    </div>
+    
   </div>
 </div>
 
