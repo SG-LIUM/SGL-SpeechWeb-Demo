@@ -302,7 +302,6 @@ function TranscriptionsData(transcriptionTable,BinarySearch,Indexes){
       	  //We add all the insertion at once because of the shift it causes
           self.addWords(wordsToAddInTranscriptions);
           self.calculationMessage="";
-          console.log((self.fullTranscription));
         }
         busy=false;	
       }
@@ -418,13 +417,15 @@ function SpeakerBar(transcripiton,transcriptionNum){
     var hashSpeakers=new Object();
   	var defaultColor=this.colors[this.colors.length-1];
     var wordObjects=this.transcripiton.content;
-    //NOTE: Comme on ne dispose pas de l'information de durée du dernier mot, on décide de ne pas le traiter
+    //NOTE: On ne dispose pas de l'information de durée du dernier mot.
+    //We don't treat the last word because we need the start of the following word to deduce the word duration.
     for(var i=0;i<wordObjects.length-1;i++){
       if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
         hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk.id,defaultColor);
         hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
       }
       else{
+        //We merge the consecutive speaking periods so the bar is not so that the bar is not hatched.
         if(hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]==wordObjects[i].start){
           hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]=wordObjects[i+1].start;
         }
@@ -436,10 +437,12 @@ function SpeakerBar(transcripiton,transcriptionNum){
     for(s in hashSpeakers){
       this.speakers.push(hashSpeakers[s]);
     }
+    //We sort the speakers so the first one are those who talk the most.
     this.speakers.sort(function (a, b) {
               		  return b.totalTime()-a.totalTime();
             		});
     for(var i=0;i<this.speakers.length;i++){
+      //If we don't have enough colors for all the speakers, the last speakers(who talk the less) will keep the default color.
       if(i<this.colors.length-1){
         this.speakers[i].color=this.colors[i];
       }
@@ -457,7 +460,6 @@ function SpeakerBar(transcripiton,transcriptionNum){
   }
   //Draws all the speakers in the bar.
   this.drawSpeakers=function() {
-    console.log(this.speakers);
     for(var i=0;i<this.speakers.length;i++){
       this.setColor(this.speakers[i].color);
       for(var j=0;j<this.speakers[i].speakingPeriods.length;j++){
