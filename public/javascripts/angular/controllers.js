@@ -439,10 +439,12 @@ function SpeakerBar(transcripiton,transcriptionNum){
 	  spkPeriod[1]=end;
 	  this.speakingPeriods.push(spkPeriod);
     }
+    //Set the video to the moment when the speaker speaks for the first time.
     this.moveVideoToSpeechStart=function(){
     	var firstSpeechStart=this.speakingPeriods[0][0];
     	$('#mediafile')["0"].player.setCurrentTime(firstSpeechStart);
   	}
+  	//Set the status to 'speaking' or 'notSpeaking'.
   	this.updateSpeakingStatus=function(time){
   	  for(var i=0;i<this.speakingPeriods.length;i++){
 	    if(time>=this.speakingPeriods[i][0] && time<this.speakingPeriods[i][1]){
@@ -706,6 +708,22 @@ function SpeakerCtrl($scope, $log, $http, Restangular, BinarySearch, Indexes) {
   	$scope.speakerBar.updateSpeakers();
   	$scope.speakerBar.drawSpeakers();
     $scope.startVideo($scope.transcriptionsData.fullTranscription[0].content[0].start);
+    
+    var firstPart="";
+    var cssStyle="white";
+    var filling="";
+    var lastPart="";
+    if($scope.speakerBar.speakers.length>1){
+    	//If the last color is used at least twice.
+    	if($scope.speakerBar.speakers[$scope.speakerBar.speakers.length-2].color==$scope.speakerBar.speakers[$scope.speakerBar.speakers.length-1].color){
+    		firstPart="The color ";
+    		var color=$scope.speakerBar.colors[$scope.speakerBar.colors.length-1];
+    		cssStyle="color:"+";background:"+color+";padding:2px 10px 2px;";
+    		filling="__";
+    		lastPart="  is used for several speakers (those who talk the less).";
+    	}
+    }
+    $scope.captionMessage={begin:firstPart,style:cssStyle,fill:filling,end:lastPart};
   });
 
   //Non angular events
