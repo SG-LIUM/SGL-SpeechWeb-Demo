@@ -179,7 +179,8 @@ angular.module('transcriptionServices', [])
       return {
         instance : function(transcriptionTable){
             //This sub-class regroups the information of a displayed part of a transcription. The step is the number of words currently displayed.
-            function DisplayedTranscription(step) {
+            function DisplayedTranscription(step,id) {
+            this.id=id;
             this.nextWordToDisplay=0;             //in the complete transcription
             this.currentHighlightedIndex=0;         //in the displayed part
             this.currentWordStart=0;            //in the complete transcription
@@ -199,7 +200,7 @@ angular.module('transcriptionServices', [])
             this.globalStep=50;
             this.displayedTranscriptions =new Array(this.fullTranscription.length);
             for(var i=0;i<this.displayedTranscriptions.length;i++){
-              this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep);
+              this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep,this.fullTranscription[i].system);
             }
             this.calculationMessage="";
             this.message="";
@@ -822,7 +823,7 @@ angular.module('positionServices', []).
 angular.module('controllerServices', []).
 	factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
         return {
-        	initializeTranscriptionComparisonCtrl : function(scope,truc){
+        	initialize : function(scope){
                 scope.startVideo=function(timeStart){
                 	Video.startVideo(timeStart,scope.transcriptionsData);
                 }
