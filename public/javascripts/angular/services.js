@@ -818,4 +818,93 @@ angular.module('positionServices', []).
 			}
         }
 	});
+	
+angular.module('controllerServices', []).
+	factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
+        return {
+        	initializeTranscriptionComparisonCtrl : function(scope,truc){
+                scope.startVideo=function(timeStart){
+                	Video.startVideo(timeStart,scope.transcriptionsData);
+                }
+                
+                scope.moveVideo=function(eventObject){
+                	Video.moveVideo(eventObject);
+                }
+                
+                //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
+                File.get({fileId: 'enhanced-transcription.json'}, 
+                    function(transcriptions) {
+                  	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
+                  	//We make sure that the nextWordToDisplay value is correct
+                  	scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+                    },
+                    function(){
+                      Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
+                	      scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
+                	      scope.transcriptionsData.adjustTranscriptions();
+                        File.get({fileId: 'etape.dev.g.seg'}, 
+                          function(data) {
+                  	      //We get the bounds of the sentences we will use for the DTWs
+                  	      scope.sentenceBounds=SentenceBoundaries.get(data);	
+                  	      scope.transcriptionsData.updateTranscriptionsWithDtw(scope.sentenceBounds);
+                  	      //We make sure that the nextWordToDisplay value is correct
+                  	      scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+                          }
+                        );
+                      });
+                    }
+                );
+
+                //Non angular events
+                $("#mediafile").on("timeupdate", function (e) {
+                  scope.$apply( function() {
+                    scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
+                  });
+                });
+
+                $("#mediafile").on("seeking", function (e) {
+                  scope.$apply( function() {
+                    scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
+                  });
+                });
+			},
+			initializeDiarizationCtrl : function(scope) {
+            	scope.startVideo=function(timeStart){
+            		Video.startVideo(timeStart,scope.transcriptionsData);
+            	}
+            
+            	scope.moveVideo=function(eventObject){
+            		Video.moveVideo(eventObject);
+            	}
+            
+            	scope.clickUpdate=function(event) {
+              		scope.speakerBar.clickUpdate(event);
+            	}
+            
+            	//Get the transcription from the server
+            	Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
+            		scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
+            		scope.transcriptionsData.adjustTranscriptions();
+            		scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0);
+            		scope.speakerBar.updateSpeakers();
+            		scope.speakerBar.drawSpeakers();
+              		scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+            	});
+
+            	//Non angular events
+            	$("#mediafile").on("timeupdate", function (e) {
+              		scope.$apply( function() {
+                		scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
+                		scope.speakerBar.timeUpdate(e.target.currentTime);
+              		});
+            	});
+
+            	$("#mediafile").on("seeking", function (e) {
+              		scope.$apply( function() {
+                		scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
+              		});
+            	});
+			}
+    	}
+	});
 
