@@ -8,6 +8,9 @@ function UploadCtrl($scope) {
 }
 
 function TranscriptionCtrl($scope, $log, $http, Controller) {
-    Controller.initialize($scope);
+   Controller.initializeTranscriptionComparisonCtrl($scope);
 }
-
+ 
+function SpeakerCtrl($scope, $log, $http, Controller) {
+	Controller.initializeDiarizationCtrl($scope);
+}

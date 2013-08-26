@@ -823,7 +823,7 @@ angular.module('positionServices', []).
 angular.module('controllerServices', []).
 	factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
         return {
-        	initialize : function(scope){
+        	initializeTranscriptionComparisonCtrl : function(scope){
                 scope.startVideo=function(timeStart){
                 	Video.startVideo(timeStart,scope.transcriptionsData);
                 }
@@ -833,7 +833,7 @@ angular.module('controllerServices', []).
                 }
                 
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'enhanced-transcription.json'}, 
+                File.get({fileId: 'enhanced-trannscription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
                   	//We make sure that the nextWordToDisplay value is correct
@@ -843,7 +843,7 @@ angular.module('controllerServices', []).
                       Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
                 	      scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
                 	      scope.transcriptionsData.adjustTranscriptions();
-                        File.get({fileId: 'etape.dev.g.seg'}, 
+                        File.get({fileId: 'sentence_bounds.seg'}, 
                           function(data) {
                   	      //We get the bounds of the sentences we will use for the DTWs
                   	      scope.sentenceBounds=SentenceBoundaries.get(data);	
