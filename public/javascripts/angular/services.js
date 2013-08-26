@@ -585,7 +585,7 @@ angular.module('transcriptionServices', [])
     			if(this.speakers[this.speakers.length-2].color==this.speakers[this.speakers.length-1].color){
     				firstPart="The color ";
     				var color=this.colors[this.colors.length-1];
-    				cssStyle="color:"+";background:"+color+";padding:2px 10px 2px;";
+    				cssStyle="color:"+color+";background:"+color+";padding:2px 10px 2px;";
     				filling="__";
     				lastPart="  is used for several speakers (those who talk the less).";
     			}
