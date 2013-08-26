@@ -535,6 +535,7 @@ angular.module('transcriptionServices', [])
             //this.colors.push('red','blue','yellow','green','orange','cyan','pink','GreenYellow');
             this.colors.push('yellow','cyan','pink','GreenYellow','orange','blue','red','green');
             this.speakers = new Array();
+    		this.captionMessage="";
                
             //Methods:
             //Fills the speaker array with SpeakerData objects.
@@ -573,6 +574,22 @@ angular.module('transcriptionServices', [])
                   this.speakers[i].color=this.colors[i];
                 }
               }
+              
+              var firstPart="";
+    		  var cssStyle="white";
+    		  var filling="";
+    		  var lastPart="";
+    		  if(this.speakers.length>1){
+    			//If the last color is used at least twice.
+    			if(this.speakers[this.speakers.length-2].color==this.speakers[this.speakers.length-1].color){
+    				firstPart="The color ";
+    				var color=this.colors[this.colors.length-1];
+    				cssStyle="color:"+";background:"+color+";padding:2px 10px 2px;";
+    				filling="__";
+    				lastPart="  is used for several speakers (those who talk the less).";
+    			}
+    		  }
+    		  this.captionMessage={begin:firstPart,style:cssStyle,fill:filling,end:lastPart};
             }
             //Sets the current color to fill the canva.
             this.setColor=function(color){
