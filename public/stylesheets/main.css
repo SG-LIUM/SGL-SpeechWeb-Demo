@@ -54,6 +54,10 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.bold{
+	font-weight:bold;
+}
+
 
 /* styles for speaker diarization bar*/
 .canvas {

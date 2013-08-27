@@ -928,4 +928,3 @@ angular.module('controllerServices', []).
 			}
     	}
 	});
-
