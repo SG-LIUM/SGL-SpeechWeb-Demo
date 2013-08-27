@@ -526,11 +526,11 @@ angular.module('transcriptionServices', [])
             this.transcripiton=transcripiton;
             this.timeStart=this.transcripiton.content[0].start;
             this.timeEnd=this.transcripiton.content[this.transcripiton.content.length-1].start;
-            this.canva = $('#canva'+transcriptionNum)["0"].getContext('2d');
+            this.canvas = $('#canvas'+transcriptionNum)["0"].getContext('2d');
             this.timer  = $('#progressTime'+transcriptionNum)["0"];
-            this.canva.lineWidth  = "5";
-            this.canvaWidth=$('#canva'+transcriptionNum)["0"].width;
-            this.canvaHeight=$('#canva'+transcriptionNum)["0"].height;
+            this.canvas.lineWidth  = "5";
+            this.canvasWidth=$('#canvas'+transcriptionNum)["0"].width;
+            this.canvasHeight=$('#canvas'+transcriptionNum)["0"].height;
             this.duration=this.timeEnd-this.timeStart;
             this.colors=colors;
             this.speakers = new Array();
@@ -612,15 +612,15 @@ angular.module('transcriptionServices', [])
               }
               
             }
-            //Sets the current color to fill the canva.
+            //Sets the current color to fill the canvas.
             this.setColor=function(color){
-              this.canva.fillStyle = color;
+              this.canvas.fillStyle = color;
             }
             //Draws a segment in the canvas.
             this.drawSegment=function(start,width){
               var fractionStart=(start-this.timeStart)/this.duration;
               var fractionWidth=width/this.duration;
-              this.canva.fillRect(this.canvaWidth*fractionStart, 0, this.canvaWidth*fractionWidth, this.canvaHeight);
+              this.canvas.fillRect(this.canvasWidth*fractionStart, 0, this.canvasWidth*fractionWidth, this.canvasHeight);
             }
             //Draws all the speakers in the bar.
             this.drawSpeakers=function() {
@@ -652,13 +652,13 @@ angular.module('transcriptionServices', [])
             }
             //Update the video in terms of the spot we clicked on the bar
             this.clickUpdate=function(event) {
-              var parent = Position.getElementPosition($('#canva'+this.transcriptionNum)["0"]);  
+              var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
               var target = Position.getMousePosition(event); 
               
               var x = target.x - parent.x;
               var y = target.y - parent.y;
               
-              var wrapperWidth = $('#canva'+this.transcriptionNum)["0"].offsetWidth;
+              var wrapperWidth = $('#canvas'+this.transcriptionNum)["0"].offsetWidth;
               
               var percent  = Math.ceil((x / wrapperWidth) * 100);
               
