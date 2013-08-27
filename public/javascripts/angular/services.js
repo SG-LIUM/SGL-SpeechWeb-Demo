@@ -177,27 +177,27 @@ angular.module('transcriptionServices', [])
     //This class contains information concerning the transcriptions. transcriptionTable is an array which contains the words json data of the different transcriptions.
     .factory('TranscriptionsData', function(BinarySearch,Indexes,DtwTranscription){
       return {
-        instance : function(transcriptionTable){
+        instance : function(transcriptionTable,globalStep){
             //This sub-class regroups the information of a displayed part of a transcription. The step is the number of words currently displayed.
             function DisplayedTranscription(step,id) {
-            this.id=id;
-            this.nextWordToDisplay=0;             //in the complete transcription
-            this.currentHighlightedIndex=0;         //in the displayed part
-            this.currentWordStart=0;            //in the complete transcription
-            this.currentWordEnd=this.currentWordEnd+step; //in the complete transcription
-            this.step=step;
-            this.nextTimeToDisplay=0;
-            this.transcription=[];              //the words to display
+            	this.id=id;
+            	this.nextWordToDisplay=0;             //in the complete transcription
+            	this.currentHighlightedIndex=0;         //in the displayed part
+            	this.currentWordStart=0;            //in the complete transcription
+            	this.currentWordEnd=this.currentWordEnd+step; //in the complete transcription
+            	this.step=step;
+            	this.nextTimeToDisplay=0;
+            	this.transcription=[];              //the words to display
             }
             //This sub-class represents a word object that will have to be inserted in a transcription (they are inserted at the end because of the shift).
             function WordToAdd(wordObject,position){
-            this.wordObject=wordObject;
-            this.position=position;
+            	this.wordObject=wordObject;
+            	this.position=position;
             }
             
             //Instance Variables:
             this.fullTranscription = transcriptionTable; //We admit that the first transcription(index 0) is the reference. The other (if there is) are hypothesis
-            this.globalStep=50;
+            this.globalStep=globalStep;
             this.displayedTranscriptions =new Array(this.fullTranscription.length);
             for(var i=0;i<this.displayedTranscriptions.length;i++){
               this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep,this.fullTranscription[i].system);
@@ -468,7 +468,7 @@ angular.module('transcriptionServices', [])
     //This class contains information concerning the speaker bar for the Diarization. the constructor needs the complete transcription that the bar will describe and the id of this transcription to identify the bar elements in the page.
     .factory('SpeakerBar', function(Time,Position){
       return {
-        instance : function(transcripiton,transcriptionNum){
+        instance : function(transcripiton,transcriptionNum,colors){
             //This sub-class regroups the information of a single speaker.
             function SpeakerData(spk,color) {
               this.spkId=spk.id;
@@ -532,9 +532,7 @@ angular.module('transcriptionServices', [])
             this.canvaWidth=$('#canva'+transcriptionNum)["0"].width;
             this.canvaHeight=$('#canva'+transcriptionNum)["0"].height;
             this.duration=this.timeEnd-this.timeStart;
-            this.colors=new Array();
-            //this.colors.push('red','blue','yellow','green','orange','cyan','pink','GreenYellow');
-            this.colors.push('yellow','cyan','pink','GreenYellow','orange','blue','red','green');
+            this.colors=colors;
             this.speakers = new Array();
             this.secondarySpeakersTitle="";
                
@@ -845,7 +843,7 @@ angular.module('positionServices', []).
 angular.module('controllerServices', []).
 	factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
         return {
-        	initializeTranscriptionComparisonCtrl : function(scope){
+        	initializeTranscriptionComparisonCtrl : function(scope,globalStep){
                 scope.startVideo=function(timeStart){
                 	Video.startVideo(timeStart,scope.transcriptionsData);
                 }
@@ -857,13 +855,13 @@ angular.module('controllerServices', []).
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
                 File.get({fileId: 'enhanced-trannscription.json'}, 
                     function(transcriptions) {
-                  	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
+                  	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	//We make sure that the nextWordToDisplay value is correct
                   	scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
                     },
                     function(){
                       Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
-                	      scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
+                	      scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                 	      scope.transcriptionsData.adjustTranscriptions();
                         File.get({fileId: 'sentence_bounds.seg'}, 
                           function(data) {
@@ -891,7 +889,7 @@ angular.module('controllerServices', []).
                   });
                 });
 			},
-			initializeDiarizationCtrl : function(scope) {
+			initializeDiarizationCtrl : function(scope,globalStep,transcriptionNum,colors) {
             	scope.startVideo=function(timeStart){
             		Video.startVideo(timeStart,scope.transcriptionsData);
             	}
@@ -906,12 +904,12 @@ angular.module('controllerServices', []).
             
             	//Get the transcription from the server
             	Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
-            		scope.transcriptionsData=new TranscriptionsData.instance(transcriptions);
+            		scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
             		scope.transcriptionsData.adjustTranscriptions();
-            		scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0);
+            		scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[transcriptionNum],transcriptionNum,colors);
             		scope.speakerBar.updateSpeakers();
             		scope.speakerBar.drawSpeakers();
-              		scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+              		scope.startVideo(scope.transcriptionsData.fullTranscription[transcriptionNum].content[transcriptionNum].start);
             	});
 
             	//Non angular events

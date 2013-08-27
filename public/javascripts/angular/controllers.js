@@ -8,9 +8,9 @@ function UploadCtrl($scope) {
 }
 
 function TranscriptionCtrl($scope, $log, $http, Controller) {
-   Controller.initializeTranscriptionComparisonCtrl($scope);
+   Controller.initializeTranscriptionComparisonCtrl($scope,50);
 }
  
 function SpeakerCtrl($scope, $log, $http, Controller) {
-	Controller.initializeDiarizationCtrl($scope);
+	Controller.initializeDiarizationCtrl($scope,100,0,['yellow','cyan','pink','GreenYellow','orange','blue','red','green']);
 }
