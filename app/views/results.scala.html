@@ -59,10 +59,17 @@
 
             <h3>Caption</h3>
             
-            <p>Click on the <span style="font-weight:bold;">colored rectangles</span> to start the video at the first speech of the corresponding speaker. {{speakerBar.captionMessage.begin}}<span style="{{speakerBar.captionMessage.style}}">{{speakerBar.captionMessage.fill}} </span> {{speakerBar.captionMessage.end}}<p>
+            <p>Click on the <span style="font-weight:bold;">colored rectangles</span> to start the video at the first speech of the corresponding speaker. <p>
+            <p style="font-weight:bold;"> Principal speakers <p>
             <ul>
-            <li ng-repeat="speaker in speakerBar.speakers" ngModel="speakerBar.speakers" class="{{speaker.speakingStatus}}" ><span style="background:white;padding:2px 10px 2px;">   </span><span style="cursor:pointer;color:{{speaker.color}};background:{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span><span style="background:white;padding:2px 10px 2px;">   </span>	name: <span style="font-weight:bold;">{{speaker.spkId}}</span>, gender: <span style="font-weight:bold;">{{speaker.gender}}</span>, :total time of speech=<span style="font-weight:bold;">{{speaker.totalTimeString()}}</span> </li>
+            	<li ng-repeat="speaker in speakerBar.mainSpeakers()" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" ><span style="background:white;padding:2px 10px 2px;">   </span><span style="cursor:pointer;color:{{speaker.color}};background:{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span><span style="background:white;padding:2px 10px 2px;">   </span>	name: <span style="font-weight:bold;">{{speaker.spkId}}</span>, gender: <span style="font-weight:bold;">{{speaker.gender}}</span>, :total time of speech=<span style="font-weight:bold;">{{speaker.totalTimeString()}}</span> </li>
         	</ul>
+        	
+        	<p style="font-weight:bold;"> Secondary speakers (who talk the less)<p>
+            <ul>
+            	<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" ><span style="background:white;padding:2px 10px 2px;">   </span><span style="cursor:pointer;color:{{speaker.color}};background:{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span><span style="background:white;padding:2px 10px 2px;">   </span>	name: <span style="font-weight:bold;">{{speaker.spkId}}</span>, gender: <span style="font-weight:bold;">{{speaker.gender}}</span>, :total time of speech=<span style="font-weight:bold;">{{speaker.totalTimeString()}}</span> </li>
+        	</ul>
+        	
         </article>
     
       </div>

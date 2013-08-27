@@ -536,9 +536,41 @@ angular.module('transcriptionServices', [])
             //this.colors.push('red','blue','yellow','green','orange','cyan','pink','GreenYellow');
             this.colors.push('yellow','cyan','pink','GreenYellow','orange','blue','red','green');
             this.speakers = new Array();
-    		this.captionMessage="";
                
             //Methods:
+            //Return a sub-array of the principal speakers (those who have their own color).
+            this.mainSpeakers=function(){
+            	if(this.speakers.length>this.colors.length){
+            		var indLim;
+            		for(var i=0;i<this.speakers.length;i++){
+            			if(this.speakers[i].color==this.colors[this.colors.length-1]){
+            				indLim=i;
+            				break;
+            			}
+            		}
+            		return this.speakers.slice(0,indLim-1);
+            	}
+            	else{
+            		return this.speakers;
+            	}
+            }
+            //Return a sub-array of the secondary speakers (those who share the same color).
+            this.secondarySpeakers=function(){
+            	if(this.speakers.length>this.colors.length){
+            		var indLim;
+            		for(var i=0;i<this.speakers.length;i++){
+            			if(this.speakers[i].color==this.colors[this.colors.length-1]){
+            				indLim=i;
+            				break;
+            			}
+            		}
+            		return this.speakers.slice(indLim,this.speakers.length);
+            		
+            	}
+            	else{
+            		return [];
+            	}
+            }
             //Fills the speaker array with SpeakerData objects.
             this.updateSpeakers=function(){
               var hashSpeakers=new Object();
@@ -575,22 +607,6 @@ angular.module('transcriptionServices', [])
                   this.speakers[i].color=this.colors[i];
                 }
               }
-              
-              var firstPart="";
-    		  var cssStyle="white";
-    		  var filling="";
-    		  var lastPart="";
-    		  if(this.speakers.length>1){
-    			//If the last color is used at least twice.
-    			if(this.speakers[this.speakers.length-2].color==this.speakers[this.speakers.length-1].color){
-    				firstPart="The color ";
-    				var color=this.colors[this.colors.length-1];
-    				cssStyle="color:"+color+";background:"+color+";padding:2px 10px 2px;";
-    				filling="__";
-    				lastPart="  is used for several speakers (those who talk the less).";
-    			}
-    		  }
-    		  this.captionMessage={begin:firstPart,style:cssStyle,fill:filling,end:lastPart};
             }
             //Sets the current color to fill the canva.
             this.setColor=function(color){
