@@ -85,7 +85,7 @@ angular.module('transcriptionServices', [])
               }
               
               //Methods:
-              this.giveDistance=function(s1,s2){
+              /* this.giveDistance=function(s1,s2){
                 var arrayS1=s1.split("");
               var arrayS2=s2.split("");
               var d=new Array(s1.length+1);
@@ -113,8 +113,8 @@ angular.module('transcriptionServices', [])
                 }
               }
               return d[arrayS1.length][arrayS2.length];
-              }
-              //Fill the matrix with points 
+              } */
+              //Fills the matrix with points 
               this.calculate=function(){
                 this.matrix[0][0]=new PointDtwTranscription(this,0,'',0,0);
                 for (var i = 1 ; i < this.iM ; i++) {
@@ -148,7 +148,7 @@ angular.module('transcriptionServices', [])
                   }
                 }
               }
-              //Return the shortest path           
+              //Returns the shortest path           
               this.givePath=function(){
                 var path=new Array();
                 var i=this.iM-1;
@@ -274,7 +274,7 @@ angular.module('transcriptionServices', [])
                 this.updateDisplayedTranscription(i);
               }
             }
-            //Add all the word in the complete transcriptions with the index transcriptionNum
+            //Add all the word in the complete transcriptions 
             this.addWords=function(wordsToAddInTranscriptions){
               for(var i=1;i<this.fullTranscription.length;i++){
                 var wordsToAdd=wordsToAddInTranscriptions[i];
@@ -285,7 +285,7 @@ angular.module('transcriptionServices', [])
                   }
               }
             }
-            //Calculates the DTW between the references and the hypothesis and insert the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
+            //Calculates the DTW between the references and the hypothesis and put the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
             this.updateTranscriptionsWithDtw=function(segments){
               this.calculationMessage="-> Still calculating...";
               //This array will be used for further checks.
@@ -452,7 +452,7 @@ angular.module('transcriptionServices', [])
                   //We want the transcriptions to be included in the reference plus a certain margin
                   var margin=1;
                   if(this.fullTranscription[i].content[hypothesisFirstIndex].start<(referenceFirstTime-margin)){
-                hypothesisFirstIndex++;
+                	hypothesisFirstIndex++;
                   }
                   if(this.fullTranscription[i].content[hypothesisLastIndex].start>(referenceLastTime+margin)){
                   hypothesisLastIndex--;
@@ -468,7 +468,7 @@ angular.module('transcriptionServices', [])
     //This class contains information concerning the speaker bar for the Diarization. the constructor needs the complete transcription that the bar will describe and the id of this transcription to identify the bar elements in the page.
     .factory('SpeakerBar', function(Time,Position){
       return {
-        instance : function(transcripiton,transcriptionNum,colors){
+        instance : function(transcription,transcriptionNum,colors){
             //This sub-class regroups the information of a single speaker.
             function SpeakerData(spk,color) {
               this.spkId=spk.id;
@@ -523,9 +523,9 @@ angular.module('transcriptionServices', [])
 
             //Instance Variables:
             this.transcriptionNum=transcriptionNum;
-            this.transcripiton=transcripiton;
-            this.timeStart=this.transcripiton.content[0].start;
-            this.timeEnd=this.transcripiton.content[this.transcripiton.content.length-1].start;
+            this.transcription=transcription;
+            this.timeStart=this.transcription.content[0].start;
+            this.timeEnd=this.transcription.content[this.transcription.content.length-1].start;
             this.canvas = $('#canvas'+transcriptionNum)["0"].getContext('2d');
             this.timer  = $('#progressTime'+transcriptionNum)["0"];
             this.canvas.lineWidth  = "5";
@@ -574,7 +574,7 @@ angular.module('transcriptionServices', [])
             this.updateSpeakers=function(){
               var hashSpeakers=new Object();
               var defaultColor=this.colors[this.colors.length-1];
-              var wordObjects=this.transcripiton.content;
+              var wordObjects=this.transcription.content;
               //NOTE: On ne dispose pas de l'information de durée du dernier mot.
               //We don't treat the last word because we need the start of the following word to deduce the word duration.
               for(var i=0;i<wordObjects.length-1;i++){
@@ -637,7 +637,7 @@ angular.module('transcriptionServices', [])
             this.timeUpdate=function(currentTime){
               var time=currentTime-this.timeStart;
               if(time<0 || time>this.duration){
-                this.timer.textContent = "outside transcripiton";
+                this.timer.textContent = "outside transcription";
               }
               else{
                 this.timer.textContent = Time.format(time)+'/'+Time.format(this.duration);

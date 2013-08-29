@@ -58,7 +58,6 @@
 	font-weight:bold;
 }
 
-
 /* styles for speaker diarization bar*/
 .canvas {
   background: #F8F8F8 ;
@@ -67,7 +66,6 @@
   border-radius: 15px;
   box-shadow: 15px 15px 1px rgba(0, 0, 0, 0.1);
 }
-
 .speaking {
  border-width:5px;
  border-style:inset;
