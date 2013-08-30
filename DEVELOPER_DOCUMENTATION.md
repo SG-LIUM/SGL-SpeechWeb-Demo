@@ -5,19 +5,19 @@ The user must be able to see in real-time the transcriptions synchronized with t
 A plugin is also available to show the distribution of the speaking time between the speakers (diarization viewer), with an interactive colored bar. The developer have to provide the transcription files and the video for the demonstration.
 Every time given is in second except the contrary is said.
 
-## How to use the tools
+## I) How to use the tools
 
-### Installing the plugins
+### A) Installing the plugins
 
 The plugins are implemented in javascript using the AngularJs framework. They also use the Restangular service. Two files are provided to make them work: services.js and main.css. 
 To use those plugins, the developer has to insert the services contained in services.js to his services and to insert (or adapt) the styles contained in main.css to his css styles.
 
-### Elements required
+### B) Elements required
 
 To work, the plugins need a transcription file, a segment file for the analyze of the transcription file  and a video (from which the transcription was made) to synchronize the transcription display in real-time with.
 The transcription file is a json file containing the information of the different transcriptions of the same video. The structures which have to be employed are described bellow:
 
-#### Json file
+#### 1) Json file
 
 * data in the json file:
 
@@ -59,7 +59,7 @@ Here is an example of the json file content:
 		{"system": “SYST2” ,"content":[{"start":"0","word":"Cello","spk":	{"id":"S1","gender":"m"}},{"start":"0.2","word":"Word","spk":	{"id":"S1","gender":"m"}}, … ]}
 	]
 
-#### Segment file
+#### 2) Segment file
 
 The segment file (.seg) is a text document which contain the sentences' time delimitations that were used during the transcription process. They are necessary to make the comparison between the transcriptions. The segment file has to be named 'sentence_bounds.seg' and to be stored in /assets/files. It has the following structure:
 
@@ -82,9 +82,9 @@ First of all, the plugin put the json data in an object to use them. Then, when 
 
 The computation of the comparison can be long. The plugin is made so it will not freeze the browser but if the enhanced json data are get back by the developer and put on the server, they can be directly used and the user will not have to waste time in computation. The enhanced json data have to be recovered and saved in /assets/files with the name 'enhanced-transcription.json'. When the user visit the web page, if the file is found on the server, the results appear directly, if not , the calculation is made.
 
-### Element to insert in your code
+### C) Elements to insert in your code
 
-#### initializing the controllers
+#### 1) Initializing the controllers
 
 Two different controllers are necessary for the transcription comparator and for the diarization viewer. The service 'Controller' from the 'controllerServices' is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages. 
 
@@ -106,11 +106,11 @@ As we have seen before, the json data given by the developer are an array of tra
 
 colors is an array of color names. One color is attributed to one speaker on the bar: they will be given in the order of the array to the speakers sorted (decreasing) by their speaking time. Nevertheless, if they are less speakers in the transcriptions than colors given, only the first colors will be used. And if they are more speakers than colors given, the last color will be used several time for the speakers whose talk the less.
 
-#### elements to use in the html pages
+#### 2) Elements to use in the html pages
 
 Here is the description of the different tags to dispose in the pages.
 
-##### Transcription Comparator:
+##### i. Transcription Comparator:
 
 * remember to indicate the right controller:
 
@@ -215,7 +215,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 			: the referenceWord({{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted into the hypothesis({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
 		</p>
 
-##### Diarization Viewer:
+##### ii. Diarization Viewer:
 
 * remember to indicate the right controller again:
 
@@ -297,13 +297,13 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 
 	The colored rectangle has to be bounded to the function speaker.moveVideoToSpeechStart() which set the video to the moment when the speaker talk for the first time.
 
-## Detailed code documentation
+## II) Detailed code documentation
 
-### css file
+### A) css file
 
 The css file contains styles used by the plugins.
 
-#### Styles for displayed words
+#### 1) Styles for displayed words
 
 current : The displayed part of one transcription is progressively highlighted as the video is read. This style is given to a word highlighted.
 
@@ -327,7 +327,7 @@ none : This style is given for words that have not to be modified (but it means 
 
 untreatedDtw : This style is given for words that have not been treated in the Dtw (grey text).
 
-#### Styles for user messages
+#### 2) Styles for user messages
 
 message: A style for visible user message.
 
@@ -335,7 +335,7 @@ clickableMessage : A style for the part of the message that can be clicked.
 
 bold : Bold style.
 
-#### Styles for speaker diarization bar
+#### 3) Styles for speaker diarization bar
 
 canvas : The style of the speaker bar (form, shadows...)
 
@@ -343,13 +343,13 @@ speaking : A style to distinguish which speaker is currently speaking.
 
 notSpeaking : A style for every other speakers not speaking.
 
-### service.js
+### B) service.js
 
 The service file is composed of several modules.
 
-#### transcriptionServices
+#### 1) transcriptionServices
 
-##### Indexes
+##### i. Indexes
 
 _ function getNextWords: returns the next list of words to display on the screen
 
@@ -369,7 +369,7 @@ _ function getNextWords: returns the next list of words to display on the screen
 			“nextTimeToDisplay”: the start of the first word in the next display  
 		}
 
-##### DtwTranscription
+##### ii. DtwTranscription
 
 _ function instance: It returns an instance of the DtwTranscription class. This class contains information concerning a DTW between two transcriptions. 
 
@@ -416,7 +416,7 @@ _ function instance: It returns an instance of the DtwTranscription class. This 
 	
 	* *return:* an array of PointDtwTranscription
 
-##### TranscriptionsData (use the services BinarySearch,Indexes and DtwTranscription)
+##### iii. TranscriptionsData (use the services BinarySearch,Indexes and DtwTranscription)
 
 _ function instance: It returns an instance of the TranscriptionData class. This class contains information concerning the transcriptions.
 
@@ -517,7 +517,7 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 
 	**adjustTranscriptions:** adds/modifies information to the transcriptions and adjust the hypothesis transcriptions to the reference before anything starts
 
-##### SpeakerBar (use the services Time and Position)
+##### iv. SpeakerBar (use the services Time and Position)
 
 _ function instance: It returns an instance of the SpeakerBar class. This class contains information concerning the speaker bar for the diarization.   
 
@@ -620,9 +620,9 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 		
 		**event:** an $event object
 
-#### searchServices
+#### 2) searchServices
 
-##### BinarySearch
+##### i. BinarySearch
 
 _ function search: perform a binary search
 
@@ -634,9 +634,9 @@ _ function search: perform a binary search
 
 * *return:* the index of the value if found. Otherwise an error is returned. -2 is returned if the value we search is inferior to the items given. -3 if it is superior. -1 is returned for the other cases.
 
-#### fileServices
+#### 3) fileServices
 
-##### File (use the service $resource)
+##### i. File (use the service $resource)
 
 - function get: gets a file from assets/files
 
@@ -646,7 +646,7 @@ _ function search: perform a binary search
 
 * *return:* the file
 
-##### SentenceBoundaries
+##### ii. SentenceBoundaries
 
 _ function get: parses the content of a seg file in assets/files into an exploitable array
 
@@ -656,9 +656,9 @@ _ function get: parses the content of a seg file in assets/files into an exploit
 
 * *return:* an array of {“start”:moment when sentence starts, “end”:moment when sentence ends} objects
 
-#### videoServices
+#### 4) videoServices
 
-##### Video
+##### i. Video
 
 _ function startVideo: starts the video at at specific time
 
@@ -673,7 +673,7 @@ _ function moveVideo: moves the video at the time corresponding to the word the 
 
 	**event:** an $event object
 
-##### Time
+##### ii. Time
 
 _ function format: gives a string representation of a time in second (rounded to the lower value)
 
@@ -683,9 +683,9 @@ _ function format: gives a string representation of a time in second (rounded to
 
 * *return:* a string representation
 
-#### positionServices
+#### 5) positionServices
 
-##### Position
+##### i. Position
 
 _ function getElementPosition: gives the absolute position of an element in the page
 
@@ -702,9 +702,9 @@ _ getMousePosition: gives the coordinates of the mouse position
 
 * *return:* an { “x”: abscissa, “y”: ordinate } object giving the coordinates of the left top of the mouse
 
-#### controllerServices
+#### 6) controllerServices
 
-##### Controller (uses the services Video, File, Restangular, SentenceBoundaries, TranscriptionsData and SpeakerBar)
+##### i. Controller (uses the services Video, File, Restangular, SentenceBoundaries, TranscriptionsData and SpeakerBar)
 
 _ function initializeTranscriptionComparisonCtrl: initializes the controller for the transcription comparator
 
