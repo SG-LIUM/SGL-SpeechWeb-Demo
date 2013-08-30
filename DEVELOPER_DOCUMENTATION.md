@@ -1,21 +1,21 @@
 # Developer Documentation
 
-This documentation presents tools developed to construct a web demonstrator of multiple transcription systems. 
-The user must be able to see in real-time the transcriptions synchronized with the original video (it can also be an audio recording) and the differences between the transcriptions highlighted. The comparison is made between one transcription (the first given) chosen as a reference and the other that are called hypothesis. Therefore the first transcription is shown unmodified but the other have information added in their content which help the user to distinguish the words in each hypothesis that have to be inserted, substituted by an other word (which comes from the reference) or simply deleted so this hypothesis matches with the reference. The comparison is made with an adaptation of the DTW algorithm which calculates the best alignment between each hypothesis and the reference.
-A plugin is also available to show the distribution of the speaking time between the speakers (diarization viewer), with an interactive colored bar. The developer have to provide the transcription files and the video for the demonstration.
-Every time given is in second except the contrary is said.
+This documentation presents tools developed to construct a web demonstrator of multiple transcription systems.    
+The user must be able to see in real-time the transcriptions synchronized with the original video (it can also be an audio recording) and the differences between the transcriptions highlighted. The comparison is made between one transcription (the first given) chosen as a reference and the other that are called hypothesis. Therefore the first transcription is shown unmodified but the other have information added in their content which help the user to distinguish the words in each hypothesis that have to be inserted, substituted by an other word (which comes from the reference) or simply deleted so this hypothesis matches with the reference. The comparison is made with an adaptation of the DTW algorithm which calculates the best alignment between each hypothesis and the reference.    
+A plugin is also available to show the distribution of the speaking time between the speakers (diarization viewer), with an interactive colored bar. The developer have to provide the transcription files and the video for the demonstration.    
+Every time given is in second except the contrary is said.    
 
 ## I) How to use the tools
 
 ### A) Installing the plugins
 
-The plugins are implemented in javascript using the AngularJs framework. They also use the Restangular service. Two files are provided to make them work: services.js and main.css. 
-To use those plugins, the developer has to insert the services contained in services.js to his services and to insert (or adapt) the styles contained in main.css to his css styles.
+The plugins are implemented in javascript using the "AngularJs" framework. They also use the "Restangular" service. Two files are provided to make them work: "services.js" and "main.css".    
+To use those plugins, the developer has to insert the services contained in "services.js" to his services and to insert (or adapt) the styles contained in "main.css" to his css styles.   
 
 ### B) Elements required
 
-To work, the plugins need a transcription file, a segment file for the analyze of the transcription file  and a video (from which the transcription was made) to synchronize the transcription display in real-time with.
-The transcription file is a json file containing the information of the different transcriptions of the same video. The structures which have to be employed are described bellow:
+To work, the plugins need a transcription file, a segment file for the analyze of the transcription file  and a video (from which the transcription was made) to synchronize the transcription display in real-time with.   
+The transcription file is a json file containing the information of the different transcriptions of the same video. The structures which have to be employed are described bellow:   
 
 #### 1) Json file
 
@@ -29,7 +29,7 @@ The transcription file is a json file containing the information of the differen
 
 		{system,content}
 		
-	system is the name of the transcription system (string)
+	`system` is the name of the transcription system (string)
 
 * content:
 
@@ -39,29 +39,27 @@ The transcription file is a json file containing the information of the differen
 
 		{start,word,spk}
 		
-	start is the time when the word begins. It can be a string as well as a float (it will be parsed anyway).
-	
-	word is the actual word (string).
+	`start` is the time when the word begins. It can be a string as well as a float (it will be parsed anyway).   
+	`word` is the actual word (string).
 
 * spk:
 
 		{id,gender}	
 		
-	id is the name of the speaker (string).
-	
-	gender have the value “m” for male and “f” for female.
+	`id` is the name of the speaker (string).   
+	`gender` have the value "m" for male and "f" for female.
 
 Here is an example of the json file content:
 
 	[
-		{"system": “SYST1” ,"content":[{"start":"0","word":"Hello","spk": 	{"id":"S1","gender":"m"}},{"start":"0.3","word":"World","spk": 	{"id":"S1","gender":"m"}}, … ]},
-
-		{"system": “SYST2” ,"content":[{"start":"0","word":"Cello","spk":	{"id":"S1","gender":"m"}},{"start":"0.2","word":"Word","spk":	{"id":"S1","gender":"m"}}, … ]}
+		{"system": “SYST1” ,"content":[{"start":"0","word":"Hello","spk": {"id":"S1","gender":"m"}},{"start":"0.3","word":"World","spk": {"id":"S1","gender":"m"}}, … ]},
+		{"system": “SYST2” ,"content":[{"start":"0","word":"Cello","spk":{"id":"S1","gender":"m"}},{"start":"0.2","word":"Word","spk":	{"id":"S1","gender":"m"}}, … ]}
 	]
 
 #### 2) Segment file
 
-The segment file (.seg) is a text document which contain the sentences' time delimitations that were used during the transcription process. They are necessary to make the comparison between the transcriptions. The segment file has to be named 'sentence_bounds.seg' and to be stored in /assets/files. It has the following structure:
+The segment file (.seg) is a text document which contain the sentences' time delimitations that were used during the transcription process. They are necessary to make the comparison between the transcriptions. The segment file has to be named "sentence_bounds.seg" and to be stored in "/assets/files".     
+It has the following structure:
 
 	video_title sentence0_start sentence0_end concatenation_of_title_and_start_and_end
 	video_title sentence1_start sentence1_end concatenation_of_title_and_start_and_end
@@ -80,31 +78,28 @@ What matters for the comparison are the second and third value for each line (th
 
 First of all, the plugin put the json data in an object to use them. Then, when the comparison is made, it simply add other information to this json object concerning the words that are different between the first transcriptions (reference: index 0) and the others (hypothesis: index>0). 
 
-The computation of the comparison can be long. The plugin is made so it will not freeze the browser but if the enhanced json data are get back by the developer and put on the server, they can be directly used and the user will not have to waste time in computation. The enhanced json data have to be recovered and saved in /assets/files with the name 'enhanced-transcription.json'. When the user visit the web page, if the file is found on the server, the results appear directly, if not , the calculation is made.
+The computation of the comparison can be long. The plugin is made so it will not freeze the browser but if the enhanced json data are get back by the developer and put on the server, they can be directly used and the user will not have to waste time in computation. The enhanced json data have to be recovered and saved in "/assets/files" with the name "enhanced-transcription.json". When the user visit the web page, if the file is found on the server, the results appear directly, if not , the calculation is made.
 
 ### C) Elements to insert in your code
 
 #### 1) Initializing the controllers
 
-Two different controllers are necessary for the transcription comparator and for the diarization viewer. The service 'Controller' from the 'controllerServices' is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages. 
-
-The instance manipulated for the transcription comparator is transcriptionData which contain the important information built from the seg and json files given by the developer (or only the enhanced json data file if present). The instance manipulated for the diarization viewer is transcriptionData again and speakerBar which contain the information built from  transcriptionData and which permit to handle the interactive bar.
+Two different controllers are necessary for the transcription comparator and for the diarization viewer. The service `Controller` from the `controllerServices` is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages.     
+The instance manipulated for the transcription comparator is `transcriptionData` which contain the important information built from the seg and json files given by the developer (or only the enhanced json data file if present). The instance manipulated for the diarization viewer is `transcriptionData` again and `speakerBar` which contain the information built from `transcriptionData` and which permit to handle the interactive bar.
 
 The transcription comparator has to call the service :
 
 	Controller.initializeTranscriptionComparisonCtrl($scope,step);
 
-step is the integer value representing the number of word displayed at the same time.
+`step` is the integer value representing the number of word displayed at the same time.
 
 The diarization viewer has to call the service :
 
 	Controller.initializeDiarizationCtrl($scope,step,numTranscription,colors);
 
-step has the same signification as previously.
-
-As we have seen before, the json data given by the developer are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription). numTranscription is the index in the array of the transcription that will be used.
-
-colors is an array of color names. One color is attributed to one speaker on the bar: they will be given in the order of the array to the speakers sorted (decreasing) by their speaking time. Nevertheless, if they are less speakers in the transcriptions than colors given, only the first colors will be used. And if they are more speakers than colors given, the last color will be used several time for the speakers whose talk the less.
+`step` has the same signification as previously.    
+As we have seen before, the json data given by the developer are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription). `numTranscription` is the index in the array of the transcription that will be used.    
+`colors` is an array of color names. One color is attributed to one speaker on the bar: they will be given in the order of the array to the speakers sorted (decreasing) by their speaking time. Nevertheless, if they are less speakers in the transcriptions than colors given, only the first colors will be used. And if they are more speakers than colors given, the last color will be used several time for the speakers whose talk the less.
 
 #### 2) Elements to use in the html pages
 
@@ -128,11 +123,9 @@ Here is the description of the different tags to dispose in the pages.
 			<span ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionsData.clickableMessage}}</span> 
 		</p>
 
-transcriptionsData.calculationMessage is a message indicating if there are still comparison calculation in progress. If not, the message is empty.
-
-transcriptionsData.message and transcriptionsData.clickableMessage compose a complete message indicating if the video is outside of the transcribed part (taking the first transcription as a reference too for the limits). transcriptionsData.clickableMessage contain the time when the transcription start and is dedicated to be bounded to the action: startVideo(transcriptionsData.fullTranscription[0].content[0].start) which set video to the start of the transcription. The start chosen here is the one of the reference.
-
-transcriptionsData.fullTranscription is the array extracted from the json file.
+`transcriptionsData.calculationMessage` is a message indicating if there are still comparison calculation in progress. If not, the message is empty.   
+`transcriptionsData.message` and `transcriptionsData.clickableMessage` compose a complete message indicating if the video is outside of the transcribed part (taking the first transcription as a reference too for the limits). `transcriptionsData.clickableMessage` contains the time when the transcription start and is dedicated to be bounded to the action: `startVideo(transcriptionsData.fullTranscription[0].content[0].start)` which set video to the start of the transcription. The start chosen here is the one of the reference.   
+`transcriptionsData.fullTranscription` is the array extracted from the json file.
 
 * Title:
 
@@ -143,7 +136,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 
 * Displayed Transcription:
 
-	The transcriptions are displayed part by part in synchronization with the video (a whole transcription is too big to be displayed at once). The developer can access these transcription pieces with transcriptionsData.displayedTranscriptions[i] (for the transcription n°i). Here is an example to show the displayed part of the reference:
+	The transcriptions are displayed part by part in synchronization with the video (a whole transcription is too big to be displayed at once). The developer can access these transcription pieces with `transcriptionsData.displayedTranscriptions[i]` (for the transcription n°i). Here is an example to show the displayed part of the reference:
 
 		<article id="content0">
 			<p>
@@ -158,7 +151,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 			</p>
 		</article>
 
-	And here is an example to show the displayed part of the hypothesis (transcription n°i with i>0) which is slightly different because of the  ng-mouseenter and ng-mouseleave fields:
+	And here is an example to show the displayed part of the hypothesis (transcription n°i with i>0) which is slightly different because of the  `ng-mouseenter` and `ng-mouseleave` fields:
 
 		<article class="last" id="contenti">
 			<p>
@@ -175,13 +168,10 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 			</p>
 		</article>
 
-	The code of the displayed transcription must be inside of a container having the id 'contenti' where i is the index of the transcription (content0 for the transcription n°0).
-
-	transcriptionsData.displayedTranscriptions is an array of displayedTranscription object which regroup the information of the displayed part of a transcription (one for each complete transcription). The word objects (same structure as those of the original json file) are accessible via  transcriptionsData.displayedTranscriptions[i].transcription.
-
-	data-start="{{jsonWord.start}}" and ng-click="moveVideo($event)" are important because they allow the user to click on a word to set the video at the start of this word.
-
-	Two more field are presents in the hypothesis displays. As it was told before, information has been added to word if they are word to delete, insert (word that comes from the reference) or substitute (by a word from the reference). In the insert and substitute case, it could be interesting for the user to see to which word it correspond in the reference. That what the transcriptionsData.showCorespondingWordInReferenceWord(jsonWord) and transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord) functions are for. When the user points his mouse on a inserted or substituted word in a hypothesis, it will change the style or the corresponding word in the reference. When his mouse leaves it, the original style is restituted.
+	The code of the displayed transcription must be inside of a container having the id "contenti" where i is the index of the transcription (content0 for the transcription n°0).   
+	`transcriptionsData.displayedTranscriptions` is an array of `displayedTranscription` objects which regroups the information of the displayed part of a transcription (one for each complete transcription). The word objects (same structure as those of the original json file) are accessible via `transcriptionsData.displayedTranscriptions[i].transcription`.   
+	`data-start="{{jsonWord.start}}"` and `ng-click="moveVideo($event)"` are important because they allow the user to click on a word to set the video at the start of this word.   
+	Two more field are presents in the hypothesis displays. As it was told before, information has been added to word if they are word to delete, insert (word that comes from the reference) or substitute (by a word from the reference). In the insert and substitute case, it could be interesting for the user to see to which word it correspond in the reference. That what the `transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)` and `transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)` functions are for. When the user points his mouse on a inserted or substituted word in a hypothesis, it will change the style or the corresponding word in the reference. When his mouse leaves it, the original style is restituted.
 
 * Video:
 
@@ -194,7 +184,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 			<source type="video/webm" src="http://your-video .webm" />
 		</video>
 
-	It is important that the video (or audio) has the id 'mediafile' otherwise the functions used by the controller will not be able to detect it.
+	It is important that the video (or audio) has the id "mediafile" otherwise the functions used by the controller will not be able to detect it.
 
 * Caption:
 
@@ -206,7 +196,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 		</p>
  		<p>
 			<span class="substCaption">hypothesisWord(->referenceWord) </span>
-			: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to 	match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
+			: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
 			<br>
     		<span class="supprCaption">-hypothesisWord- </span>
 			: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be deleted to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
@@ -225,7 +215,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 
 * User messages:
 
-	transcriptionsData.message and transcriptionData.clickableMessage are still present in this controller.
+	`transcriptionsData.message` and `transcriptionData.clickableMessage` are still present in this controller.
 
 * Title:
 
@@ -237,13 +227,12 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 
 * transcriptionsData:
 
-	The transcriptionsData object is the same as previously and can be use in the same way (to display the transcription) except that the comparison information have not been calculated and therefore are not present in this object.
+	The `transcriptionsData` object is the same as previously and can be use in the same way (to display the transcription) except that the comparison information have not been calculated and therefore are not present in this object.
 
 * Displayed Transcription: 
 
-	Quite the same thing except that the developer should not place the class="{{jsonWord.wordClass}}" attribute in the span tag where ng-repeat is. Indeed this  wordClass is a part of the information added by the comparison. It is different depending if the word must be substituted, inserted, deleted. Beside if a part of a transcription have not been treated by the Dtw (if it is outside of any sentence bounds) then the corresponding word will have the wordClass 'untreatedDtw' (should appear as grey text). Or as we seen before the comparison is not made in the diarization controller so the developer should not place the class attribute if he do not want to see the all text appear in grey. However he may use the 'none' class (a default style).
-
-	The ng-mouseenter and ng-mouseleave are not necessary too.
+	Quite the same thing except that the developer should not place the `class="{{jsonWord.wordClass}}"` attribute in the span tag where `ng-repeat` is. Indeed this `wordClass` is a part of the information added by the comparison. It is different depending if the word must be substituted, inserted, deleted. Beside if a part of a transcription have not been treated by the Dtw (if it is outside of any sentence bounds) then the corresponding word will have the wordClass "untreatedDtw" (should appear as grey text). Or as we seen before the comparison is not made in the diarization controller so the developer should not place the class attribute if he do not want to see the all text appear in grey. However he may use the "none" class (a default style).   
+	The `ng-mouseenter` and `ng-mouseleave` are not necessary too.
 
 * Interactive bar:
 
@@ -254,9 +243,8 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 		</canvas>
  		<p><span id="progressTimei">--:--</span></p>	
 
-	As before, the canvas tag must have the id 'canvasi' and the timer the id 'progressTimei' where i is the index of the transcription. The canvas must be bounded to the clickUpdate function.
-
-	The message 'updates are necessary' is useful to inform if the browser does not support canvas.
+	As before, the canvas tag must have the id "canvasi" and the timer the id "progressTimei" where i is the index of the transcription. The canvas must be bounded to the `clickUpdate` function.   
+	The message "updates are necessary" is useful to inform if the browser does not support canvas.
 
 * Caption:
 
@@ -269,8 +257,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 		<ul>
 			<li ng-repeat="speaker in speakerBar.mainSpeakers()" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
 				<span style="background:white;padding:2px 10px 2px;">   </span>
-				<span style="cursor:pointer;color:{{speaker.color}};background:	{{speaker.color}};padding:2px 10px 2px;" 
-				ng-click="speaker.moveVideoToSpeechStart()">________</span>
+				<span style="cursor:pointer;color:{{speaker.color}};background:	{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
 				<span style="background:white;padding:2px 10px 2px;">   </span>
 				name: <span class="bold">{{speaker.spkId}}</span>,
 				gender: <span class="bold">{{speaker.gender}}</span>, 
@@ -282,8 +269,7 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 		<ul>
 			<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
 				<span style="background:white;padding:2px 10px 2px;">   </span>
-				<span style="cursor:pointer;color:{{speaker.color}};background: {{speaker.color}};padding:2px 10px 2px;" 
-				ng-click="speaker.moveVideoToSpeechStart()">________</span>
+				<span style="cursor:pointer;color:{{speaker.color}};background: {{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
 				<span style="background:white;padding:2px 10px 2px;">   </span>	
 				name: <span class="bold">{{speaker.spkId}}</span>, 
 				gender: <span class="bold">{{speaker.gender}}</span>, 
@@ -291,11 +277,9 @@ transcriptionsData.fullTranscription is the array extracted from the json file.
 			</li>
 		</ul>
 
-	The developer can access the data of the different speaker (their color, id, gender, speaking periods, speaking status) via speakerBar.speakers which is an array of speaker objects. But here, it is more interesting to use the functions speakerBar.mainSpeakers() and speakerBar.secondarySpeakers() which return a subset of the speakerBar.speakers array. speakerBar.mainSpeakers() will return the speakers who talk the most and have their own color while speakerBar.secondarySpeakers() will return the speakers who talk the less and share the same color. It all depends of the colors the developer gave in first time when he initialized the controller. Now it is possible to separate the main speakers from the others in the caption.
-
-	speaker.speakingStatus correspond to a css style different if the speaker is currently speaking or not and it is frequently updated.
-
-	The colored rectangle has to be bounded to the function speaker.moveVideoToSpeechStart() which set the video to the moment when the speaker talk for the first time.
+	The developer can access the data of the different speaker (their color, id, gender, speaking periods, speaking status) via `speakerBar.speakers` which is an array of `speakerData` objects. But here, it is more interesting to use the functions `speakerBar.mainSpeakers()` and `speakerBar.secondarySpeakers()` which return a subset of the `speakerBar.speakers` array. `speakerBar.mainSpeakers()` will return the speakers who talk the most and have their own color while `speakerBar.secondarySpeakers()` will return the speakers who talk the less and share the same color. It all depends of the colors the developer gave in first time when he initialized the controller. Now it is possible to separate the main speakers from the others in the caption.   
+	`speaker.speakingStatus` correspond to a css style different if the speaker is currently speaking or not and it is frequently updated.    
+	The colored rectangle has to be bounded to the function `speaker.moveVideoToSpeechStart()` which set the video to the moment when the speaker talk for the first time.
 
 ## II) Detailed code documentation
 
