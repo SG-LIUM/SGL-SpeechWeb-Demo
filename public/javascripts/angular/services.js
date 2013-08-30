@@ -175,7 +175,7 @@ angular.module('transcriptionServices', [])
       }
     })
     //This class contains information concerning the transcriptions. transcriptionTable is an array which contains the words json data of the different transcriptions.
-    .factory('TranscriptionsData', function(BinarySearch,Indexes,DtwTranscription){
+    .factory('TranscriptionsData', function(BinarySearch,Indexes,DtwTranscription,Video){
       return {
         instance : function(transcriptionTable,globalStep){
             //This sub-class regroups the information of a displayed part of a transcription. The step is the number of words currently displayed.
@@ -205,6 +205,8 @@ angular.module('transcriptionServices', [])
             this.calculationMessage="";
             this.message="";
             this.clickableMessage="";
+            this.buttonClass="disabledButton";
+            this.buttonMessage="";
             
             //Methods:
             //Update the content of the displayed transcription n°transcriptionNum.
@@ -286,7 +288,7 @@ angular.module('transcriptionServices', [])
               }
             }
             //Calculates the DTW between the references and the hypothesis and put the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
-            this.updateTranscriptionsWithDtw=function(segments){
+            this.updateTranscriptionsWithDtw=function(segments,refresh){
               this.calculationMessage="-> Still calculating...";
               //This array will be used for further checks.
               var formerIndexEnd=new Array(this.fullTranscription.length);
@@ -389,12 +391,22 @@ angular.module('transcriptionServices', [])
                     }
                   }
                   }
+                  //refresh the page
+                  refresh(); //refresh the content
+                  self.timeUpdateDisplay($('#mediafile')["0"].currentTime); //refresh the highlighting
                   
                   if(++j==limit){ 
                     clearInterval(processor);   
                     //We add all the insertion at once because of the shift it causes
                     self.addWords(wordsToAddInTranscriptions);
                     self.calculationMessage="";
+                    self.buttonClass="enabledButton";
+                    self.buttonMessage="Click here to get the transcriptions with comparison detail (json)";
+                    //last refresh
+                    var timeToUpdate=$('#mediafile')["0"].currentTime; //currentTime
+                    Video.startVideo(self.displayedTranscriptions[0].transcription[self.displayedTranscriptions[0].currentHighlightedIndex].start,self); //reset the video to include the insertion
+                 	Video.moveVideoTo(timeToUpdate); //place the video at the ancien place 
+                 	
                   }
                   busy=false; 
                 }
@@ -461,6 +473,9 @@ angular.module('transcriptionServices', [])
                   this.fullTranscription[i].content=this.fullTranscription[i].content.slice(hypothesisFirstIndex,hypothesisLastIndex+1);
                 }
               }
+            }
+            this.copyTranscription=function(){
+            	window.prompt ("Transcription with Dtw informations: Copy to clipboard: Ctrl+C (cmd+C), Enter", JSON.stringify(this.fullTranscription));
             }
         }
       }
@@ -772,7 +787,7 @@ angular.module('fileServices', ['ngResource'])
 angular.module('videoServices', [])
     .factory('Video', function(){
         return {
-            //Starts the video at at specific time. We give the corresponding transcriptionsData to init its display.
+            //Starts the video at a specific time. We give the corresponding transcriptionsData to init its display.
         	startVideo : function(timeStart,transcriptionsData){
         		$('#mediafile')["0"].player.setCurrentTime(timeStart); //The video have to exist with this id
   				transcriptionsData.initDisplay(timeStart);
@@ -780,6 +795,10 @@ angular.module('videoServices', [])
         	//Move the video at the time corresponding to the word(event) we click on.
         	moveVideo : function(eventObject){
         		var time = eventObject.currentTarget.attributes["data-start"].value;
+  				$('#mediafile')["0"].player.setCurrentTime(time);
+        	},
+        	//Move the video at a specific time.
+        	moveVideoTo : function(time){
   				$('#mediafile')["0"].player.setCurrentTime(time);
         	}
         }
@@ -852,6 +871,10 @@ angular.module('controllerServices', []).
                 	Video.moveVideo(eventObject);
                 }
                 
+                var refresh=function(){
+                	scope.$apply();
+                }
+                
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
                 File.get({fileId: 'enhanced-trannscription.json'}, 
                     function(transcriptions) {
@@ -867,7 +890,7 @@ angular.module('controllerServices', []).
                           function(data) {
                   	      //We get the bounds of the sentences we will use for the DTWs
                   	      scope.sentenceBounds=SentenceBoundaries.get(data);	
-                  	      scope.transcriptionsData.updateTranscriptionsWithDtw(scope.sentenceBounds);
+                  	      scope.transcriptionsData.updateTranscriptionsWithDtw(scope.sentenceBounds,refresh);
                   	      //We make sure that the nextWordToDisplay value is correct
                   	      scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
                           }

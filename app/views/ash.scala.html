@@ -9,7 +9,6 @@
     <br/>
     <p> <span class="message">{{transcriptionsData.calculationMessage}} </span> </p>
     <p> <span class="message">{{transcriptionsData.message}} </span><span ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionsData.clickableMessage}}</span> </p>
-          
     <div class="row">
       <div class="6u skel-cell-mainContent">
 
@@ -68,18 +67,20 @@
         </div>
 
     </div>
+    <p> <span class="{{transcriptionsData.buttonClass}}" ng-click="transcriptionsData.copyTranscription()">{{transcriptionsData.buttonMessage}}<span> </p>
+    
     <div class="row">
       <div class="6u skel-cell-mainContent">
         <article class="last">
-
+            
             <h3>Caption</h3>
             <p>We choose the {{transcriptionsData.displayedTranscriptions[0].id}} system as a reference for the comparison.</p>
             <p><span class="substCaption">hypothesisWord(->referenceWord) </span>: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
             <span class="supprCaption">-hypothesisWord- </span>: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be deleted to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
             <span class="inserCaption">+referenceWord+</span>: the referenceWord({{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted into the hypothesis({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).</p>
-
+			
         </article>
-    
+
       </div>
     </div>
     

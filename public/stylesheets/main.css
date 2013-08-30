@@ -57,6 +57,18 @@
 .bold{
 	font-weight:bold;
 }
+.enabledButton{
+	padding:5px;
+	font-weight:bold;
+	border-width:5px;
+	border-style:inset;
+	border-color:grey;
+	background:#E0E0E0 ;
+	cursor: pointer;
+}
+.disabledButton{
+
+}
 
 /* styles for speaker diarization bar*/
 .canvas {
