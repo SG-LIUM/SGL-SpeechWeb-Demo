@@ -205,8 +205,8 @@ angular.module('transcriptionServices', [])
             this.calculationMessage="";
             this.message="";
             this.clickableMessage="";
-            this.buttonClass="disabledButton";
-            this.buttonMessage="";
+            this.buttonClass="enabledButton";
+            this.buttonMessage="Click here to get the transcriptions with comparison detail (json)";
             
             //Methods:
             //Update the content of the displayed transcription n°transcriptionNum.
@@ -289,6 +289,8 @@ angular.module('transcriptionServices', [])
             }
             //Calculates the DTW between the references and the hypothesis and put the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
             this.updateTranscriptionsWithDtw=function(segments,refresh){
+              this.buttonClass="disabledButton";
+              this.buttonMessage="";
               this.calculationMessage="-> Still calculating...";
               //This array will be used for further checks.
               var formerIndexEnd=new Array(this.fullTranscription.length);
@@ -357,14 +359,22 @@ angular.module('transcriptionServices', [])
                   //We add the resulting information to our json data making the correspondence betwin hypothesis and reference.
                   for(var k=0;k<path.length;k++){
                     if(path[k].operation=='inser'){
-                    var word =self.fullTranscription[0].content[path[k].indexFullRef].word;
+                      var word =self.fullTranscription[0].content[path[k].indexFullRef].word;
                       var spk  =self.fullTranscription[0].content[path[k].indexFullRef].spk;
                       var insertionIndex=path[k].indexFullHyp+1;
+                      //We take the start of the inserted word in the reference
+                      var start=self.fullTranscription[0].content[path[k].indexFullRef].start;
                       if(insertionIndex>0){
-                        var start=(self.fullTranscription[i].content[insertionIndex-1].start+self.fullTranscription[i].content[insertionIndex].start)/2;
+                        //If the resulted starts in the hypothesis are not ordered
+                      	if(!(start>=self.fullTranscription[i].content[insertionIndex-1].start && start<=self.fullTranscription[i].content[insertionIndex].start)){
+                      		start=start=(self.fullTranscription[i].content[insertionIndex-1].start+self.fullTranscription[i].content[insertionIndex].start)/2;
+                      	}
                       }
                       else{
-                        var start=self.fullTranscription[i].content[insertionIndex].start/2;
+                      	//Same thing
+                        if(!(start<=self.fullTranscription[i].content[insertionIndex].start)){
+                      		start=self.fullTranscription[i].content[insertionIndex].start/2;
+                      	}
                       }
                       var wordObject={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
                       //We store the words to add in the end.
@@ -372,14 +382,14 @@ angular.module('transcriptionServices', [])
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
                     else if(path[k].operation=='suppr'){
-                    var word=self.fullTranscription[i].content[path[k].indexFullHyp].word;
-                    self.fullTranscription[i].content[path[k].indexFullHyp].word="-"+word+"-";
+                      var word=self.fullTranscription[i].content[path[k].indexFullHyp].word;
+                      self.fullTranscription[i].content[path[k].indexFullHyp].word="-"+word+"-";
                       self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="suppr";
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
                     else if(path[k].operation=='subst'){
                       var current=self.fullTranscription[i].content[path[k].indexFullHyp].word;
-                    var replacement=self.fullTranscription[0].content[path[k].indexFullRef].word;
+                      var replacement=self.fullTranscription[0].content[path[k].indexFullRef].word;
                       self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="subst";
                       self.fullTranscription[i].content[path[k].indexFullHyp].word=current+"(->"+replacement+")";
                       self.fullTranscription[i].content[path[k].indexFullHyp].corespondingWordIndex=path[k].indexFullRef;
@@ -876,7 +886,7 @@ angular.module('controllerServices', []).
                 }
                 
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'enhanced-trannscription.json'}, 
+                File.get({fileId: 'eenhanced-transcription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	//We make sure that the nextWordToDisplay value is correct
