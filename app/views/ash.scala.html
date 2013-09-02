@@ -19,7 +19,7 @@
             <h2>{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</h2>
 
 			<p style="text-align: justify; text-justify: newspaper">
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
 
         </article>
@@ -34,7 +34,7 @@
             <h2>Comparison with {{transcriptionsData.displayedTranscriptions[3].id}}</h2>
 
 			<p style="text-align: justify; text-justify: newspaper">
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[3].transcription" ngModel="transcriptionsData.displayedTranscriptions[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[3].transcription" ngModel="transcriptionsData.displayedTranscriptions[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
 
         </article>
@@ -47,7 +47,7 @@
             <h3>{{transcriptionsData.displayedTranscriptions[1].id}} Transcription (auxiliary system of {{transcriptionsData.displayedTranscriptions[0].id}})</h3>
             
             <p>
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[1].transcription" ngModel="transcriptionsData.displayedTranscriptions[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[1].transcription" ngModel="transcriptionsData.displayedTranscriptions[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
             
         </div>
@@ -55,7 +55,7 @@
             <h3>{{transcriptionsData.displayedTranscriptions[2].id}} Transcription (auxiliary system of {{transcriptionsData.displayedTranscriptions[0].id}})</h3>
             
             <p>
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[2].transcription" ngModel="transcriptionsData.displayedTranscriptions[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)"  class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
+              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[2].transcription" ngModel="transcriptionsData.displayedTranscriptions[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">{{jsonWord.word}} </span>
             </p>
             
         </div>
