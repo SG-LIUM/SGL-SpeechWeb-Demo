@@ -367,13 +367,13 @@ angular.module('transcriptionServices', [])
                       if(insertionIndex>0){
                         //If the resulted starts in the hypothesis are not ordered
                       	if(!(start>=self.fullTranscription[i].content[insertionIndex-1].start && start<=self.fullTranscription[i].content[insertionIndex].start)){
-                      		start=start=(self.fullTranscription[i].content[insertionIndex-1].start+self.fullTranscription[i].content[insertionIndex].start)/2;
+                      		start=self.fullTranscription[i].content[insertionIndex].start;
                       	}
                       }
                       else{
                       	//Same thing
                         if(!(start<=self.fullTranscription[i].content[insertionIndex].start)){
-                      		start=self.fullTranscription[i].content[insertionIndex].start/2;
+                      		start=self.fullTranscription[i].content[insertionIndex].start;
                       	}
                       }
                       var wordObject={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
