@@ -184,7 +184,7 @@ angular.module('transcriptionServices', [])
             	this.nextWordToDisplay=0;             //in the complete transcription
             	this.currentHighlightedIndex=0;         //in the displayed part
             	this.currentWordStart=0;            //in the complete transcription
-            	this.currentWordEnd=this.currentWordEnd+step; //in the complete transcription
+            	this.currentWordEnd=this.currentWordStart+step; //in the complete transcription
             	this.step=step;
             	this.nextTimeToDisplay=0;
             	this.transcription=[];              //the words to display
@@ -220,8 +220,8 @@ angular.module('transcriptionServices', [])
             }
             //Update the display of the transcriptions at a specific time (currentTime)
             this.timeUpdateDisplay = function(currentTime) {
-              for(var i=0;i<this.displayedTranscriptions.length;i++){ 
-              //Search the word through the words that are displayed
+              for(var i=0;i<this.displayedTranscriptions.length;i++){
+                //Search the word through the words that are displayed
                 var currentDisplayedWordIndex = BinarySearch.search(this.displayedTranscriptions[i].transcription, currentTime, function(item) { return item.start; });
                 //This check makes currentDisplayedWordIndex reach the last word because the binary search don't find the last index.
                 if(currentDisplayedWordIndex== -3){
@@ -244,15 +244,15 @@ angular.module('transcriptionServices', [])
                 // We add the arbitrary 0.5 sec value that we chose in the Indexe service.
                 if(currentTime>this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start+0.5){
                   this.message="ASH transcription is finished. It start at ";
-                this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
+                  this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
                 }
                 else if(currentTime<this.fullTranscription[0].content[0].start){
                   this.message="ASH transcription has not started yet. It start at ";
-                this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
+                  this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
                 }
                 else{
                   this.message="";
-                this.clickableMessage="";
+                  this.clickableMessage="";
                 } 
               } 
             }
@@ -262,7 +262,7 @@ angular.module('transcriptionServices', [])
                 if(typeof this.fullTranscription[i] !== 'undefined') {
                   var nextWordPosition = BinarySearch.search(this.fullTranscription[i].content, seekingTime, function(item) { return item.start; });
                   //Change page only if the next word is not currently displayed
-                  if(nextWordPosition < this.displayedTranscriptions[i].currentWordStart || nextWordPosition >= this.displayedTranscriptions[i].currentWordStart + this.displayedTranscriptions[i].step) {
+    			  if(nextWordPosition < this.displayedTranscriptions[i].currentWordStart || nextWordPosition >= this.displayedTranscriptions[i].currentWordStart + this.displayedTranscriptions[i].step || nextWordPosition>this.displayedTranscriptions[i].nextWordToDisplay) {
                     this.displayedTranscriptions[i].nextWordToDisplay = nextWordPosition;
                     this.updateDisplayedTranscription(i);
                   }
@@ -886,7 +886,7 @@ angular.module('controllerServices', []).
                 }
                 
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'eenhanced-transcription.json'}, 
+                File.get({fileId: 'enhanced-transcription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	//We make sure that the nextWordToDisplay value is correct
