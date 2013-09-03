@@ -207,6 +207,9 @@ angular.module('transcriptionServices', [])
             this.clickableMessage="";
             this.buttonClass="enabledButton";
             this.buttonMessage="Click here to get the transcriptions with comparison detail (json)";
+            this.insertionStyle="label label-success";
+            this.suppressionStyle="label label-important";
+            this.substitutionStyle="label label-info";
             
             //Methods:
             //Update the content of the displayed transcription n°transcriptionNum.
@@ -376,22 +379,22 @@ angular.module('transcriptionServices', [])
                       		start=self.fullTranscription[i].content[insertionIndex].start;
                       	}
                       }
-                      var wordObject={"start":start,"word":"+"+word+"+","spk":spk,"wordClass":"inser", "corespondingWordIndex":path[k].indexFullRef};
+                      var wordObject={"start":start,"word":word,"spk":spk,"wordClass":self.insertionStyle, "corespondingWordIndex":path[k].indexFullRef};
                       //We store the words to add in the end.
                       wordsToAddInTranscriptions[i].push(new WordToAdd(wordObject,insertionIndex));
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
                     else if(path[k].operation=='suppr'){
                       var word=self.fullTranscription[i].content[path[k].indexFullHyp].word;
-                      self.fullTranscription[i].content[path[k].indexFullHyp].word="-"+word+"-";
-                      self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="suppr";
+                      self.fullTranscription[i].content[path[k].indexFullHyp].word=word;
+                      self.fullTranscription[i].content[path[k].indexFullHyp].wordClass=self.suppressionStyle;
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
                     else if(path[k].operation=='subst'){
                       var current=self.fullTranscription[i].content[path[k].indexFullHyp].word;
                       var replacement=self.fullTranscription[0].content[path[k].indexFullRef].word;
-                      self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="subst";
-                      self.fullTranscription[i].content[path[k].indexFullHyp].word=current+"(->"+replacement+")";
+                      self.fullTranscription[i].content[path[k].indexFullHyp].wordClass=self.substitutionStyle;
+                      self.fullTranscription[i].content[path[k].indexFullHyp].word=current+"(>>"+replacement+")";
                       self.fullTranscription[i].content[path[k].indexFullHyp].corespondingWordIndex=path[k].indexFullRef;
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
@@ -425,20 +428,20 @@ angular.module('transcriptionServices', [])
             }
             //Change the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.showCorespondingWordInReferenceWord=function(word){
-              if(word.wordClass=="subst"){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showSubst');
+              if(word.wordClass==this.substitutionStyle){
+                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass(this.substitutionStyle);
               }
-              else if(word.wordClass=="inser"){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass('showInser');
+              else if(word.wordClass==this.insertionStyle){
+                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass(this.insertionStyle);
               }
             }
             //Restore the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.hideCorespondingWordInReferenceWord=function(word){
-              if(word.wordClass=="subst"){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showSubst');
+              if(word.wordClass==this.substitutionStyle){
+                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass(this.substitutionStyle);
               }
-              else if(word.wordClass=="inser"){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass('showInser');
+              else if(word.wordClass==this.insertionStyle){
+                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass(this.insertionStyle);
               }
             }
             //Add/modify information to the transcriptions and adjust the hypothesis transcriptions to the reference.

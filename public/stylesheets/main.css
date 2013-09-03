@@ -2,39 +2,12 @@
 .current {
   color: orange;
   text-decoration: underline;
+}
+.clickable {
   cursor: pointer;
-}
-.suppr {
-  color: red;
-  cursor: pointer;
-}
-.supprCaption {
-  color: red;
-}
-.inser {
-  color: green;
-  cursor: pointer;
-}
-.inserCaption {
-  color: green;
-}
-.showInser {
-  color: green;
-  font-weight:bold;
-}
-.subst {
-  color: blue;
-  cursor: pointer;
-}
-.substCaption {
-  color: blue;
-}
-.showSubst {
-  color: blue;
-  font-weight:bold;
 }
 .none {
-  cursor: pointer;
+  
 }
 .untreatedDtw {
   color: #E0E0E0;
