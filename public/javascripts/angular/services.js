@@ -563,6 +563,10 @@ angular.module('transcriptionServices', [])
             this.colors=colors;
             this.speakers = new Array();
             this.secondarySpeakersTitle="";
+			// Create gradient
+			this.grd=this.canvas.createLinearGradient(this.canvasWidth/2,0,this.canvasWidth/2,this.canvasHeight*1.8);
+			this.canvas.fillStyle=this.grd;
+			this.grd.addColorStop(1,"grey");
                
             //Methods:
             //Return a sub-array of the principal speakers (those who have their own color).
@@ -641,8 +645,9 @@ angular.module('transcriptionServices', [])
               
             }
             //Sets the current color to fill the canvas.
-            this.setColor=function(color){
-              this.canvas.fillStyle = color;
+            this.setColor=function(color){         
+				// Fill with gradient
+				this.grd.addColorStop(0,color);
             }
             //Draws a segment in the canvas.
             this.drawSegment=function(start,width){
@@ -672,7 +677,7 @@ angular.module('transcriptionServices', [])
             }
             //We have to draw all the speakers again because if we draw the transparent progressBar over the former one, it will become opaque. It is also useful if the currentTime updated is inferior to the forme time updated.
             this.drawSpeakers();
-            this.setColor("rgba(161, 161, 161, 0.7)");
+            this.setColor("rgba(161, 161, 161, 0.5)");
             this.drawSegment(this.timeStart,currentTime-this.timeStart);
             for(var i=0;i<this.speakers.length;i++){
               this.speakers[i].updateSpeakingStatus(currentTime);
