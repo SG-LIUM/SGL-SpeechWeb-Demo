@@ -316,6 +316,7 @@ angular.module('transcriptionServices', [])
               var processor = setInterval(function(){
                 if(!busy){
                   var calculationPercent=(j/limit)*100;
+                  calculationPercent=Math.round(calculationPercent*100)/100
                   self.progressBarContent.css("width", calculationPercent + "%");
                   var indexStartRef = BinarySearch.search(self.fullTranscription[0].content, segments[j].start, function(item) { return item.start; });
                   var indexEndRef   = BinarySearch.search(self.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });

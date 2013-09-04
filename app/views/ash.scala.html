@@ -13,6 +13,16 @@
 			<div class="span12">
 				<div class="bloc">
 					<div class="hero-unit">
+					
+						<div class="navbar">
+						  <div class="navbar-inner">
+							<ul class="nav">
+							  <li class="active"><a href="#">Transcription Comparator</a></li>
+							  <li class="divider-vertical"><a href="http://localhost:9000/demo/results">Diarization Viewer</a></li>
+							</ul>
+						  </div>
+						</div>
+					
 						<h1>ASH Project <small>Web Demonstrator</small></h1>
 						<hr>
 						<p>Some Explanation...</p>
@@ -29,7 +39,7 @@
 							<div class="progress progress-striped active">
 							  <div id="progressBarContent" class="bar"></div>
 							</div>
-							<p>Dtw Calculation...</p>
+							<p>Dtw Calculation ({{transcriptionsData.progressBarContent[0].style.width}})</p>
 						</div>
 						
 						<div id="calculationOverAlert" class="alert alert-success">
@@ -164,7 +174,7 @@
 						<div class="accordion-heading"> <a class="accordion-toggle" href="#item6" data-toggle="collapse"> <span class="title">SpeakerBar</span> </a> </div>
   						<div id="item6" class="collapse in">
   							<div class="accordion-inner">
-								
+								TODO
 							</div>
 						</div>
 					</div>
@@ -178,6 +188,5 @@
 <script>
 // jQuery method
 $('#mediafile').mediaelementplayer();
-$("#tooltip").tooltip();
 </script>
 }
