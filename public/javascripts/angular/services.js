@@ -514,7 +514,7 @@ angular.module('transcriptionServices', [])
               }
               this.color=color;
               this.speakingPeriods=new Array();
-              this.speakingStatus="notSpeaking";
+              this.speakingStatus="none";
             
               //Returns the sum of his speaking periods.
               this.totalTime=function(){
@@ -544,11 +544,11 @@ angular.module('transcriptionServices', [])
               this.updateSpeakingStatus=function(time){
                 for(var i=0;i<this.speakingPeriods.length;i++){
                 if(time>=this.speakingPeriods[i][0] && time<this.speakingPeriods[i][1]){
-                  this.speakingStatus="speaking";
+                  this.speakingStatus="active";
                   return null;
                 }
               }
-              this.speakingStatus="notSpeaking";
+              this.speakingStatus="none";
               }
             }
 

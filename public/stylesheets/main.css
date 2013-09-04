@@ -1,3 +1,5 @@
+a {text-decoration:none}
+
 .bloc{
 	padding:15px 10px;
 }
@@ -33,12 +35,4 @@
   border: 1px solid black;
   border-radius: 15px;
   box-shadow: 15px 15px 1px rgba(0, 0, 255, 0.2);
-}
-.speaking {
- border-width:5px;
- border-style:inset;
- border-color:grey;
-}
-.notSpeaking{
-
 }
