@@ -29,7 +29,7 @@
 						
 						<span class="title">Caption</span>
 						<br><br>
-						Click on the <span class="bold">colored rectangles</span> to start the video at the first speech of the corresponding speaker.
+						Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.
 						<br>
 						
 						<div id="outTranscriptionAlert" class="alert alert-error">
@@ -50,7 +50,7 @@
 			<div class="span6">
 				<div class="bloc">
 					<div class="accordion-group" style="background-color: #FFFFEB;">
-						<div class="accordion-heading"> <a class="accordion-toggle" href="#item1" data-toggle="collapse"> <span class="title">{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</span> </a> </div>
+						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item1" data-toggle="collapse"> <span class="title">{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</span> </a> </div>
   						<div id="item1" class="collapse in">
   							<div class="accordion-inner">
 								<article id="content0">
@@ -69,7 +69,7 @@
 			<div class="span6">
 				<div class="bloc">
 					<div class="accordion-group" style="background-color: #FFFFEB;">
-						<div class="accordion-heading"> <a class="accordion-toggle" href="#item2" data-toggle="collapse"> <span class="title">Your File</span> </a> </div>
+						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item2" data-toggle="collapse"> <span class="title">Your File</span> </a> </div>
   						<div id="item2" class="collapse in">
   							<div class="accordion-inner">
 								<video width="512" height="288" id="mediafile" controls preload>
@@ -84,41 +84,59 @@
 				</div>
 			</div>
 		</div>
-  
-  		<!-- ROW 3 -->
+  		
+		<!-- ROW 3 -->
 		<div class="row">
 			<!-- Speaker Bar -->
 			<div class="span12">
 				<div class="bloc">
 					<div class="accordion-group" style="background-color: #FFFFEB;">
-						<div class="accordion-heading"> <a class="accordion-toggle" href="#item3" data-toggle="collapse"> <span class="title">Speaker Bar</span> </a> </div>
-  						<div id="item3" class="collapse in">
-  							<div class="accordion-inner">
+						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <span class="title">Speaker Bar</span> </a> </div>
+						<div id="item3" class="collapse in">
+							<div class="accordion-inner">
 								<canvas width="1100" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)">
 								  <p>updates are necessary</p>
 								</canvas>
-								<p><span id="progressTime0">--:--</span></p>
-								<p class="bold"> Principal speakers [{{speakerBar.mainSpeakers().length}}]<p>
-								<ul class="nav nav-pills nav-stacked">
-									<li ng-repeat="speaker in speakerBar.mainSpeakers()" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
-										<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
-									</li>
-								</ul>
-			
-								<p class="bold">{{speakerBar.secondarySpeakersTitle}}<p>
-								<ul class="nav nav-pills nav-stacked">
-									<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
-										<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
-									</li>
-								</ul>
-								
+								<p><span id="progressTime0">--:--</span></p>	
+								<!-- Main Speaker -->
+								<span class="bold"> Principal speakers [{{speakerBar.mainSpeakers().length}}]</span>
+								<div class="container-fluid">
+								  <div class="row-fluid">
+									<div class="span6">
+									  	<ul class="nav nav-pills nav-stacked">
+											<li ng-repeat="speaker in speakerBar.mainSpeakers().splice(0,(speakerBar.mainSpeakers().length / 2)+1)" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+											</li>
+										</ul>
+									</div>
+									<div class="span6">
+									  	<ul class="nav nav-pills nav-stacked">
+											<li ng-repeat="speaker in speakerBar.mainSpeakers().splice((speakerBar.mainSpeakers().length / 2)+1,speakerBar.mainSpeakers().length)" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+											</li>
+										</ul>
+									</div>
+								  </div>
+								</div>
+								<!-- Secondary Speaker -->
+								<span class="bold">{{speakerBar.secondarySpeakersTitle}}</span>
+								<div class="container-fluid">
+								  <div class="row-fluid">
+									<div class="span6">
+										<ul class="nav nav-pills nav-stacked">
+											<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
+												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+											</li>
+										</ul>
+									</div>
+								  </div>
+								</div>	
 							</div>
 						</div>
 					</div>
-        		</div>
+				</div>	
 			</div>
 		</div>
-    
   </div>
 </div>
 
