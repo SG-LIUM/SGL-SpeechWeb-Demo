@@ -7,6 +7,65 @@
 
   <div class="container">
   
+		<!-- ROW 1 -->
+		<div class="row">
+			<!-- Title and information zone -->
+			<div class="span12">
+				<div class="bloc">
+					<div id="pagestart" class="hero-unit">
+					
+						<div class="navbar">
+						  <div class="navbar-inner">
+							<ul class="nav">
+							  <li class="divider-vertical"><a href="http://localhost:9000/demo/ash#pagestart">Transcription Comparator</a></li>
+							  <li class="active"><a href="#pagestart">Diarization Viewer</a></li>
+							</ul>
+						  </div>
+						</div>
+					
+						<h1>ASH Project <small>Web Demonstrator</small></h1>
+						<hr>
+						<p>Some Explanation...</p>
+						
+						<span class="title">Caption</span>
+						<br><br>
+						<p>We choose the {{transcriptionsData.displayedTranscriptions[0].id}} system as a reference for the comparison:<br>
+						<span class="{{transcriptionsData.substitutionStyle}}">hypothesisWord(>>referenceWord) </span> : the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
+						<span class="{{transcriptionsData.suppressionStyle}}">hypothesisWord </span> : the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be deleted to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
+						<span class="{{transcriptionsData.insertionStyle}}">referenceWord </span> : the referenceWord({{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted into the hypothesis({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).</p>
+						<br>
+						
+						<div id="progressBar">
+							<div class="progress progress-striped active">
+							  <div id="progressBarContent" class="bar"></div>
+							</div>
+							<p>Dtw Calculation ({{transcriptionsData.progressBarContent[0].style.width}})</p>
+						</div>
+						
+						<div id="calculationOverAlert" class="alert alert-success">
+						  <button type="button" class="close" data-dismiss="alert">&times;</button>
+						  <h4>Calculation Over!</h4>
+						  You can <button class=" btn btn-success  btn-large" ng-click="transcriptionsData.copyTranscription()">get the get the transcriptions json data</button> (with the comparison information added) .
+						</div>
+						<div id="outTranscriptionAlert" class="alert alert-error">
+						  <button type="button" class="close" data-dismiss="alert">&times;</button>
+						  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+						  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+  
+  
+  
+  
+  
+  
+  
+  
   <a href="http://localhost:9000/demo/ash"> {{transcriptionsData.displayedTranscriptions[0].id}} Transcription </a>
   <br/>
     <div class="row">
