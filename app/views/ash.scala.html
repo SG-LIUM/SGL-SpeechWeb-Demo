@@ -4,85 +4,173 @@
 
 <!-- Main Wrapper -->
 <div id="main-wrapper" ng-controller="TranscriptionCtrl">
-    <div class="container">
-    <a href="http://localhost:9000/demo/results"> Speaker Diarization </a>
-    <br/>
-    <p> <span class="message">{{transcriptionsData.calculationMessage}} </span> </p>
-    <p> <span class="message">{{transcriptionsData.message}} </span><span ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionsData.clickableMessage}}</span> </p>
-    <div class="row">
-      <div class="6u skel-cell-mainContent">
 
-        <!-- Content -->   
-        
-        <article class="last" id="content0">
+	<div class="container">
 
-            <h2>{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</h2>
+		<!-- ROW 1 -->
+		<div class="row">
+			<!-- Title and information zone -->
+			<div class="span12">
+				<div class="bloc">
+					<div class="hero-unit">
+						<h1>ASH Project <small>Web Demonstrator</small></h1>
+						<hr>
+						<p>Some Explanation...</p>
+						
+						<span class="title">Caption</span>
+						<br><br>
+						<p>We choose the {{transcriptionsData.displayedTranscriptions[0].id}} system as a reference for the comparison:<br>
+						<span class="{{transcriptionsData.substitutionStyle}}">hypothesisWord(>>referenceWord) </span> : the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
+						<span class="{{transcriptionsData.suppressionStyle}}">hypothesisWord </span> : the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be deleted to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
+						<span class="{{transcriptionsData.insertionStyle}}">referenceWord </span> : the referenceWord({{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted into the hypothesis({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).</p>
+						<br>
+						
+						<div id="progressBar">
+							<div class="progress progress-striped active">
+							  <div id="progressBarContent" class="bar"></div>
+							</div>
+							<p>Dtw Calculation...</p>
+						</div>
+						
+						<div id="calculationOverAlert" class="alert alert-success">
+						  <button type="button" class="close" data-dismiss="alert">&times;</button>
+						  <h4>Calculation Over!</h4>
+						  You can <button class=" btn btn-success  btn-large" ng-click="transcriptionsData.copyTranscription()">get the get the transcriptions json data</button> (with the comparison information added) .
+						</div>
+						<div id="outTranscriptionAlert" class="alert alert-error">
+						  <button type="button" class="close" data-dismiss="alert">&times;</button>
+						  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+						  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+						</div>
 
-			<p style="text-align: justify; text-justify: newspaper">
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}" style="cursor: pointer;">    {{jsonWord.word}}    </span>
-            </p>
+					</div>
+				</div>
 
-        </article>
-    
-      </div>
-      <div class="6u skel-cell-mainContent">
+			</div>
+		</div>
+	
+		
+	
+		<!-- ROW 2 -->
+		<div class="row">
+			<!-- Reference Transcription -->
+			<div class="span12">
+				<div class="bloc">
+					<div class="accordion-group" style="background-color: #FFFFEB;">
+						<div class="accordion-heading"> <a class="accordion-toggle" href="#item1" data-toggle="collapse"> <span class="title">{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</span> </a> </div>
+  						<div id="item1" class="collapse in">
+  							<div class="accordion-inner">
+								<article id="content0">
+									<p>
+										<span class="cickable">
+											<span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
+										</span>
+									</p>
+								</article>
+							</div>
+						</div>
+					</div>
+        		</div>
+			</div>
+		</div>
 
-        <!-- Content -->   
-        
-        <article class="last" id="content3">
-
-            <h2>Comparison with {{transcriptionsData.displayedTranscriptions[3].id}}</h2>
-
-			<p style="text-align: justify; text-justify: newspaper">
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[3].transcription" ngModel="transcriptionsData.displayedTranscriptions[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}" style="cursor: pointer;">    {{jsonWord.word}}    </span>
-            </p>
-
-        </article>
-        
-      </div>
-      
-    </div>
-    <div class="row">
-        <div class="3u" id="content1">
-            <h3>{{transcriptionsData.displayedTranscriptions[1].id}} Transcription (auxiliary system of {{transcriptionsData.displayedTranscriptions[0].id}})</h3>
-            
-            <p>
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[1].transcription" ngModel="transcriptionsData.displayedTranscriptions[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}" style="cursor: pointer;">    {{jsonWord.word}}    </span>
-            </p>
-            
-        </div>
-        <div class="3u" id="content2">
-            <h3>{{transcriptionsData.displayedTranscriptions[2].id}} Transcription (auxiliary system of {{transcriptionsData.displayedTranscriptions[0].id}})</h3>
-            
-            <p>
-              <span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[2].transcription" ngModel="transcriptionsData.displayedTranscriptions[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}" style="cursor: pointer;">    {{jsonWord.word}}    </span>
-            </p>
-            
-        </div>
-        <div class="3u">
-          <h3>Your file</h3>
-          <audio width="600" id="mediafile" controls preload>
-            <source type="audio/wav" src="http://localhost/tmp/BFMTV_BFMStory_2011-03-17_175900.wav" />
-          </audio>
-        </div>
-
-    </div>
-    <p> <span class="{{transcriptionsData.buttonClass}}" ng-click="transcriptionsData.copyTranscription()">{{transcriptionsData.buttonMessage}}<span> </p>
-    
-    <div class="row">
-      <div class="6u skel-cell-mainContent">
-        <article class="last">
-            
-            <h3>Caption</h3>
-            <p>We choose the {{transcriptionsData.displayedTranscriptions[0].id}} system as a reference for the comparison.</p>
-            <p><span class="{{transcriptionsData.substitutionStyle}}">hypothesisWord(>>referenceWord) </span>: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
-            <span class="{{transcriptionsData.suppressionStyle}}">hypothesisWord </span>: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be deleted to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).<br>
-            <span class="{{transcriptionsData.insertionStyle}}">referenceWord </span>: the referenceWord({{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted into the hypothesis({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).</p>
+		<!-- ROW 3 -->
+		<div class="row">
+			<!-- Auxiliary Transcription n°1 -->
+			<div class="span6">
+				<div class="bloc">
+					<div class="accordion-group" style="background-color: #FFFFEB;">
+						<div class="accordion-heading"> <a class="accordion-toggle" href="#item2" data-toggle="collapse"> <span class="title">{{transcriptionsData.displayedTranscriptions[1].id}} Transcription ({{transcriptionsData.displayedTranscriptions[0].id}} auxiliary system)</span></a> </div>
+						<div id="item2" class="collapse in">
+							<div class="accordion-inner">
+								<article id="content1">
+									<p>
+										<span class="cickable">
+											<span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[1].transcription" ngModel="transcriptionsData.displayedTranscriptions[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
+										</span>
+									</p>
+								</article>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			
-        </article>
-
-      </div>
-    </div>
+			<!-- Auxiliary Transcription n°2 -->
+			<div class="span6">
+				<div class="bloc">
+					<div class="accordion-group" style="background-color: #FFFFEB;">
+						<div class="accordion-heading"> <a class="accordion-toggle" href="#item3" data-toggle="collapse"> <span class="title">{{transcriptionsData.displayedTranscriptions[2].id}} Transcription ({{transcriptionsData.displayedTranscriptions[0].id}} auxiliary system)</span> </a> </div>
+						<div id="item3" class="collapse in">
+							<div class="accordion-inner">
+								<article id="content2">
+									<p>
+										<span class="cickable">
+											<span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[2].transcription" ngModel="transcriptionsData.displayedTranscriptions[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
+										</span>
+									</p>
+								</article>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- ROW 4 -->
+		<div class="row">
+			<!-- Transcription for comparison -->
+			<div class="span12">
+				<div class="bloc">
+					<div class="accordion-group" style="background-color: #FFFFEB;">
+						<div class="accordion-heading"> <a class="accordion-toggle" href="#item4" data-toggle="collapse"> <span class="title">Comparison with {{transcriptionsData.displayedTranscriptions[3].id}}</span> </a> </div>
+						<div id="item4" class="collapse in">
+							<div class="accordion-inner">
+								<article id="content3">
+									<p>
+										<span class="cickable">
+											<span ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[3].transcription" ngModel="transcriptionsData.displayedTranscriptions[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
+										</span>
+									</p>
+								</article>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- ROW 5 -->
+		<div class="row">
+			<!-- Media -->
+			<div class="span5">
+				<div class="bloc">
+					<div class="accordion-group" style="background-color: #FFFFEB;">
+						<div class="accordion-heading"> <a class="accordion-toggle" href="#item5" data-toggle="collapse"> <span class="title">Your File</span> </a> </div>
+  						<div id="item5" class="collapse in">
+  							<div class="accordion-inner">
+								<audio id="mediafile" controls preload>
+									<source type="audio/wav" src="http://localhost/tmp/BFMTV_BFMStory_2011-03-17_175900.wav" />
+								</audio>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Speaker Bar & Caption -->
+			<div class="span7">
+				<div class="bloc">
+					<div class="accordion-group" style="background-color: #FFFFEB;">
+						<div class="accordion-heading"> <a class="accordion-toggle" href="#item6" data-toggle="collapse"> <span class="title">SpeakerBar</span> </a> </div>
+  						<div id="item6" class="collapse in">
+  							<div class="accordion-inner">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
     
   </div>
 </div>
@@ -90,5 +178,6 @@
 <script>
 // jQuery method
 $('#mediafile').mediaelementplayer();
+$("#tooltip").tooltip();
 </script>
 }

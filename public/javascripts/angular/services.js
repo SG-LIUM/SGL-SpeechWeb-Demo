@@ -202,14 +202,15 @@ angular.module('transcriptionServices', [])
             for(var i=0;i<this.displayedTranscriptions.length;i++){
               this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep,this.fullTranscription[i].system);
             }
-            this.calculationMessage="";
+            
             this.message="";
             this.clickableMessage="";
-            this.buttonClass="enabledButton";
-            this.buttonMessage="Click here to get the transcriptions with comparison detail (json)";
-            this.insertionStyle="label label-success";
+            this.progressBarContent=$('#progressBarContent');
+        	this.insertionStyle="label label-success";
             this.suppressionStyle="label label-important";
             this.substitutionStyle="label label-info";
+            
+            
             
             //Methods:
             //Update the content of the displayed transcription n°transcriptionNum.
@@ -248,14 +249,17 @@ angular.module('transcriptionServices', [])
                 if(currentTime>this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start+0.5){
                   this.message="ASH transcription is finished. It start at ";
                   this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
+                  $('#outTranscriptionAlert').show();
                 }
                 else if(currentTime<this.fullTranscription[0].content[0].start){
                   this.message="ASH transcription has not started yet. It start at ";
                   this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
+                  $('#outTranscriptionAlert').show();
                 }
                 else{
                   this.message="";
                   this.clickableMessage="";
+                  $('#outTranscriptionAlert').hide();
                 } 
               } 
             }
@@ -292,9 +296,6 @@ angular.module('transcriptionServices', [])
             }
             //Calculates the DTW between the references and the hypothesis and put the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
             this.updateTranscriptionsWithDtw=function(segments,refresh){
-              this.buttonClass="disabledButton";
-              this.buttonMessage="";
-              this.calculationMessage="-> Still calculating...";
               //This array will be used for further checks.
               var formerIndexEnd=new Array(this.fullTranscription.length);
               for(var i=0;i<formerIndexEnd.length;i++){
@@ -306,6 +307,7 @@ angular.module('transcriptionServices', [])
                 wordsToAddInTranscriptions[i]=new Array();
               }
               
+              $('#progressBar').show();
               var j=0;
               var limit=segments.length-1;
               var busy=false;
@@ -313,6 +315,8 @@ angular.module('transcriptionServices', [])
               //We use this methods to avoid the script to freeze the browser.
               var processor = setInterval(function(){
                 if(!busy){
+                  var calculationPercent=(j/limit)*100;
+                  self.progressBarContent.css("width", calculationPercent + "%");
                   var indexStartRef = BinarySearch.search(self.fullTranscription[0].content, segments[j].start, function(item) { return item.start; });
                   var indexEndRef   = BinarySearch.search(self.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });
                   //Check if the sentence is outside the reference.
@@ -412,14 +416,12 @@ angular.module('transcriptionServices', [])
                     clearInterval(processor);   
                     //We add all the insertion at once because of the shift it causes
                     self.addWords(wordsToAddInTranscriptions);
-                    self.calculationMessage="";
-                    self.buttonClass="enabledButton";
-                    self.buttonMessage="Click here to get the transcriptions with comparison detail (json)";
+                    $('#calculationOverAlert').show();
                     //last refresh
                     var timeToUpdate=$('#mediafile')["0"].currentTime; //currentTime
                     Video.startVideo(self.displayedTranscriptions[0].transcription[self.displayedTranscriptions[0].currentHighlightedIndex].start,self); //reset the video to include the insertion
                  	Video.moveVideoTo(timeToUpdate); //place the video at the ancien place 
-                 	
+                 	$('#progressBar').hide();
                   }
                   busy=false; 
                 }
@@ -893,12 +895,16 @@ angular.module('controllerServices', []).
                 	scope.$apply();
                 }
                 
+                $('#calculationOverAlert').hide();
+                $('#outTranscriptionAlert').hide();
+                $('#progressBar').hide();
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'enhanced-transcription.json'}, 
+                File.get({fileId: 'enehanced-transcription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	//We make sure that the nextWordToDisplay value is correct
                   	scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+                  	$('#calculationOverAlert').show();
                     },
                     function(){
                       Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {

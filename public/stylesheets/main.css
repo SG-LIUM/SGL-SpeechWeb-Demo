@@ -1,10 +1,21 @@
+.bloc{
+	padding:15px 10px;
+}
+.bold{
+	font-weight:bold;
+}
+.cickable{
+	cursor: pointer;
+}
+.title{
+	font-weight:bold;
+	font-size:145%;
+}
+
 /* styles for displayed words */
 .current {
   color: orange;
   text-decoration: underline;
-}
-.clickable {
-  cursor: pointer;
 }
 .none {
   
@@ -14,34 +25,6 @@
   cursor: pointer;
 }
 
-/* styles for user messages */
-.message {
-  color: red;
-  font-weight:bold;
-  font-size:150%;
-}
-.clickableMessage {
-  color: red;
-  font-weight:bold;
-  font-size:150%;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.bold{
-	font-weight:bold;
-}
-.enabledButton{
-	padding:5px;
-	font-weight:bold;
-	border-width:5px;
-	border-style:inset;
-	border-color:grey;
-	background:#E0E0E0 ;
-	cursor: pointer;
-}
-.disabledButton{
-
-}
 
 /* styles for speaker diarization bar*/
 .canvas {
