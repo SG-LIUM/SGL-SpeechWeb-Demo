@@ -557,11 +557,11 @@ angular.module('transcriptionServices', [])
             this.transcription=transcription;
             this.timeStart=this.transcription.content[0].start;
             this.timeEnd=this.transcription.content[this.transcription.content.length-1].start;
-            this.canvas = $('#canvas'+transcriptionNum)["0"].getContext('2d');
+            this.context = $('#canvas'+transcriptionNum)["0"].getContext('2d');
             this.timer  = $('#progressTime'+transcriptionNum)["0"];
-            this.canvas.lineWidth  = "5";
-            this.canvasWidth=$('#canvas'+transcriptionNum)["0"].width;
-            this.canvasHeight=$('#canvas'+transcriptionNum)["0"].height;
+            this.context.lineWidth  = "5";
+            this.contextWidth=$('#canvas'+transcriptionNum)["0"].width;
+            this.contextHeight=$('#canvas'+transcriptionNum)["0"].height;
             this.duration=this.timeEnd-this.timeStart;
             this.colors=colors;
             this.speakers = new Array();
@@ -571,9 +571,10 @@ angular.module('transcriptionServices', [])
             this.secondarySpeakersTitle="";
             this.mainSpeakersTitle="";
 			// Create gradient
-			this.grd=this.canvas.createLinearGradient(this.canvasWidth/2,0,this.canvasWidth/2,this.canvasHeight*1.8);
-			this.canvas.fillStyle=this.grd;
+			this.grd=this.context.createLinearGradient(this.contextWidth/2,0,this.contextWidth/2,this.contextHeight*1.8);
+			this.context.fillStyle=this.grd;
 			this.grd.addColorStop(1,"grey");
+			this.contextCopy=null;
                
             //Methods:
             //Fills the speaker array with SpeakerData objects.
@@ -627,7 +628,6 @@ angular.module('transcriptionServices', [])
 			  else{
 			  	mainSpeakers=this.speakers;
 			  }
-			  console.log(mainSpeakers);
 			  
 			  this.mainSpeakersCol1 = mainSpeakers.slice(0,Math.ceil(mainSpeakers.length / 2));
 			  this.mainSpeakersCol2 = mainSpeakers.slice(Math.ceil(mainSpeakers.length / 2),mainSpeakers.length);
@@ -661,7 +661,7 @@ angular.module('transcriptionServices', [])
             this.drawSegment=function(start,width){
               var fractionStart=(start-this.timeStart)/this.duration;
               var fractionWidth=width/this.duration;
-              this.canvas.fillRect(this.canvasWidth*fractionStart, 0, this.canvasWidth*fractionWidth, this.canvasHeight);
+              this.context.fillRect(this.contextWidth*fractionStart, 0, this.contextWidth*fractionWidth, this.contextHeight);
             }
             //Draws all the speakers in the bar.
             this.drawSpeakers=function() {
@@ -684,7 +684,8 @@ angular.module('transcriptionServices', [])
                 this.timer.textContent = Time.format(time)+'/'+Time.format(this.duration);
             }
             //We have to draw all the speakers again because if we draw the transparent progressBar over the former one, it will become opaque. It is also useful if the currentTime updated is inferior to the forme time updated.
-            this.drawSpeakers();
+            this.context.clearRect(0,0,this.contextWidth,this.contextHeigth);
+			this.context.putImageData(this.contextCopy,0,0);
             this.setColor("rgba(161, 161, 161, 0.5)");
             this.drawSegment(this.timeStart,currentTime-this.timeStart);
             for(var i=0;i<this.speakers.length;i++){
@@ -704,6 +705,11 @@ angular.module('transcriptionServices', [])
               var percent  = Math.ceil((x / wrapperWidth) * 100);
               
               $('#mediafile')["0"].player.setCurrentTime(((this.duration * percent) / 100)+this.timeStart);
+            }
+            this.initialize=function(){
+            	this.updateSpeakers();
+            	this.drawSpeakers();
+            	this.contextCopy = this.context.getImageData(0,0,this.contextWidth,this.contextHeight);
             }
         }
       }
@@ -960,8 +966,7 @@ angular.module('controllerServices', []).
             		scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
             		scope.transcriptionsData.adjustTranscriptions();
             		scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[transcriptionNum],transcriptionNum,colors);
-            		scope.speakerBar.updateSpeakers();
-            		scope.speakerBar.drawSpeakers();
+            		scope.speakerBar.initialize();
               		scope.startVideo(scope.transcriptionsData.fullTranscription[transcriptionNum].content[transcriptionNum].start);
             	});
 
