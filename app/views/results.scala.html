@@ -99,19 +99,19 @@
 								</canvas>
 								<p><span id="progressTime0">--:--</span></p>	
 								<!-- Main Speaker -->
-								<span class="bold"> Principal speakers [{{speakerBar.mainSpeakers().length}}]</span>
+								<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
 								<div class="container-fluid">
 								  <div class="row-fluid">
 									<div class="span6">
 									  	<ul class="nav nav-pills nav-stacked">
-											<li ng-repeat="speaker in speakerBar.mainSpeakers().splice(0,(speakerBar.mainSpeakers().length / 2)+1)" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+											<li ng-repeat="speaker in speakerBar.mainSpeakersCol1" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
 												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 											</li>
 										</ul>
 									</div>
 									<div class="span6">
 									  	<ul class="nav nav-pills nav-stacked">
-											<li ng-repeat="speaker in speakerBar.mainSpeakers().splice((speakerBar.mainSpeakers().length / 2)+1,speakerBar.mainSpeakers().length)" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+											<li ng-repeat="speaker in speakerBar.mainSpeakersCol2" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
 												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 											</li>
 										</ul>
@@ -124,7 +124,7 @@
 								  <div class="row-fluid">
 									<div class="span6">
 										<ul class="nav nav-pills nav-stacked">
-											<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
+											<li ng-repeat="speaker in speakerBar.secondarySpeakers" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
 												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech=<span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 											</li>
 										</ul>

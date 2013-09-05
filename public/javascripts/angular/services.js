@@ -565,46 +565,17 @@ angular.module('transcriptionServices', [])
             this.duration=this.timeEnd-this.timeStart;
             this.colors=colors;
             this.speakers = new Array();
+            this.mainSpeakersCol1 = new Array();
+            this.mainSpeakersCol2 = new Array();
+            this.secondarySpeakers = new Array();
             this.secondarySpeakersTitle="";
+            this.mainSpeakersTitle="";
 			// Create gradient
 			this.grd=this.canvas.createLinearGradient(this.canvasWidth/2,0,this.canvasWidth/2,this.canvasHeight*1.8);
 			this.canvas.fillStyle=this.grd;
 			this.grd.addColorStop(1,"grey");
                
             //Methods:
-            //Return a sub-array of the principal speakers (those who have their own color).
-            this.mainSpeakers=function(){
-            	if(this.speakers.length>this.colors.length){
-            		var indLim;
-            		for(var i=0;i<this.speakers.length;i++){
-            			if(this.speakers[i].color==this.colors[this.colors.length-1]){
-            				indLim=i;
-            				break;
-            			}
-            		}
-            		return this.speakers.slice(0,indLim);
-            	}
-            	else{
-            		return this.speakers;
-            	}
-            }
-            //Return a sub-array of the secondary speakers (those who share the same color).
-            this.secondarySpeakers=function(){
-            	if(this.speakers.length>this.colors.length){
-            		var indLim;
-            		for(var i=0;i<this.speakers.length;i++){
-            			if(this.speakers[i].color==this.colors[this.colors.length-1]){
-            				indLim=i;
-            				break;
-            			}
-            		}
-            		return this.speakers.slice(indLim,this.speakers.length);
-            		
-            	}
-            	else{
-            		return [];
-            	}
-            }
             //Fills the speaker array with SpeakerData objects.
             this.updateSpeakers=function(){
               var hashSpeakers=new Object();
@@ -642,8 +613,42 @@ angular.module('transcriptionServices', [])
                 }
               }
               
+              var mainSpeakers;
               if(this.speakers.length>this.colors.length){
-                this.secondarySpeakersTitle=" Secondary speakers (who talk the less) ["+this.secondarySpeakers().length+"]";
+			  	var indLim=0;
+				for(var i=0;i<this.speakers.length;i++){
+					if(this.speakers[i].color==this.colors[this.colors.length-1]){
+						indLim=i;
+						break;
+					}
+				}
+				mainSpeakers=this.speakers.slice(0,indLim);
+			  }
+			  else{
+			  	mainSpeakers=this.speakers;
+			  }
+			  console.log(mainSpeakers);
+			  
+			  this.mainSpeakersCol1 = mainSpeakers.slice(0,Math.ceil(mainSpeakers.length / 2));
+			  this.mainSpeakersCol2 = mainSpeakers.slice(Math.ceil(mainSpeakers.length / 2),mainSpeakers.length);
+			  
+			  if(this.speakers.length>this.colors.length){
+              	indLim=0;
+				for(var i=0;i<this.speakers.length;i++){
+					if(this.speakers[i].color==this.colors[this.colors.length-1]){
+						indLim=i;
+						break;
+					}
+				}
+				this.secondarySpeakers=this.speakers.slice(indLim,this.speakers.length);
+              }
+			  else{
+				this.secondarySpeakers=[];
+			  }
+            	
+              this.mainSpeakersTitle=" Principal speakers ["+mainSpeakers.length+"]";
+              if(this.speakers.length>this.colors.length){
+                this.secondarySpeakersTitle=" Secondary speakers (who talk the less) ["+this.secondarySpeakers.length+"]";
               }
               
             }
