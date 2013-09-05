@@ -497,7 +497,7 @@ angular.module('transcriptionServices', [])
       }
     })
     //This class contains information concerning the speaker bar for the Diarization. the constructor needs the complete transcription that the bar will describe and the id of this transcription to identify the bar elements in the page.
-    .factory('SpeakerBar', function(Time,Position){
+    .factory('SpeakerBar', function(Time,Position,BinarySearch){
       return {
         instance : function(transcription,transcriptionNum,colors){
             //This sub-class regroups the information of a single speaker.
@@ -539,16 +539,6 @@ angular.module('transcriptionServices', [])
               this.moveVideoToSpeechStart=function(){
                 var firstSpeechStart=this.speakingPeriods[0][0];
                 $('#mediafile')["0"].player.setCurrentTime(firstSpeechStart);
-              }
-              //Set the status to 'speaking' or 'notSpeaking'.
-              this.updateSpeakingStatus=function(time){
-                for(var i=0;i<this.speakingPeriods.length;i++){
-                if(time>=this.speakingPeriods[i][0] && time<this.speakingPeriods[i][1]){
-                  this.speakingStatus="active";
-                  return null;
-                }
-              }
-              this.speakingStatus="none";
               }
             }
 
@@ -682,15 +672,21 @@ angular.module('transcriptionServices', [])
               }
               else{
                 this.timer.textContent = Time.format(time)+'/'+Time.format(this.duration);
-            }
-            //We have to draw all the speakers again because if we draw the transparent progressBar over the former one, it will become opaque. It is also useful if the currentTime updated is inferior to the forme time updated.
-            this.context.clearRect(0,0,this.contextWidth,this.contextHeigth);
-			this.context.putImageData(this.contextCopy,0,0);
-            this.setColor("rgba(161, 161, 161, 0.5)");
-            this.drawSegment(this.timeStart,currentTime-this.timeStart);
-            for(var i=0;i<this.speakers.length;i++){
-              this.speakers[i].updateSpeakingStatus(currentTime);
-            }
+              }
+              //We have to draw all the speakers again because if we draw the transparent progressBar over the former one, it will become opaque. It is also useful if the currentTime updated is inferior to the forme time updated.
+              this.context.putImageData(this.contextCopy,0,0);
+              this.setColor("rgba(161, 161, 161, 0.5)");
+              this.drawSegment(this.timeStart,currentTime-this.timeStart);
+              var currentSpeakerIndex=BinarySearch.search(this.transcription.content, currentTime, function(item) { return item.start; });
+              var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
+              for(var i=0;i<this.speakers.length;i++){
+              	if(this.speakers[i].spkId==currentSpeakerId){
+              		this.speakers[i].speakingStatus="active";
+              	}
+              	else{
+              		this.speakers[i].speakingStatus="none";
+              	}
+              }
             }
             //Update the video in terms of the spot we clicked on the bar
             this.clickUpdate=function(event) {
