@@ -549,10 +549,9 @@ angular.module('transcriptionServices', [])
             this.contextHeight=$('#canvas'+transcriptionNum)["0"].height;
             this.duration=this.timeEnd-this.timeStart;
             this.colors=colors;
-            this.speakers = new Array();
-            this.mainSpeakersCol1 = new Array();
-            this.mainSpeakersCol2 = new Array();
-            this.secondarySpeakers = new Array();
+            this.speakers=new Array();
+            this.mainSpeakers;
+            this.secondarySpeakers;
             this.secondarySpeakersTitle="";
             this.mainSpeakersTitle="";
 			// Create gradient
@@ -571,19 +570,21 @@ angular.module('transcriptionServices', [])
               //NOTE: On ne dispose pas de l'information de durée du dernier mot.
               //We don't treat the last word because we need the start of the following word to deduce the word duration.
               for(var i=0;i<wordObjects.length-1;i++){
-                if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
-                  hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk,defaultColor);
-                  hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
-                }
-                else{
-                  //We merge the consecutive speaking periods so the bar is not so that the bar is not hatched.
-                  if(hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]==wordObjects[i].start){
-                    hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]=wordObjects[i+1].start;
-                  }
-                  else{
-                    hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
-                  }
-                }
+              	if(wordObjects[i].spk!=null){
+					if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
+					  hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk,defaultColor);
+					  hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
+					}
+					else{
+					  //We merge the consecutive speaking periods so the bar is not so that the bar is not hatched.
+					  if(hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]==wordObjects[i].start){
+						hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]=wordObjects[i+1].start;
+					  }
+					  else{
+						hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
+					  }
+					}
+				}
               }
               var s;
               for(s in hashSpeakers){
@@ -600,7 +601,6 @@ angular.module('transcriptionServices', [])
                 }
               }
               
-              var mainSpeakers;
               if(this.speakers.length>this.colors.length){
 			  	var indLim=0;
 				for(var i=0;i<this.speakers.length;i++){
@@ -609,14 +609,11 @@ angular.module('transcriptionServices', [])
 						break;
 					}
 				}
-				mainSpeakers=this.speakers.slice(0,indLim);
+				this.mainSpeakers=this.speakers.slice(0,indLim);
 			  }
 			  else{
-			  	mainSpeakers=this.speakers;
+			  	this.mainSpeakers=this.speakers;
 			  }
-			  
-			  this.mainSpeakersCol1 = mainSpeakers.slice(0,Math.ceil(mainSpeakers.length / 2));
-			  this.mainSpeakersCol2 = mainSpeakers.slice(Math.ceil(mainSpeakers.length / 2),mainSpeakers.length);
 			  
 			  if(this.speakers.length>this.colors.length){
               	indLim=0;
@@ -632,7 +629,7 @@ angular.module('transcriptionServices', [])
 				this.secondarySpeakers=[];
 			  }
             	
-              this.mainSpeakersTitle=" Principal speakers ["+mainSpeakers.length+"]";
+              this.mainSpeakersTitle=" Principal speakers ["+this.mainSpeakers.length+"]";
               if(this.speakers.length>this.colors.length){
                 this.secondarySpeakersTitle=" Secondary speakers (who talk the less) ["+this.secondarySpeakers.length+"]";
               }

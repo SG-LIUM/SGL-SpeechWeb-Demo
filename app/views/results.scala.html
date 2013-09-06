@@ -14,12 +14,12 @@
 				<div class="bloc">
 					<div class="tabbable"> 
 						<ul class="nav nav-tabs">
-							<li class="active"><a style="text-decoration:none;" href="#home" data-toggle="tab"><i class="icon-home"></i> Home</a></li>
+							<li class="active"><a style="text-decoration:none;" href="#main" data-toggle="tab"><i class="icon-home"></i> Transcription Demonstrator</a></li>
 							<li><a style="text-decoration:none;" href="#info" data-toggle="tab"><i class="icon-info-sign"></i> Information</a></li>
 							<li><a style="text-decoration:none;" href="#about" data-toggle="tab"><i class="icon-question-sign"></i> About</a></li>
 						</ul>
 						<div class="tab-content">
-							<div class="tab-pane active" id="home">
+							<div class="tab-pane active" id="main">
 									<div class="container-fluid">
 										<!-- ROW 1 -->
 										<div class="row-fluid">
@@ -27,17 +27,14 @@
 											<div class="span12">
 												<div class="bloc">
 				
-													<div class="hero-unit">
-				
-														<h2>Transcription Demonstrator <br><small>With Diarization Viewer</small></h2>
-														
+													
 														<div id="outTranscriptionAlert" class="alert alert-error">
 														  <button type="button" class="close" data-dismiss="alert">&times;</button>
 														  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
 														  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
 														</div>
 
-													</div>
+												
 												</div>
 
 											</div>
@@ -109,14 +106,15 @@
 																  <div class="row-fluid">
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
-																			<li ng-repeat="speaker in speakerBar.mainSpeakersCol1" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" ngModel="speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
 																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
+															
 																	</div>
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
-																			<li ng-repeat="speaker in speakerBar.mainSpeakersCol2" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" ngModel="speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" class="{{speaker.speakingStatus}}" >
 																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
@@ -129,8 +127,15 @@
 																  <div class="row-fluid">
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
-																			<li ng-repeat="speaker in speakerBar.secondarySpeakers" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
+																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" ngModel="speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
 																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																			</li>
+																		</ul>
+																	</div>
+																	<div class="span6">
+																		<ul class="nav nav-pills nav-stacked">
+																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" ngModel="speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" class="{{speaker.speakingStatus}}" >
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
@@ -186,7 +191,7 @@
 													<h2>About <br></h2>
 													<hr>
 													<p>View this project on <a href="https://github.com/SG-LIUM/SGL-SpeechWeb-Demo">GitHub</a>. <p>
-													<p>Web demonstrator designed by <a href="https://github.com/eSim">Edwin Simonnet</a>, <a href="http://sciences.univ-lemans.fr/Licence-Sciences-Pour-l-Ingenieur">Licence Science Pour l'Ingénieur</a>, <a href="http://www.univ-lemans.fr">Université du Maine</a>, Le Mans, France<p>
+													<p>Web demonstrator designed by <a href="https://github.com/eSim">Edwin Simonnet</a>, <a href="http://sciences.univ-lemans.fr/Licence-Sciences-Pour-l-Ingenieur">Licence Science Pour l'Ingénieur</a>, <a href="http://www.univ-lemans.fr">Université du Maine</a>, Le Mans, France.<p>
 
 												</div>
 											</div>
