@@ -83,16 +83,12 @@
 			</div>
 		</div>
   		
-  		<canvas width="1100" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
-		  <p>updates are necessary</p>
-		</canvas>
 		<div id="popover" class="popover">
 			<div class="bloc">
 			<h4>Speaker Bar Info</h4>
 			<span>{{speakerBar.popoverText}}</span>
 			</div class="bloc">
 		</div>
-		<p><span id="progressTime0">--:--</span></p>	
 		
 		<!-- ROW 3 -->
 		<div class="row">
@@ -103,7 +99,11 @@
 						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <i id="chevron2" class="icon-chevron-up"></i> <span class="title">Speaker Bar</span> </a> </div>
 						<div id="item3" class="collapse in">
 							<div class="accordion-inner">
-								
+								<!-- SpeakerBar -->
+								<canvas width="1100" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
+								  <p>updates are necessary</p>
+								</canvas>
+								<p><span id="progressTime0">--:--</span></p>	
 								<!-- Main Speaker -->
 								<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
 								<div class="container-fluid">
