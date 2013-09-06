@@ -565,6 +565,7 @@ angular.module('transcriptionServices', [])
 			this.context.fillStyle=this.grd;
 			this.grd.addColorStop(1,"grey");
 			this.contextCopy=null;
+			this.popoverText=""
                
             //Methods:
             //Fills the speaker array with SpeakerData objects.
@@ -707,6 +708,32 @@ angular.module('transcriptionServices', [])
             	this.drawSpeakers();
             	this.contextCopy = this.context.getImageData(0,0,this.contextWidth,this.contextHeight);
             }
+            
+            this.openPopover=function (event) {
+              var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
+              var target = Position.getMousePosition(event); 
+              var x = target.x - parent.x;
+              var y = target.y - parent.y;
+              var wrapperWidth = $('#canvas'+this.transcriptionNum)["0"].offsetWidth;
+              var percent  = Math.ceil((x / wrapperWidth) * 100);
+              var time=((this.duration * percent) / 100);
+              var timeString=Time.format(time);
+              
+              var currentSpeakerIndex=BinarySearch.search(this.transcription.content, time+this.timeStart, function(item) { return item.start; });
+              var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
+              
+              this.popoverText="speaker: "+currentSpeakerId+", time: "+timeString;
+              
+			  var left = event.pageX;
+			  var top = event.pageY;
+			  var theHeight = $('#popover').height();
+		      $('#popover').show();
+			  $('#popover').css('left', (left+10) + 'px');
+		      $('#popover').css('top', (top-(theHeight/2)-10) + 'px');
+			}
+			this.closePopover=function () {
+				$('#popover').hide();
+			}
         }
       }
     });
