@@ -8,7 +8,7 @@ function UploadCtrl($scope) {
 }
 
 function TranscriptionCtrl($scope, $log, $http, Controller) {
-   Controller.initializeTranscriptionComparisonCtrl($scope,50);
+   Controller.initializeTranscriptionComparisonCtrl($scope,50,['yellow','cyan','pink','GreenYellow','orange','#FF6699','blue','red','#33CCFF','green','black','white','purple']);
 }
  
 function SpeakerCtrl($scope, $log, $http, Controller) {

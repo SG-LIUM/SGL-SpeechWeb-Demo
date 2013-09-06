@@ -918,7 +918,7 @@ angular.module('positionServices', []).
 angular.module('controllerServices', []).
 	factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
         return {
-        	initializeTranscriptionComparisonCtrl : function(scope,globalStep){
+        	initializeTranscriptionComparisonCtrl : function(scope,globalStep,colors){
                 scope.startVideo=function(timeStart){
                 	Video.startVideo(timeStart,scope.transcriptionsData);
                 }
@@ -926,6 +926,10 @@ angular.module('controllerServices', []).
                 scope.moveVideo=function(eventObject){
                 	Video.moveVideo(eventObject);
                 }
+                
+                scope.clickUpdate=function(event) {
+              		scope.speakerBar.clickUpdate(event);
+            	}
                 
                 var refresh=function(){
                 	scope.$apply();
@@ -938,14 +942,21 @@ angular.module('controllerServices', []).
                 File.get({fileId: 'enehanced-transcription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
+                  	
+                  	scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
+            		scope.speakerBar.initialize();
+                  	
                   	//We make sure that the nextWordToDisplay value is correct
                   	scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
-                  	$('#calculationOverAlert').show();
                     },
                     function(){
                       Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
                 	      scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                 	      scope.transcriptionsData.adjustTranscriptions();
+                	      
+                	      scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
+            			  scope.speakerBar.initialize();
+                	      
                         File.get({fileId: 'sentence_bounds.seg'}, 
                           function(data) {
                   	      //We get the bounds of the sentences we will use for the DTWs
@@ -963,6 +974,7 @@ angular.module('controllerServices', []).
                 $("#mediafile").on("timeupdate", function (e) {
                   scope.$apply( function() {
                     scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
+                    scope.speakerBar.timeUpdate(e.target.currentTime);
                   });
                 });
 
