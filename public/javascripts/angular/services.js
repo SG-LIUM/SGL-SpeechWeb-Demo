@@ -671,8 +671,7 @@ angular.module('transcriptionServices', [])
               this.setColor("rgba(161, 161, 161, 0.5)");
               this.drawSegment(this.timeStart,currentTime-this.timeStart);
               var currentSpeakerIndex=BinarySearch.search(this.transcription.content, currentTime, function(item) { return item.start; });
-              
-              if(currentSpeakerIndex>0){
+              if(currentSpeakerIndex>=0){
               	var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
               	for(var i=0;i<this.speakers.length;i++){
 					if(this.speakers[i].spkId==currentSpeakerId){
