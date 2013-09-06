@@ -347,7 +347,7 @@ angular.module('transcriptionServices', [])
                       if(insertionIndex>0){
                         //If the resulted starts in the hypothesis are not ordered
                       	if(!(start>=self.fullTranscription[i].content[insertionIndex-1].start && start<=self.fullTranscription[i].content[insertionIndex].start)){
-                      		start=self.fullTranscription[i].content[insertionIndex].start;
+                      		start=self.fullTranscription[i].content[insertionIndex-1].start;
                       	}
                       }
                       else{
@@ -908,7 +908,7 @@ angular.module('controllerServices', []).
                 $('#outTranscriptionAlert').hide();
                 $('#progressBar').hide();
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'enhanced-transcription.json'}, 
+                File.get({fileId: 'en hanced-transcription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	
