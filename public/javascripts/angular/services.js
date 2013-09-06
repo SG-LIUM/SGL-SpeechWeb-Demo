@@ -209,6 +209,7 @@ angular.module('transcriptionServices', [])
         	this.insertionStyle="label label-success";
             this.suppressionStyle="label label-important";
             this.substitutionStyle="label label-info";
+            this.showStyle="label label-inverse";
             
             
             
@@ -431,20 +432,14 @@ angular.module('transcriptionServices', [])
             }
             //Change the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.showCorespondingWordInReferenceWord=function(word){
-              if(word.wordClass==this.substitutionStyle){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass(this.substitutionStyle);
-              }
-              else if(word.wordClass==this.insertionStyle){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass(this.insertionStyle);
+              if(word.wordClass==this.substitutionStyle || word.wordClass==this.insertionStyle){
+                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass(this.showStyle);
               }
             }
             //Restore the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.hideCorespondingWordInReferenceWord=function(word){
-              if(word.wordClass==this.substitutionStyle){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass(this.substitutionStyle);
-              }
-              else if(word.wordClass==this.insertionStyle){
-                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass(this.insertionStyle);
+              if(word.wordClass==this.substitutionStyle || word.wordClass==this.insertionStyle){
+                $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass(this.showStyle);
               }
             }
             //Add/modify information to the transcriptions and adjust the hypothesis transcriptions to the reference.
