@@ -7,142 +7,203 @@
 
   <div class="container">
   
-		<!-- ROW 1 -->
-		<div class="row">
-			<!-- Title and information zone -->
+  		<!-- ROW 0 -->
+  		<div class="row">
+			<!-- Togglable tabs -->
 			<div class="span12">
 				<div class="bloc">
-					<div id="pagestart" class="hero-unit">
-					
-						<div class="navbar">
-						  <div class="navbar-inner">
-							<ul class="nav">
-							  <li class="divider-vertical"><a href="http://localhost:9000/demo/ash#pagestart">Transcription Comparator</a></li>
-							  <li class="active"><a href="#pagestart">Diarization Viewer</a></li>
-							</ul>
-						  </div>
-						</div>
-					
-						<h1>ASH Project <small>Web Demonstrator 2</small></h1>
-						<hr>
-						<p>Some Explanation...</p>
-						
-						<span class="title">Caption</span>
-						<br><br>
-						Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.
-						<br>
-						
-						<div id="outTranscriptionAlert" class="alert alert-error">
-						  <button type="button" class="close" data-dismiss="alert">&times;</button>
-						  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
-						  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
-						</div>
+					<div class="tabbable"> 
+						<ul class="nav nav-tabs">
+							<li class="active"><a style="text-decoration:none;" href="#home" data-toggle="tab"><i class="icon-home"></i> Home</a></li>
+							<li><a style="text-decoration:none;" href="#info" data-toggle="tab"><i class="icon-info-sign"></i> Information</a></li>
+							<li><a style="text-decoration:none;" href="#about" data-toggle="tab"><i class="icon-question-sign"></i> About</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="home">
+									<div class="container-fluid">
+										<!-- ROW 1 -->
+										<div class="row-fluid">
+											<!-- Title and information zone -->
+											<div class="span12">
+												<div class="bloc">
+				
+													<div class="hero-unit">
+				
+														<h2>Transcription Demonstrator <br><small>With Diarization Viewer</small></h2>
+														
+														<div id="outTranscriptionAlert" class="alert alert-error">
+														  <button type="button" class="close" data-dismiss="alert">&times;</button>
+														  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+														  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+														</div>
 
-					</div>
-				</div>
+													</div>
+												</div>
 
-			</div>
-		</div>
+											</div>
+										</div>
 		
-		<!-- ROW 2 -->
-		<div class="row">
-			<!-- Reference Transcription -->
-			<div class="span6">
-				<div class="bloc">
-					<div class="accordion-group" style="background-color: #FFFFEB;">
-						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item1" data-toggle="collapse"> <i id="chevron2" class="icon-chevron-up"></i> <span class="title">{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</span> </a> </div>
-  						<div id="item1" class="collapse in">
-  							<div class="accordion-inner">
-								<article id="content0">
-									<p>
-										<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="none">{{jsonWord.word}} </span>
-									</p>
-								</article>
-							</div>
-						</div>
-					</div>
-        		</div>
-			</div>
-			<!-- Media -->
-			<div class="span6">
-				<div class="bloc">
-					<div class="accordion-group" style="background-color: #FFFFEB;">
-						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item2" data-toggle="collapse"> <i id="chevron2" class="icon-chevron-up"></i> <span class="title">Your File</span> </a> </div>
-  						<div id="item2" class="collapse in">
-  							<div class="accordion-inner">
-								<video width="512" height="288" id="mediafile" controls preload>
-									<!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
-									<source type="video/mp4" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.mp4" />
-									<!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
-									<source type="video/webm" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.webm" />
-								</video>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-  		
-		<div id="popover" class="popover">
-			<div class="bloc">
-			<h4>Speaker Bar Info</h4>
-			<span>{{speakerBar.popoverText}}</span>
-			</div class="bloc">
-		</div>
+										<!-- ROW 2 -->
+										<div class="row-fluid">
+											<!-- Transcription -->
+											<div class="span6">
+												<div class="bloc">
+													<div class="accordion-group" style="background-color: #FFFFEB;">
+														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item1" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Transcription</span> </a> </div>
+														<div id="item1" class="collapse in">
+															<div class="accordion-inner">
+																<article id="content0">
+																	<p>
+																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="none">{{jsonWord.word}} </span>
+																	</p>
+																</article>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- Media -->
+											<div class="span6">
+												<div class="bloc">
+													<div class="accordion-group" style="background-color: #FFFFEB;">
+														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item2" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Your File</span> </a> </div>
+														<div id="item2" class="collapse in">
+															<div class="accordion-inner">
+																<video width="490" height="276" id="mediafile" controls preload>
+																	<!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
+																	<source type="video/mp4" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.mp4" />
+																	<!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
+																	<source type="video/webm" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.webm" />
+																</video>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 		
-		<!-- ROW 3 -->
-		<div class="row">
-			<!-- Speaker Bar -->
-			<div class="span12">
-				<div class="bloc">
-					<div class="accordion-group" style="background-color: #FFFFEB;">
-						<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <i id="chevron2" class="icon-chevron-up"></i> <span class="title">Speaker Bar</span> </a> </div>
-						<div id="item3" class="collapse in">
-							<div class="accordion-inner">
-								<!-- SpeakerBar -->
-								<canvas width="1100" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
-								  <p>updates are necessary</p>
-								</canvas>
-								<p><span id="progressTime0">--:--</span></p>	
-								<!-- Main Speaker -->
-								<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
+										<div id="popover" class="popover">
+											<div class="bloc">
+											<h4>Speaker Bar Info</h4>
+											<span>{{speakerBar.popoverText}}</span>
+											</div class="bloc">
+										</div>
+		
+										<!-- ROW 3 -->
+										<div class="row-fluid">
+											<!-- Speaker Bar -->
+											<div class="span12">
+												<div class="bloc">
+													<div class="accordion-group" style="background-color: #FFFFEB;">
+														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Speaker Bar</span> </a> </div>
+														<div id="item3" class="collapse in">
+															<div class="accordion-inner">
+																<!-- SpeakerBar -->
+																<canvas width="1040" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
+																  <p>updates are necessary</p>
+																</canvas>
+																<p><span id="progressTime0">--:--</span></p>	
+																<!-- Main Speaker -->
+																<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
+																<div class="container-fluid">
+																  <div class="row-fluid">
+																	<div class="span6">
+																		<ul class="nav nav-pills nav-stacked">
+																			<li ng-repeat="speaker in speakerBar.mainSpeakersCol1" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																			</li>
+																		</ul>
+																	</div>
+																	<div class="span6">
+																		<ul class="nav nav-pills nav-stacked">
+																			<li ng-repeat="speaker in speakerBar.mainSpeakersCol2" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																			</li>
+																		</ul>
+																	</div>
+																  </div>
+																</div>
+																<!-- Secondary Speaker -->
+																<span class="bold">{{speakerBar.secondarySpeakersTitle}}</span>
+																<div class="container-fluid">
+																  <div class="row-fluid">
+																	<div class="span6">
+																		<ul class="nav nav-pills nav-stacked">
+																			<li ng-repeat="speaker in speakerBar.secondarySpeakers" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																			</li>
+																		</ul>
+																	</div>
+																  </div>
+																</div>	
+															</div>
+														</div>
+													</div>
+												</div>	
+											</div>
+										</div>
+									</div>
+
+							
+							</div>
+							<div class="tab-pane" id="info">
 								<div class="container-fluid">
-								  <div class="row-fluid">
-									<div class="span6">
-									  	<ul class="nav nav-pills nav-stacked">
-											<li ng-repeat="speaker in speakerBar.mainSpeakersCol1" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
-												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
-											</li>
-										</ul>
+									<!-- ROW 1 -->
+									<div class="row-fluid">
+										<!-- Title and information zone -->
+										<div class="span12">
+											<div class="bloc">
+		
+												<div class="hero-unit">
+		
+													<h2>Information <br></h2>
+													<hr>
+													<p>Some Explanation...</p>
+				
+													<span class="title">Caption</span>
+													<br><br>
+													Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.
+													<br>
+
+												</div>
+											</div>
+
+										</div>
 									</div>
-									<div class="span6">
-									  	<ul class="nav nav-pills nav-stacked">
-											<li ng-repeat="speaker in speakerBar.mainSpeakersCol2" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
-												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
-											</li>
-										</ul>
-									</div>
-								  </div>
+					
 								</div>
-								<!-- Secondary Speaker -->
-								<span class="bold">{{speakerBar.secondarySpeakersTitle}}</span>
+							</div>
+							<div class="tab-pane" id="about">
 								<div class="container-fluid">
-								  <div class="row-fluid">
-									<div class="span6">
-										<ul class="nav nav-pills nav-stacked">
-											<li ng-repeat="speaker in speakerBar.secondarySpeakers" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
-												<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total time of speech= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
-											</li>
-										</ul>
+									<!-- ROW 1 -->
+									<div class="row-fluid">
+										<!-- Title and information zone -->
+										<div class="span12">
+											<div class="bloc">
+		
+												<div class="hero-unit">
+		
+													<h2>About <br></h2>
+													<hr>
+													<p>View this project on <a href="https://github.com/SG-LIUM/SGL-SpeechWeb-Demo">GitHub</a>. <p>
+													<p>Web demonstrator designed by <a href="https://github.com/eSim">Edwin Simonnet</a>, <a href="http://sciences.univ-lemans.fr/Licence-Sciences-Pour-l-Ingenieur">Licence Science Pour l'Ingénieur</a>, <a href="http://www.univ-lemans.fr">Université du Maine</a>, Le Mans, France<p>
+
+												</div>
+											</div>
+
+										</div>
 									</div>
-								  </div>
-								</div>	
+					
+								</div>
+							
 							</div>
 						</div>
 					</div>
-				</div>	
+				</div>
 			</div>
 		</div>
+  
+  
   </div>
 </div>
 

@@ -679,15 +679,24 @@ angular.module('transcriptionServices', [])
               this.setColor("rgba(161, 161, 161, 0.5)");
               this.drawSegment(this.timeStart,currentTime-this.timeStart);
               var currentSpeakerIndex=BinarySearch.search(this.transcription.content, currentTime, function(item) { return item.start; });
-              var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
-              for(var i=0;i<this.speakers.length;i++){
-              	if(this.speakers[i].spkId==currentSpeakerId){
-              		this.speakers[i].speakingStatus="active";
-              	}
-              	else{
-              		this.speakers[i].speakingStatus="none";
+              
+              if(currentSpeakerIndex>0){
+              	var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
+              	for(var i=0;i<this.speakers.length;i++){
+					if(this.speakers[i].spkId==currentSpeakerId){
+						this.speakers[i].speakingStatus="active";
+					}
+					else{
+						this.speakers[i].speakingStatus="none";
+					}
               	}
               }
+              else{
+              	for(var i=0;i<this.speakers.length;i++){
+					this.speakers[i].speakingStatus="none";
+              	}
+              }
+              
             }
             //Update the video in terms of the spot we clicked on the bar
             this.clickUpdate=function(event) {
