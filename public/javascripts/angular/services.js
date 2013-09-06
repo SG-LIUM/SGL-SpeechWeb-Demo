@@ -146,7 +146,7 @@ angular.module('transcriptionServices', [])
       }
     })
     //This class contains information concerning the transcriptions. transcriptionTable is an array which contains the words json data of the different transcriptions.
-    .factory('TranscriptionsData', function(BinarySearch,Indexes,DtwTranscription,Video){
+    .factory('TranscriptionsData', function(BinarySearch,Indexes,DtwTranscription,Video,Time){
       return {
         instance : function(transcriptionTable,globalStep){
             //This sub-class regroups the information of a displayed part of a transcription. The step is the number of words currently displayed.
@@ -220,12 +220,12 @@ angular.module('transcriptionServices', [])
                 // We add the arbitrary 0.5 sec value that we chose in the Indexe service.
                 if(currentTime>this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start+0.5){
                   this.message="ASH transcription is finished. It start at ";
-                  this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
+                  this.clickableMessage=Time.format(this.fullTranscription[0].content[0].start)+".";
                   $('#outTranscriptionAlert').show();
                 }
                 else if(currentTime<this.fullTranscription[0].content[0].start){
                   this.message="ASH transcription has not started yet. It start at ";
-                  this.clickableMessage=this.fullTranscription[0].content[0].start+" sec.";
+                  this.clickableMessage=Time.format(this.fullTranscription[0].content[0].start)+".";
                   $('#outTranscriptionAlert').show();
                 }
                 else{
@@ -501,6 +501,9 @@ angular.module('transcriptionServices', [])
                 spkPeriod[1]=end;
                 this.speakingPeriods.push(spkPeriod);
               }
+              this.giveFirstSpeechTimeString=function(){
+              	return Time.format(this.speakingPeriods[0][0]);
+              }
               //Set the video to the moment when the speaker speaks for the first time.
               this.moveVideoToSpeechStart=function(){
                 var firstSpeechStart=this.speakingPeriods[0][0];
@@ -530,7 +533,7 @@ angular.module('transcriptionServices', [])
 			this.context.fillStyle=this.grd;
 			this.grd.addColorStop(1,"grey");
 			this.contextCopy=null;
-			this.popoverText=""
+			this.popoverText="";
                
             //Methods:
             //Fills the speaker array with SpeakerData objects.
@@ -630,19 +633,16 @@ angular.module('transcriptionServices', [])
             }
             //Updates the bar corresponding to a specific time.
             this.timeUpdate=function(currentTime){
-              var time=currentTime-this.timeStart;
-              if(time<0 || time>this.duration){
-                this.timer.textContent = "outside transcription";
-              }
-              else{
-                this.timer.textContent = Time.format(time)+'/'+Time.format(this.duration);
+              this.timer.textContent = Time.format(currentTime)+'/'+Time.format($('#mediafile')[0].duration);
+              if(currentTime<this.timeStart || currentTime>this.timeEnd){
+                this.timer.textContent+= " - OUTSIDE TRANSCRIPTION";
               }
               //We have to draw all the speakers again because if we draw the transparent progressBar over the former one, it will become opaque. It is also useful if the currentTime updated is inferior to the forme time updated.
               this.context.putImageData(this.contextCopy,0,0);
-              this.setColor("rgba(161, 161, 161, 0.5)");
+              this.setColor("rgba(161, 161, 161, 0.8)");
               this.drawSegment(this.timeStart,currentTime-this.timeStart);
               var currentSpeakerIndex=BinarySearch.search(this.transcription.content, currentTime, function(item) { return item.start; });
-              if(currentSpeakerIndex>=0){
+              if(currentSpeakerIndex>=0 && this.transcription.content[currentSpeakerIndex].spk!=null){
               	var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
               	for(var i=0;i<this.speakers.length;i++){
 					if(this.speakers[i].spkId==currentSpeakerId){
@@ -687,10 +687,9 @@ angular.module('transcriptionServices', [])
               var y = target.y - parent.y;
               var wrapperWidth = $('#canvas'+this.transcriptionNum)["0"].offsetWidth;
               var percent  = Math.ceil((x / wrapperWidth) * 100);
-              var time=((this.duration * percent) / 100);
+              var time=((this.duration * percent) / 100)+this.timeStart;
               var timeString=Time.format(time);
-              
-              var currentSpeakerIndex=BinarySearch.search(this.transcription.content, time+this.timeStart, function(item) { return item.start; });
+              var currentSpeakerIndex=BinarySearch.search(this.transcription.content, time, function(item) { return item.start; });
               var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
               
               this.popoverText="speaker: "+currentSpeakerId+", time: "+timeString;
