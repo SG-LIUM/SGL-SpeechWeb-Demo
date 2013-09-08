@@ -6,6 +6,9 @@
 .bold{
 	font-weight:bold;
 }
+.italic{
+	font-style:italic 
+}
 .title{
 	font-weight:bold;
 	font-size:145%;

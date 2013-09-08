@@ -151,6 +151,7 @@ angular.module('transcriptionServices', [])
         instance : function(transcriptionTable,globalStep){
             //This sub-class regroups the information of a displayed part of a transcription. The step is the number of words currently displayed.
             function DisplayedTranscription(step,id) {
+            	this.message="";
             	this.id=id;
             	this.nextWordToDisplay=0;             //in the complete transcription
             	this.currentHighlightedIndex=0;         //in the displayed part
@@ -189,6 +190,12 @@ angular.module('transcriptionServices', [])
             this.updateDisplayedTranscription = function(transcriptionNum) {
               var nextWords = Indexes.getNextWords(this.fullTranscription[transcriptionNum], this.displayedTranscriptions[transcriptionNum].nextWordToDisplay, this.displayedTranscriptions[transcriptionNum].step);
               this.displayedTranscriptions[transcriptionNum].transcription = nextWords.words;
+              if(this.displayedTranscriptions[transcriptionNum].transcription.length==0){
+            	this.displayedTranscriptions[transcriptionNum].message="Nothing yet";
+              }
+              else{
+            	this.displayedTranscriptions[transcriptionNum].message="";
+              }
               this.displayedTranscriptions[transcriptionNum].currentWordEnd = nextWords.currentWordEnd;
               this.displayedTranscriptions[transcriptionNum].currentWordStart = nextWords.currentWordStart;
               this.displayedTranscriptions[transcriptionNum].nextWordToDisplay = nextWords.nextWordToDisplay;

@@ -49,6 +49,7 @@
 														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item1" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Transcription</span> </a> </div>
 														<div id="item1" class="collapse in">
 															<div class="accordion-inner">
+																<span class="italic"><i>{{transcriptionsData.displayedTranscriptions[0].message}}</i></span>
 																<article id="content0">
 																	<p>
 																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="none">{{jsonWord.word}} </span>
