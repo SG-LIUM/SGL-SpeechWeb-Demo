@@ -191,7 +191,7 @@
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" ngModel="speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 															
@@ -199,7 +199,7 @@
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" ngModel="speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
@@ -212,14 +212,14 @@
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" ngModel="speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>  id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" ngModel="speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
@@ -252,13 +252,22 @@
 													<br><br>
 													<p>The comparisons between the transcriptions are made with a Dynamic time warping (DTW) algorithm wich mesures similarity between two transcriptions sentence by sentence: a reference and a hypothesis. We can then determine the modifications that should be done in the hypothesis so it matches with the reference.</p>
 													<p>We choose the {{transcriptionsData.displayedTranscriptions[0].id}} transcription as a reference for the comparisons. The {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} and {{transcriptionsData.displayedTranscriptions[2].id}} transcriptions are the hypothesis.<br>Here are the caption of the modifications that must be applied to the hypothesis ({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) so it matches with the reference ({{transcriptionsData.displayedTranscriptions[0].id}} transcription) :</p>
-													<p><span class="{{transcriptionsData.substitutionStyle}}">hypothesisWord(>>referenceWord) </span> : hypothesisWord (from {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) must be substituted with referenceWord (from {{transcriptionsData.displayedTranscriptions[0].id}} transcription) to match.<br>
-													<span class="{{transcriptionsData.suppressionStyle}}">hypothesisWord </span> : hypothesisWord (from {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) must be deleted to match.<br>
-													<span class="{{transcriptionsData.insertionStyle}}">referenceWord </span> : referenceWord (from {{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted to match.</p>
+													<p>_ <span class="{{transcriptionsData.substitutionStyle}}">hypothesisWord(>>referenceWord) </span> : hypothesisWord (from {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) must be substituted with referenceWord (from {{transcriptionsData.displayedTranscriptions[0].id}} transcription) to match.<br>
+													_ <span class="{{transcriptionsData.suppressionStyle}}">hypothesisWord </span> : hypothesisWord (from {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) must be deleted to match.<br>
+													_ <span class="{{transcriptionsData.insertionStyle}}">referenceWord </span> : referenceWord (from {{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted to match.</p>
 													<p>Other information:</p>
-													<p><span class="{{transcriptionsData.showStyle}}">referenceWord </span> : When your mouse is over an inserted or substituted word in a hypothesis, the corresponding word in the reference is highlighted.<br>
-													<span class="untreatedDtw">word </span> : This word has not been treated by a DTW because it does not belong to any sentence.</p>
-													<p>Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<p>
+													<p>_ <span class="{{transcriptionsData.showStyle}}">referenceWord </span> : When your mouse is over an inserted or substituted word in a hypothesis, the corresponding word in the reference is highlighted.<br>
+													_ <span class="untreatedDtw">word </span> : This word has not been treated by a DTW because it does not belong to any sentence.</p>
+													<span class="title">Features</span>
+													<br><br>
+													<p>_ Click on the <span class="bold">box titles</span> to open/close them.<br>
+													_ Click on a <span class="bold">word</span> in a transcription to set the media at the moment the word is pronounced.<br>
+													_ Place your mouse over a <span class="bold">word</span> to see when it starts.<br>
+													_ Place your mouse over an <span class="bold">inserted or substituted word in a hypothesis</span> to highlight the corresponding word in the reference.<br>
+													_ Click on the <span class="bold">speaker bar</span> to navigate in the media.<br>
+													_ Place your mouse over the <span class="bold">speaker bar</span> to see information about the current time and the current speaker.<br>
+													_ Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<br>
+													_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>
 													
 												</div>
 											</div>

@@ -108,7 +108,7 @@
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" ngModel="speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 															
@@ -116,7 +116,7 @@
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" ngModel="speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
@@ -129,14 +129,14 @@
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" ngModel="speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>  name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>  id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" ngModel="speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" class="{{speaker.speakingStatus}}" >
-																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	name: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
+																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
 																	</div>
@@ -166,10 +166,16 @@
 													<hr>
 													<p>Some Explanation...</p>
 				
-													<span class="title">Caption</span>
+													<span class="title">Features</span>
 													<br><br>
-													Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.
-													<br>
+													<p>_ Click on the <span class="bold">box titles</span> to open/close them.<br>
+													_ Click on a <span class="bold">word</span> in a transcription to set the media at the moment the word is pronounced.<br>
+													_ Place your mouse over a <span class="bold">word</span> to see when it starts.<br>
+													_ Click on the <span class="bold">speaker bar</span> to navigate in the media.<br>
+													_ Place your mouse over the <span class="bold">speaker bar</span> to see information about the current time and the current speaker.<br>
+													_ Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<br>
+													_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>
+													
 
 												</div>
 											</div>
