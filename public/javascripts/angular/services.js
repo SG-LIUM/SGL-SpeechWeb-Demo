@@ -203,6 +203,9 @@ angular.module('transcriptionServices', [])
                 if(currentDisplayedWordIndex== -3){
                   currentDisplayedWordIndex=this.displayedTranscriptions[i].transcription.length - 1;
                 }
+                if(this.displayedTranscriptions[i].transcription[1].start==currentTime){
+                	currentDisplayedWordIndex=1;
+                }
                 //Check boundaries
                 if(currentDisplayedWordIndex >= 0 && currentDisplayedWordIndex < this.displayedTranscriptions[i].transcription.length) {
                   if (currentDisplayedWordIndex == this.displayedTranscriptions[i].transcription.length - 1) {
@@ -776,7 +779,7 @@ angular.module('searchServices', []).
               //recalculate middle
               middle = Math.floor((stopIndex + startIndex)/2);
           }
-
+          
           return middle;
         }
     }
