@@ -208,9 +208,11 @@ angular.module('transcriptionServices', [])
                   if (currentDisplayedWordIndex == this.displayedTranscriptions[i].transcription.length - 1) {
                     $('#content'+i+' span').addClass('current');
                   } else {
-                    var currentWord = this.displayedTranscriptions[i].transcription[currentDisplayedWordIndex + 1];
+                    var currentWord = this.displayedTranscriptions[i].transcription[currentDisplayedWordIndex];
                     $('#content'+i+' span').removeClass('current');
                     $('#content'+i+' span[data-start="' + currentWord.start + '"]').prevAll().addClass('current');
+                    $('#content'+i+' span[data-start="' + currentWord.start + '"]').addClass('current');
+                    
                   }
                 }
                 //Next page
@@ -346,13 +348,16 @@ angular.module('transcriptionServices', [])
                       var start=self.fullTranscription[0].content[path[k].indexFullRef].start;
                       if(insertionIndex>0){
                         //If the resulted starts in the hypothesis are not ordered
-                      	if(!(start>=self.fullTranscription[i].content[insertionIndex-1].start && start<=self.fullTranscription[i].content[insertionIndex].start)){
+                      	if(start<self.fullTranscription[i].content[insertionIndex-1].start){
                       		start=self.fullTranscription[i].content[insertionIndex-1].start;
+                      	}
+                      	else if(start>self.fullTranscription[i].content[insertionIndex].start){
+                      		start=self.fullTranscription[i].content[insertionIndex].start
                       	}
                       }
                       else{
                       	//Same thing
-                        if(!(start<=self.fullTranscription[i].content[insertionIndex].start)){
+                        if(start>self.fullTranscription[i].content[insertionIndex].start){
                       		start=self.fullTranscription[i].content[insertionIndex].start;
                       	}
                       }
@@ -908,7 +913,7 @@ angular.module('controllerServices', []).
                 $('#outTranscriptionAlert').hide();
                 $('#progressBar').hide();
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'en hanced-transcription.json'}, 
+                File.get({fileId: 'enhanced-transcription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	
