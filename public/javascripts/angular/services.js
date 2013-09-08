@@ -203,7 +203,7 @@ angular.module('transcriptionServices', [])
                 if(currentDisplayedWordIndex== -3){
                   currentDisplayedWordIndex=this.displayedTranscriptions[i].transcription.length - 1;
                 }
-                if(this.displayedTranscriptions[i].transcription[1].start==currentTime){
+                if(this.displayedTranscriptions[i].transcription.length>1 && this.displayedTranscriptions[i].transcription[1].start==currentTime){
                 	currentDisplayedWordIndex=1;
                 }
                 //Check boundaries
