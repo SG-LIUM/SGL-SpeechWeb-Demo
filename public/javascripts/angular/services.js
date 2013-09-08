@@ -293,7 +293,7 @@ angular.module('transcriptionServices', [])
               
               $('#progressBar').show();
               var j=0;
-              var limit=segments.length-1;
+              var limit=segments.length;
               var busy=false;
               var self = this;
               //We use this methods to avoid the script to freeze the browser.
@@ -923,7 +923,7 @@ angular.module('controllerServices', []).
                 $('#outTranscriptionAlert').hide();
                 $('#progressBar').hide();
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
-                File.get({fileId: 'enhanced-transcription.json'}, 
+                File.get({fileId: 'enhanced-trsanscription.json'}, 
                     function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	
