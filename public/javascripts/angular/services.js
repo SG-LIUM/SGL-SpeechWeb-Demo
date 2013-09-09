@@ -178,7 +178,7 @@ angular.module('transcriptionServices', [])
             this.showStyle="label label-inverse";
              
             //Methods:
-            //Update the content of the displayed transcription n°transcriptionNum.
+            //Updates the content of the displayed transcription n°transcriptionNum.
             this.updateDisplayedTranscription = function(transcriptionNum) {
               var nextWords = Indexes.getNextWords(this.fullTranscription[transcriptionNum], this.displayedTranscriptions[transcriptionNum].nextWordToDisplay, this.displayedTranscriptions[transcriptionNum].step);
               this.displayedTranscriptions[transcriptionNum].transcription = nextWords.words;
@@ -193,7 +193,7 @@ angular.module('transcriptionServices', [])
               this.displayedTranscriptions[transcriptionNum].nextWordToDisplay = nextWords.nextWordToDisplay;
               this.displayedTranscriptions[transcriptionNum].nextTimeToDisplay = nextWords.nextTimeToDisplay;
             }
-            //Update the display of the transcriptions at a specific time (currentTime)
+            //Updates the display of the transcriptions at a specific time (currentTime)
             this.timeUpdateDisplay = function(currentTime) {
               for(var i=0;i<this.displayedTranscriptions.length;i++){
                 //Search the word through the words that are displayed
@@ -239,7 +239,7 @@ angular.module('transcriptionServices', [])
                 } 
               } 
             }
-            //Update the display when seeking in the media
+            //Updates the display when seeking in the media
             this.seekingUpdateDisplay = function(seekingTime){
               for(var i=0;i<this.displayedTranscriptions.length;i++){ 
                 if(typeof this.fullTranscription[i] !== 'undefined') {
@@ -252,14 +252,14 @@ angular.module('transcriptionServices', [])
                 }
               }
             }
-            //Init the displayed transcription
+            //Inits the displayed transcription
             this.initDisplay = function(timeStart){
               for(var i=0;i<this.displayedTranscriptions.length;i++){
                 this.displayedTranscriptions[i].nextWordToDisplay = BinarySearch.search(this.fullTranscription[i].content, timeStart, function(item) { return item.start; });
                 this.updateDisplayedTranscription(i);
               }
             }
-            //Add all the word in the complete transcriptions 
+            //Adds all the word in the complete transcriptions 
             this.addWords=function(wordsToAddInTranscriptions){
               for(var i=1;i<this.fullTranscription.length;i++){
                 var wordsToAdd=wordsToAddInTranscriptions[i];
@@ -296,16 +296,16 @@ angular.module('transcriptionServices', [])
                   self.progressBarContent.css("width", calculationPercent + "%");
                   var indexStartRef = BinarySearch.search(self.fullTranscription[0].content, segments[j].start, function(item) { return item.start; });
                   var indexEndRef   = BinarySearch.search(self.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });
-                  //Check if the sentence is outside the reference.
+                  //Checks if the sentence is outside the reference.
                   if(indexStartRef==-3 || indexStartRef==-1 || indexEndRef==-2 || indexEndRef==-1){
                   var refSlice=[];
                   }
                   else{
-                    //Check if a part of the sentence is before the reference.
+                    //Checks if a part of the sentence is before the reference.
                   if(indexStartRef==-2){
                     indexStartRef=0;
                   }
-                  //Check if a part of the sentence is after the reference.
+                  //Checks if a part of the sentence is after the reference.
                   if(indexEndRef==-3){
                     indexEndRef=self.fullTranscription[0].content.length-1;
                   } 
@@ -408,19 +408,19 @@ angular.module('transcriptionServices', [])
               }, 100);
               
             }
-            //Change the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
+            //Changes the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.showCorespondingWordInReferenceWord=function(word){
               if(word.wordClass==this.substitutionStyle || word.wordClass==this.insertionStyle){
                 $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').addClass(this.showStyle);
               }
             }
-            //Restore the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
+            //Restores the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.hideCorespondingWordInReferenceWord=function(word){
               if(word.wordClass==this.substitutionStyle || word.wordClass==this.insertionStyle){
                 $('#content0 span[data-start="' + this.fullTranscription[0].content[word.corespondingWordIndex].start + '"]').removeClass(this.showStyle);
               }
             }
-            //Add/modify information to the transcriptions and adjust the hypothesis transcriptions to the reference.
+            //Adds/modifies information to the transcriptions and adjust the hypothesis transcriptions to the reference.
             this.adjustTranscriptions=function(){
               for(var i=0;i<this.fullTranscription.length;i++){
                 for(var j=0;j<this.fullTranscription[i].content.length;j++){
@@ -501,18 +501,18 @@ angular.module('transcriptionServices', [])
               this.giveTotalTimeString=function(){
                 return Time.format(this.giveTotalTime());
               }
-              //Add a new speaking period.
+              //Adds a new speaking period.
               this.addSpeakingPeriod=function(start,end){
                 var spkPeriod=new Array(2);
                 spkPeriod[0]=start;
                 spkPeriod[1]=end;
                 this.speakingPeriods.push(spkPeriod);
               }
-              //Give the time when the speaker talks for the first time.
+              //Gives the time when the speaker talks for the first time.
               this.giveFirstSpeechTimeString=function(){
               	return Time.format(this.speakingPeriods[0][0]);
               }
-              //Set the video to the moment when the speaker speaks for the first time.
+              //Sets the video to the moment when the speaker speaks for the first time.
               this.moveVideoToSpeechStart=function(){
                 var firstSpeechStart=this.speakingPeriods[0][0];
                 Video.moveVideoTo(firstSpeechStart);
@@ -536,7 +536,7 @@ angular.module('transcriptionServices', [])
             this.secondarySpeakers;
             this.secondarySpeakersTitle="";
             this.mainSpeakersTitle="";
-			// Create gradient
+			// Creates gradient
 			this.grd=this.context.createLinearGradient(this.contextWidth/2,0,this.contextWidth/2,this.contextHeight*1.8);
 			this.context.fillStyle=this.grd;
 			this.grd.addColorStop(1,"grey");
@@ -668,7 +668,7 @@ angular.module('transcriptionServices', [])
               }
               
             }
-            //Update the video in terms of the spot we clicked on the bar
+            //Updates the video in terms of the spot we clicked on the bar
             this.clickUpdate=function(event) {
               var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
               var target = Position.getMousePosition(event); 
@@ -682,13 +682,13 @@ angular.module('transcriptionServices', [])
               
               Video.moveVideoTo(((this.duration * percent) / 100)+this.timeStart);
             }
-            //Initialize the speaker bar for the first time.
+            //Initializes the speaker bar for the first time.
             this.initialize=function(){
             	this.updateSpeakers();
             	this.drawSpeakers();
             	this.contextCopy = this.context.getImageData(0,0,this.contextWidth,this.contextHeight);
             }
-            //Open the popover which describe the bar.
+            //Opens the popover which describe the bar.
             this.openPopover=function (event) {
               var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
               var target = Position.getMousePosition(event); 
@@ -710,7 +710,7 @@ angular.module('transcriptionServices', [])
 			  $('#popover').css('left', (left+10) + 'px');
 		      $('#popover').css('top', (top-(theHeight/2)-10) + 'px');
 			}
-			//Close the popover.
+			//Closes the popover.
 			this.closePopover=function () {
 				$('#popover').hide();
 			}
@@ -740,7 +740,7 @@ angular.module('searchServices', []).
 
             var value = accessFunction(collection[index]);
 
-            //NOTE: rajout d'un if pour gérer le cas où 2 items se suivant ont la même valeur(même start) et que l'on cherche cette valeur (ce qui génère une boucle infinie dans la suite)
+            //if 2 following items share the same start: avoids an infinity loop.
             if(toFind==accessFunction(collection[index+1])){
             	return value==toFind;
             }
@@ -767,7 +767,7 @@ angular.module('searchServices', []).
           }
 
           while(!found(middle, items, value) && startIndex < stopIndex){
-              //adjust search area
+              //adjusts search area
               if (value < accessFunction(items[middle])){
                   stopIndex = middle - 1;
               } else if (value > accessFunction(items[middle])){
@@ -777,7 +777,7 @@ angular.module('searchServices', []).
                   return -1;
               }
 
-              //recalculate middle
+              //recalculates middle
               middle = Math.floor((stopIndex + startIndex)/2);
           }
           
@@ -826,20 +826,20 @@ angular.module('videoServices', [])
         		$('#mediafile')["0"].player.setCurrentTime(timeStart); //The video have to exist with this id
   				transcriptionsData.initDisplay(timeStart);
         	},
-        	//Move the video at the time corresponding to the word(event) we click on.
+        	//Moves the video at the time corresponding to the word(event) we click on.
         	moveVideo : function(eventObject){
         		var time = eventObject.currentTarget.attributes["data-start"].value;
   				$('#mediafile')["0"].player.setCurrentTime(time);
         	},
-        	//Move the video at a specific time.
+        	//Moves the video at a specific time.
         	moveVideoTo : function(time){
   				$('#mediafile')["0"].player.setCurrentTime(time);
         	},
-        	//Return current time.
+        	//Returns current time.
         	giveCurrentTime : function(){
   				return $('#mediafile')["0"].currentTime;
         	},
-        	//Return the duration.
+        	//Returns the duration.
         	giveDuration : function(){
   				return $('#mediafile')["0"].duration;
         	}
