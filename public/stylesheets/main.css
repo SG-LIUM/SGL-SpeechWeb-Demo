@@ -1,5 +1,4 @@
-
-
+/* general styles */
 .bloc{
 	padding:15px 10px;
 }
@@ -38,8 +37,7 @@
 }
 
 
-/* popover */
-
+/* styles for popover */
 .popover {
     position:absolute;
     display:none;
