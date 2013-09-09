@@ -12,12 +12,6 @@ angular.module('transcriptionServices', [])
                 newWords.currentWordStart = nextWordToDisplay;
 
                 // Try to avoid out of bounds exception 
-                //NOTE: La displayedTransciption contient plus d'info qu'un simple tableau vide -> fait planter si on passe dedans. En revanche si les paramètres sont invalides, le slice renvoi []
-                //if (newWords.currentWordStart > transcription.content.length -1) {
-                //  return [];
-                //}
-
-                // Same here
                 if (newWords.currentWordEnd > transcription.content.length -1) {
                   newWords.currentWordEnd = transcription.content.length;
                 }
@@ -27,7 +21,6 @@ angular.module('transcriptionServices', [])
                 newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
 		
                 //Reset the counters
-                //NOTE: rajout d'une gestion différente quand on est en dehors de la vidéo.
                 //There are different managements when we are outside of the video.
                 //Before:
                 if(nextWordToDisplay==-2){
@@ -46,8 +39,7 @@ angular.module('transcriptionServices', [])
                     newWords.nextTimeToDisplay = transcription.content[newWords.nextWordToDisplay].start;
                   }
                   else {
-                    //NOTE: valeur de 0.5 sec choisie arbitrairement car on ne dispose pas de la longueur de temps des mots (et on ne peut pas du coup déduire celle du dernier de la transcription)
-                  	//We decide that the last word will be displayed for 0.5 seconds
+                    //We decide that the last word will be displayed for 0.5 seconds
                   	newWords.nextTimeToDisplay = transcription.content[transcription.content.length-1].start+0.5;
                   }
                 }
@@ -110,14 +102,14 @@ angular.module('transcriptionServices', [])
                     }
                     origins[0]=new PointDtwTranscription(this,this.matrix[i-1][j].cost+1,'suppr',i,j);
                     origins[1]=new PointDtwTranscription(this,this.matrix[i-1][j-1].cost+cost,ope,i,j);
-                origins[2]=new PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
-                //We keep the cheapest origin
-                    origins.sort(function (a, b) {
-                                return a.cost-b.cost;
-                            });
-                    this.matrix[i][j]=origins[0];
-                  }
-                }
+					origins[2]=new PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
+					//We keep the cheapest origin
+					origins.sort(function (a, b) {
+								return a.cost-b.cost;
+							});
+						this.matrix[i][j]=origins[0];
+				  	}
+				}
               }
               //Returns the shortest path           
               this.givePath=function(){
@@ -153,13 +145,13 @@ angular.module('transcriptionServices', [])
             function DisplayedTranscription(step,id) {
             	this.message="";
             	this.id=id;
-            	this.nextWordToDisplay=0;             //in the complete transcription
-            	this.currentHighlightedIndex=0;         //in the displayed part
-            	this.currentWordStart=0;            //in the complete transcription
+            	this.nextWordToDisplay=0;           			//in the complete transcription
+            	this.currentHighlightedIndex=0;     			//in the displayed part
+            	this.currentWordStart=0;            			//in the complete transcription
             	this.currentWordEnd=this.currentWordStart+step; //in the complete transcription
             	this.step=step;
             	this.nextTimeToDisplay=0;
-            	this.transcription=[];              //the words to display
+            	this.transcription=[];              			//the words to display
             }
             //This sub-class represents a word object that will have to be inserted in a transcription (they are inserted at the end because of the shift).
             function WordToAdd(wordObject,position){
@@ -174,17 +166,17 @@ angular.module('transcriptionServices', [])
             for(var i=0;i<this.displayedTranscriptions.length;i++){
               this.displayedTranscriptions[i]=new DisplayedTranscription(this.globalStep,this.fullTranscription[i].system);
             }
-            
             this.message="";
             this.clickableMessage="";
             this.progressBarContent=$('#progressBarContent');
+            this.progressBar=$('#progressBar');
+            this.outTranscriptionAlert=$('#outTranscriptionAlert');
+            this.calculationOverAlert=$('#calculationOverAlert');
         	this.insertionStyle="label label-success";
             this.suppressionStyle="label label-important";
             this.substitutionStyle="label label-info";
             this.showStyle="label label-inverse";
-            
-            
-            
+             
             //Methods:
             //Update the content of the displayed transcription n°transcriptionNum.
             this.updateDisplayedTranscription = function(transcriptionNum) {
@@ -233,17 +225,17 @@ angular.module('transcriptionServices', [])
                 if(currentTime>this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start+0.5){
                   this.message="ASH transcription is finished. It start at ";
                   this.clickableMessage=Time.format(this.fullTranscription[0].content[0].start)+".";
-                  $('#outTranscriptionAlert').show();
+                  this.outTranscriptionAlert.show();
                 }
                 else if(currentTime<this.fullTranscription[0].content[0].start){
                   this.message="ASH transcription has not started yet. It start at ";
                   this.clickableMessage=Time.format(this.fullTranscription[0].content[0].start)+".";
-                  $('#outTranscriptionAlert').show();
+                  this.outTranscriptionAlert.show();
                 }
                 else{
                   this.message="";
                   this.clickableMessage="";
-                  $('#outTranscriptionAlert').hide();
+                  this.outTranscriptionAlert.hide();
                 } 
               } 
             }
@@ -291,7 +283,7 @@ angular.module('transcriptionServices', [])
                 wordsToAddInTranscriptions[i]=new Array();
               }
               
-              $('#progressBar').show();
+              this.progressBar.show();
               var j=0;
               var limit=segments.length;
               var busy=false;
@@ -398,18 +390,18 @@ angular.module('transcriptionServices', [])
                   }
                   //refresh the page
                   refresh(); //refresh the content
-                  self.timeUpdateDisplay($('#mediafile')["0"].currentTime); //refresh the highlighting
+                  self.timeUpdateDisplay(Video.giveCurrentTime()); //refresh the highlighting
                   
                   if(++j==limit){ 
                     clearInterval(processor);   
                     //We add all the insertion at once because of the shift it causes
                     self.addWords(wordsToAddInTranscriptions);
-                    $('#calculationOverAlert').show();
+                    self.calculationOverAlert.show();
                     //last refresh
-                    var timeToUpdate=$('#mediafile')["0"].currentTime; //currentTime
+                    var timeToUpdate=Video.giveCurrentTime(); //currentTime
                     Video.startVideo(self.displayedTranscriptions[0].transcription[self.displayedTranscriptions[0].currentHighlightedIndex].start,self); //reset the video to include the insertion
                  	Video.moveVideoTo(timeToUpdate); //place the video at the ancien place 
-                 	$('#progressBar').hide();
+                 	self.progressBar.hide();
                   }
                   busy=false; 
                 }
@@ -442,7 +434,7 @@ angular.module('transcriptionServices', [])
               var referenceLastTime=this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start;
               for(var i=1;i<this.fullTranscription.length;i++){
                 var hypothesisFirstIndex=BinarySearch.search(this.fullTranscription[i].content, referenceFirstTime, function(item) { return item.start; });
-              var hypothesisLastIndex =BinarySearch.search(this.fullTranscription[i].content, referenceLastTime,  function(item) { return item.start; });
+                var hypothesisLastIndex =BinarySearch.search(this.fullTranscription[i].content, referenceLastTime,  function(item) { return item.start; });
                 // When the transcriptions doesn't overlap
                 if(hypothesisFirstIndex==-3 || hypothesisFirstIndex==-1 || hypothesisLastIndex==-2 || hypothesisLastIndex==-1){
                   this.fullTranscription[i].content=[];
@@ -478,7 +470,7 @@ angular.module('transcriptionServices', [])
       }
     })
     //This class contains information concerning the speaker bar for the Diarization. the constructor needs the complete transcription that the bar will describe and the id of this transcription to identify the bar elements in the page.
-    .factory('SpeakerBar', function(Time,Position,BinarySearch){
+    .factory('SpeakerBar', function(Video,Time,Position,BinarySearch){
       return {
         instance : function(transcription,transcriptionNum,colors){
             //This sub-class regroups the information of a single speaker.
@@ -498,7 +490,7 @@ angular.module('transcriptionServices', [])
               this.speakingStatus="none";
             
               //Returns the sum of his speaking periods.
-              this.totalTime=function(){
+              this.giveTotalTime=function(){
                 var total=0;
               for(var i=0;i<this.speakingPeriods.length;i++){
                 total=total+(this.speakingPeriods[i][1]-this.speakingPeriods[i][0]);
@@ -506,8 +498,8 @@ angular.module('transcriptionServices', [])
               return total;
               }
               //Gives a string representing the total time of speech.
-              this.totalTimeString=function(){
-                return Time.format(this.totalTime());
+              this.giveTotalTimeString=function(){
+                return Time.format(this.giveTotalTime());
               }
               //Add a new speaking period.
               this.addSpeakingPeriod=function(start,end){
@@ -516,13 +508,14 @@ angular.module('transcriptionServices', [])
                 spkPeriod[1]=end;
                 this.speakingPeriods.push(spkPeriod);
               }
+              //Give the time when the speaker talks for the first time.
               this.giveFirstSpeechTimeString=function(){
               	return Time.format(this.speakingPeriods[0][0]);
               }
               //Set the video to the moment when the speaker speaks for the first time.
               this.moveVideoToSpeechStart=function(){
                 var firstSpeechStart=this.speakingPeriods[0][0];
-                $('#mediafile')["0"].player.setCurrentTime(firstSpeechStart);
+                Video.moveVideoTo(firstSpeechStart);
               }
             }
 
@@ -581,7 +574,7 @@ angular.module('transcriptionServices', [])
               }
               //We sort the speakers so the first one are those who talk the most.
               this.speakers.sort(function (a, b) {
-                              return b.totalTime()-a.totalTime();
+                              return b.giveTotalTime()-a.giveTotalTime();
                           });
               for(var i=0;i<this.speakers.length;i++){
                 //If we don't have enough colors for all the speakers, the last speakers(who talk the less) will keep the default color.
@@ -648,7 +641,7 @@ angular.module('transcriptionServices', [])
             }
             //Updates the bar corresponding to a specific time.
             this.timeUpdate=function(currentTime){
-              this.timer.textContent = Time.format(currentTime)+'/'+Time.format($('#mediafile')[0].duration);
+              this.timer.textContent = Time.format(currentTime)+'/'+Time.format(Video.giveDuration());
               if(currentTime<this.timeStart || currentTime>this.timeEnd){
                 this.timer.textContent+= " - OUTSIDE TRANSCRIPTION";
               }
@@ -687,14 +680,15 @@ angular.module('transcriptionServices', [])
               
               var percent  = Math.ceil((x / wrapperWidth) * 100);
               
-              $('#mediafile')["0"].player.setCurrentTime(((this.duration * percent) / 100)+this.timeStart);
+              Video.moveVideoTo(((this.duration * percent) / 100)+this.timeStart);
             }
+            //Initialize the speaker bar for the first time.
             this.initialize=function(){
             	this.updateSpeakers();
             	this.drawSpeakers();
             	this.contextCopy = this.context.getImageData(0,0,this.contextWidth,this.contextHeight);
             }
-            
+            //Open the popover which describe the bar.
             this.openPopover=function (event) {
               var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
               var target = Position.getMousePosition(event); 
@@ -716,6 +710,7 @@ angular.module('transcriptionServices', [])
 			  $('#popover').css('left', (left+10) + 'px');
 		      $('#popover').css('top', (top-(theHeight/2)-10) + 'px');
 			}
+			//Close the popover.
 			this.closePopover=function () {
 				$('#popover').hide();
 			}
@@ -761,7 +756,6 @@ angular.module('searchServices', []).
 
           //No items or the value is out of range, return not found
           //We return different values to determine if we are searching before or after the items (ie if we click outside of the video, we want to know if it's before or after).
-          //NOTE: rajout de différentes sorties
           if(items.length == 0) {
             return -1;
           }
@@ -840,6 +834,14 @@ angular.module('videoServices', [])
         	//Move the video at a specific time.
         	moveVideoTo : function(time){
   				$('#mediafile')["0"].player.setCurrentTime(time);
+        	},
+        	//Return current time.
+        	giveCurrentTime : function(){
+  				return $('#mediafile')["0"].currentTime;
+        	},
+        	//Return the duration.
+        	giveDuration : function(){
+  				return $('#mediafile')["0"].duration;
         	}
         }
 	})
@@ -911,10 +913,6 @@ angular.module('controllerServices', []).
                 	Video.moveVideo(eventObject);
                 }
                 
-                scope.clickUpdate=function(event) {
-              		scope.speakerBar.clickUpdate(event);
-            	}
-                
                 var refresh=function(){
                 	scope.$apply();
                 }
@@ -922,16 +920,17 @@ angular.module('controllerServices', []).
                 $('#calculationOverAlert').hide();
                 $('#outTranscriptionAlert').hide();
                 $('#progressBar').hide();
+                
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
                 File.get({fileId: 'enhanced-trsanscription.json'}, 
                     function(transcriptions) {
-                  	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
-                  	
-                  	scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
-            		scope.speakerBar.initialize();
-                  	
-                  	//We make sure that the nextWordToDisplay value is correct
-                  	scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+						scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
+					
+						scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
+						scope.speakerBar.initialize();
+					
+						//We make sure that the nextWordToDisplay value is correct
+						scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
                     },
                     function(){
                       Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
@@ -941,15 +940,15 @@ angular.module('controllerServices', []).
                 	      scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
             			  scope.speakerBar.initialize();
                 	      
-                        File.get({fileId: 'sentence_bounds.seg'}, 
-                          function(data) {
-                  	      //We get the bounds of the sentences we will use for the DTWs
-                  	      scope.sentenceBounds=SentenceBoundaries.get(data);	
-                  	      scope.transcriptionsData.updateTranscriptionsWithDtw(scope.sentenceBounds,refresh);
-                  	      //We make sure that the nextWordToDisplay value is correct
-                  	      scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
-                          }
-                        );
+                          File.get({fileId: 'sentence_bounds.seg'}, 
+                          	function(data) {
+							  //We get the bounds of the sentences we will use for the DTWs
+							  scope.sentenceBounds=SentenceBoundaries.get(data);	
+							  scope.transcriptionsData.updateTranscriptionsWithDtw(scope.sentenceBounds,refresh);
+							  //We make sure that the nextWordToDisplay value is correct
+							  scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
+                          	}
+                          );
                       });
                     }
                 );
@@ -977,16 +976,15 @@ angular.module('controllerServices', []).
             		Video.moveVideo(eventObject);
             	}
             
-            	scope.clickUpdate=function(event) {
-              		scope.speakerBar.clickUpdate(event);
-            	}
-            
+                $('#outTranscriptionAlert').hide();
+                
             	//Get the transcription from the server
             	Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
             		scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
             		scope.transcriptionsData.adjustTranscriptions();
             		scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[transcriptionNum],transcriptionNum,colors);
             		scope.speakerBar.initialize();
+            		//We make sure that the nextWordToDisplay value is correct
               		scope.startVideo(scope.transcriptionsData.fullTranscription[transcriptionNum].content[transcriptionNum].start);
             	});
 
