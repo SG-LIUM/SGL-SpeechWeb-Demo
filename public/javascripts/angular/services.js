@@ -1,15 +1,15 @@
-  'use strict';
+'use strict';
 
-  /* Services */
+/* Services */
 
-  angular.module('transcriptionServices', [])
-  .factory('Indexes', function(){
-    return {
+angular.module('transcriptionServices', [])
+	.factory('Indexes', function(){
+        return {
             //Get the next list of words to display on the screen
             getNextWords : function(transcription, nextWordToDisplay, step) {
-              var newWords = {};
-              newWords.currentWordEnd = nextWordToDisplay + step;
-              newWords.currentWordStart = nextWordToDisplay;
+                var newWords = {};
+                newWords.currentWordEnd = nextWordToDisplay + step;
+                newWords.currentWordStart = nextWordToDisplay;
 
                 // Try to avoid out of bounds exception 
                 //NOTE: La displayedTransciption contient plus d'info qu'un simple tableau vide -> fait planter si on passe dedans. En revanche si les paramètres sont invalides, le slice renvoi []
@@ -21,11 +21,11 @@
                 if (newWords.currentWordEnd > transcription.content.length -1) {
                   newWords.currentWordEnd = transcription.content.length;
                 }
-                
+				
                 //Get the words
                 //return [] if newWords.currentWordStart<0 (if nextWordToDisplay<0 ie if the BinarySearch failed) or the parameters are invalid
                 newWords.words = transcription.content.slice(newWords.currentWordStart, newWords.currentWordEnd);
-                
+		
                 //Reset the counters
                 //NOTE: rajout d'une gestion différente quand on est en dehors de la vidéo.
                 //There are different managements when we are outside of the video.
@@ -35,10 +35,10 @@
                   newWords.nextTimeToDisplay = transcription.content[0].start;
                 }
                 //After:
-                else if(nextWordToDisplay==-3){
-                 newWords.nextWordToDisplay = transcription.length -1;
-                 newWords.nextTimeToDisplay = -1;
-               }
+            	else if(nextWordToDisplay==-3){
+            	  newWords.nextWordToDisplay = transcription.length -1;
+                  newWords.nextTimeToDisplay = -1;
+                }
                 //Else we are in the video.
                 else{
                   newWords.nextWordToDisplay = newWords.currentWordEnd;
@@ -53,14 +53,14 @@
                 }
 
                 return newWords;
-              }
             }
-          })
+        }
+	})
 	//This class contains information concerning a DTW between two transcriptions. hypothesis and reference are parts of a complete transcription. The indexes are the places where those parts start in the complete transcriptions.        
 	.factory('DtwTranscription', function(){
-    return {
-      instance : function(hypothesis,indexStartHyp,reference,indexStartRef) {
-       
+      return {
+          instance : function(hypothesis,indexStartHyp,reference,indexStartRef) {
+          	
               //This sub-class regroups the information of a point in the DTW matrix
               function PointDtwTranscription(dtw,cost,operation,matrixLine,matrixCol){
                 this.cost = cost;
@@ -110,15 +110,15 @@
                     }
                     origins[0]=new PointDtwTranscription(this,this.matrix[i-1][j].cost+1,'suppr',i,j);
                     origins[1]=new PointDtwTranscription(this,this.matrix[i-1][j-1].cost+cost,ope,i,j);
-                    origins[2]=new PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
+                origins[2]=new PointDtwTranscription(this,this.matrix[i][j-1].cost+1,'inser',i,j);
                 //We keep the cheapest origin
-                origins.sort(function (a, b) {
-                  return a.cost-b.cost;
-                });
-                this.matrix[i][j]=origins[0];
+                    origins.sort(function (a, b) {
+                                return a.cost-b.cost;
+                            });
+                    this.matrix[i][j]=origins[0];
+                  }
+                }
               }
-            }
-          }
               //Returns the shortest path           
               this.givePath=function(){
                 var path=new Array();
@@ -141,10 +141,10 @@
                 }while(!(i==0&&j==0));
                 return path;
               }
-              
-            }
+          
           }
-        })
+      }
+    })
     //This class contains information concerning the transcriptions. transcriptionTable is an array which contains the words json data of the different transcriptions.
     .factory('TranscriptionsData', function(BinarySearch,Indexes,DtwTranscription,Video,Time){
       return {
@@ -178,7 +178,7 @@
             this.message="";
             this.clickableMessage="";
             this.progressBarContent=$('#progressBarContent');
-            this.insertionStyle="label label-success";
+        	this.insertionStyle="label label-success";
             this.suppressionStyle="label label-important";
             this.substitutionStyle="label label-info";
             this.showStyle="label label-inverse";
@@ -191,16 +191,16 @@
               var nextWords = Indexes.getNextWords(this.fullTranscription[transcriptionNum], this.displayedTranscriptions[transcriptionNum].nextWordToDisplay, this.displayedTranscriptions[transcriptionNum].step);
               this.displayedTranscriptions[transcriptionNum].transcription = nextWords.words;
               if(this.displayedTranscriptions[transcriptionNum].transcription.length==0){
-               this.displayedTranscriptions[transcriptionNum].message="Nothing yet";
-             }
-             else{
-               this.displayedTranscriptions[transcriptionNum].message="";
-             }
-             this.displayedTranscriptions[transcriptionNum].currentWordEnd = nextWords.currentWordEnd;
-             this.displayedTranscriptions[transcriptionNum].currentWordStart = nextWords.currentWordStart;
-             this.displayedTranscriptions[transcriptionNum].nextWordToDisplay = nextWords.nextWordToDisplay;
-             this.displayedTranscriptions[transcriptionNum].nextTimeToDisplay = nextWords.nextTimeToDisplay;
-           }
+            	this.displayedTranscriptions[transcriptionNum].message="Nothing yet";
+              }
+              else{
+            	this.displayedTranscriptions[transcriptionNum].message="";
+              }
+              this.displayedTranscriptions[transcriptionNum].currentWordEnd = nextWords.currentWordEnd;
+              this.displayedTranscriptions[transcriptionNum].currentWordStart = nextWords.currentWordStart;
+              this.displayedTranscriptions[transcriptionNum].nextWordToDisplay = nextWords.nextWordToDisplay;
+              this.displayedTranscriptions[transcriptionNum].nextTimeToDisplay = nextWords.nextTimeToDisplay;
+            }
             //Update the display of the transcriptions at a specific time (currentTime)
             this.timeUpdateDisplay = function(currentTime) {
               for(var i=0;i<this.displayedTranscriptions.length;i++){
@@ -253,7 +253,7 @@
                 if(typeof this.fullTranscription[i] !== 'undefined') {
                   var nextWordPosition = BinarySearch.search(this.fullTranscription[i].content, seekingTime, function(item) { return item.start; });
                   //Change page only if the next word is not currently displayed
-                  if(nextWordPosition < this.displayedTranscriptions[i].currentWordStart || nextWordPosition >= this.displayedTranscriptions[i].currentWordStart + this.displayedTranscriptions[i].step || nextWordPosition>this.displayedTranscriptions[i].nextWordToDisplay) {
+    			  if(nextWordPosition < this.displayedTranscriptions[i].currentWordStart || nextWordPosition >= this.displayedTranscriptions[i].currentWordStart + this.displayedTranscriptions[i].step || nextWordPosition>this.displayedTranscriptions[i].nextWordToDisplay) {
                     this.displayedTranscriptions[i].nextWordToDisplay = nextWordPosition;
                     this.updateDisplayedTranscription(i);
                   }
@@ -273,9 +273,9 @@
                 var wordsToAdd=wordsToAddInTranscriptions[i];
                 var shift=0;
                 for(var a=0;a<wordsToAdd.length;a++){
-                  this.fullTranscription[i].content.splice(wordsToAdd[a].position+shift, 0, wordsToAdd[a].wordObject);
-                  shift++;
-                }
+                    this.fullTranscription[i].content.splice(wordsToAdd[a].position+shift, 0, wordsToAdd[a].wordObject);
+                    shift++;
+                  }
               }
             }
             //Calculates the DTW between the references and the hypothesis and put the resulting information in the transcriptions.The segments delimit the sentences used in the DTWs
@@ -306,13 +306,13 @@
                   var indexEndRef   = BinarySearch.search(self.fullTranscription[0].content, segments[j].end  , function(item) { return item.start; });
                   //Check if the sentence is outside the reference.
                   if(indexStartRef==-3 || indexStartRef==-1 || indexEndRef==-2 || indexEndRef==-1){
-                    var refSlice=[];
+                  var refSlice=[];
                   }
                   else{
                     //Check if a part of the sentence is before the reference.
-                    if(indexStartRef==-2){
-                      indexStartRef=0;
-                    }
+                  if(indexStartRef==-2){
+                    indexStartRef=0;
+                  }
                   //Check if a part of the sentence is after the reference.
                   if(indexEndRef==-3){
                     indexEndRef=self.fullTranscription[0].content.length-1;
@@ -323,27 +323,27 @@
                   }
                   formerIndexEnd[0]=indexEndRef;
                   var refSlice = self.fullTranscription[0].content.slice(indexStartRef,indexEndRef+1);
-                }
+                  }
                   //We repeat the previous operations for the sentence cutting for each hypothesis 
                   for(var i=1;i<self.fullTranscription.length;i++){
-                    var indexStartHyp = BinarySearch.search(self.fullTranscription[i].content, segments[j].start, function(item) { return item.start; });
-                    var indexEndHyp   = BinarySearch.search(self.fullTranscription[i].content, segments[j].end  , function(item) { return item.start; });
-                    if(indexStartHyp==-3 || indexStartHyp==-1 || indexEndHyp==-2 || indexEndHyp==-1){
-                      var hypSlice=[];
+                  var indexStartHyp = BinarySearch.search(self.fullTranscription[i].content, segments[j].start, function(item) { return item.start; });
+                  var indexEndHyp   = BinarySearch.search(self.fullTranscription[i].content, segments[j].end  , function(item) { return item.start; });
+                  if(indexStartHyp==-3 || indexStartHyp==-1 || indexEndHyp==-2 || indexEndHyp==-1){
+                    var hypSlice=[];
+                  }
+                  else{
+                    if(indexStartHyp==-2){
+                      indexStartHyp=0;
                     }
-                    else{
-                      if(indexStartHyp==-2){
-                        indexStartHyp=0;
-                      }
-                      if(indexEndHyp==-3){
-                        indexEndHyp=self.fullTranscription[i].content.length-1;
-                      } 
-                      if(indexStartHyp==formerIndexEnd[i]){
-                        indexStartHyp++;
-                      }
-                      formerIndexEnd[i]=indexEndHyp;
-                      var hypSlice= self.fullTranscription[i].content.slice(indexStartHyp,indexEndHyp+1);
+                    if(indexEndHyp==-3){
+                      indexEndHyp=self.fullTranscription[i].content.length-1;
+                    } 
+                    if(indexStartHyp==formerIndexEnd[i]){
+                    indexStartHyp++;
                     }
+                    formerIndexEnd[i]=indexEndHyp;
+                    var hypSlice= self.fullTranscription[i].content.slice(indexStartHyp,indexEndHyp+1);
+                  }
                   //We make a dtw for each sentence in each hypothesis
                   var dtw=new DtwTranscription.instance(hypSlice,indexStartHyp,refSlice,indexStartRef,Indexes);
                   dtw.calculate();
@@ -358,18 +358,18 @@
                       var start=self.fullTranscription[0].content[path[k].indexFullRef].start;
                       if(insertionIndex>0){
                         //If the resulted starts in the hypothesis are not ordered
-                        if(start<self.fullTranscription[i].content[insertionIndex-1].start){
-                          start=self.fullTranscription[i].content[insertionIndex-1].start;
-                        }
-                        else if(start>self.fullTranscription[i].content[insertionIndex].start){
-                          start=self.fullTranscription[i].content[insertionIndex].start
-                        }
+                      	if(start<self.fullTranscription[i].content[insertionIndex-1].start){
+                      		start=self.fullTranscription[i].content[insertionIndex-1].start;
+                      	}
+                      	else if(start>self.fullTranscription[i].content[insertionIndex].start){
+                      		start=self.fullTranscription[i].content[insertionIndex].start
+                      	}
                       }
                       else{
                       	//Same thing
                         if(start>self.fullTranscription[i].content[insertionIndex].start){
-                          start=self.fullTranscription[i].content[insertionIndex].start;
-                        }
+                      		start=self.fullTranscription[i].content[insertionIndex].start;
+                      	}
                       }
                       var wordObject={"start":start,"word":word,"spk":spk,"wordClass":self.insertionStyle, "corespondingWordIndex":path[k].indexFullRef};
                       //We store the words to add in the end.
@@ -391,11 +391,11 @@
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
                     else if(path[k].operation=='none'){
-                      self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="none";
+                    self.fullTranscription[i].content[path[k].indexFullHyp].wordClass="none";
                       self.fullTranscription[0].content[path[k].indexFullRef].wordClass="none";
                     }
                   }
-                }
+                  }
                   //refresh the page
                   refresh(); //refresh the content
                   self.timeUpdateDisplay($('#mediafile')["0"].currentTime); //refresh the highlighting
@@ -410,12 +410,12 @@
                     Video.startVideo(self.displayedTranscriptions[0].transcription[self.displayedTranscriptions[0].currentHighlightedIndex].start,self); //reset the video to include the insertion
                  	Video.moveVideoTo(timeToUpdate); //place the video at the ancien place 
                  	$('#progressBar').hide();
-                 }
-                 busy=false; 
-               }
-             }, 100);
-  
-}
+                  }
+                  busy=false; 
+                }
+              }, 100);
+              
+            }
             //Change the style of a word when the user point his mouse on it(if it's a case of substitution or insertion).
             this.showCorespondingWordInReferenceWord=function(word){
               if(word.wordClass==this.substitutionStyle || word.wordClass==this.insertionStyle){
@@ -442,30 +442,30 @@
               var referenceLastTime=this.fullTranscription[0].content[this.fullTranscription[0].content.length-1].start;
               for(var i=1;i<this.fullTranscription.length;i++){
                 var hypothesisFirstIndex=BinarySearch.search(this.fullTranscription[i].content, referenceFirstTime, function(item) { return item.start; });
-                var hypothesisLastIndex =BinarySearch.search(this.fullTranscription[i].content, referenceLastTime,  function(item) { return item.start; });
+              var hypothesisLastIndex =BinarySearch.search(this.fullTranscription[i].content, referenceLastTime,  function(item) { return item.start; });
                 // When the transcriptions doesn't overlap
                 if(hypothesisFirstIndex==-3 || hypothesisFirstIndex==-1 || hypothesisLastIndex==-2 || hypothesisLastIndex==-1){
                   this.fullTranscription[i].content=[];
                 }
                 else{
                   if(hypothesisFirstIndex==-2){
-                    hypothesisFirstIndex=0;
+                  hypothesisFirstIndex=0;
                   }
                   if(hypothesisLastIndex==-3){
-                    hypothesisLastIndex=this.fullTranscription[i].content.length-1;
+                  hypothesisLastIndex=this.fullTranscription[i].content.length-1;
                   }
                   if(hypothesisLastIndex<this.fullTranscription[i].content.length-1){
                   // Generally, the BinarySearch function take the hypothesis index whose start is slightly under the start we searched
                   hypothesisLastIndex++;
-                }
+                  }
                   //We want the transcriptions to be included in the reference plus a certain margin
                   var margin=1;
                   if(this.fullTranscription[i].content[hypothesisFirstIndex].start<(referenceFirstTime-margin)){
-                   hypothesisFirstIndex++;
-                 }
-                 if(this.fullTranscription[i].content[hypothesisLastIndex].start>(referenceLastTime+margin)){
+                	hypothesisFirstIndex++;
+                  }
+                  if(this.fullTranscription[i].content[hypothesisLastIndex].start>(referenceLastTime+margin)){
                   hypothesisLastIndex--;
-                }
+                  }
                   //if the indexes become incorrect because of the (++) and (--), slice will return []
                   this.fullTranscription[i].content=this.fullTranscription[i].content.slice(hypothesisFirstIndex,hypothesisLastIndex+1);
                 }
@@ -474,9 +474,9 @@
             this.copyTranscription=function(){
             	window.prompt ("Transcription with Dtw informations: Copy to clipboard: Ctrl+C (cmd+C), Enter", JSON.stringify(this.fullTranscription));
             }
-          }
         }
-      })
+      }
+    })
     //This class contains information concerning the speaker bar for the Diarization. the constructor needs the complete transcription that the bar will describe and the id of this transcription to identify the bar elements in the page.
     .factory('SpeakerBar', function(Time,Position,BinarySearch){
       return {
@@ -496,14 +496,14 @@
               this.color=color;
               this.speakingPeriods=new Array();
               this.speakingStatus="none";
-              
+            
               //Returns the sum of his speaking periods.
               this.totalTime=function(){
                 var total=0;
-                for(var i=0;i<this.speakingPeriods.length;i++){
-                  total=total+(this.speakingPeriods[i][1]-this.speakingPeriods[i][0]);
-                }
-                return total;
+              for(var i=0;i<this.speakingPeriods.length;i++){
+                total=total+(this.speakingPeriods[i][1]-this.speakingPeriods[i][0]);
+              }
+              return total;
               }
               //Gives a string representing the total time of speech.
               this.totalTimeString=function(){
@@ -549,7 +549,7 @@
 			this.grd.addColorStop(1,"grey");
 			this.contextCopy=null;
 			this.popoverText="";
-     
+               
             //Methods:
             //Fills the speaker array with SpeakerData objects.
             this.updateSpeakers=function(){
@@ -560,29 +560,29 @@
               //We don't treat the last word because we need the start of the following word to deduce the word duration.
               for(var i=0;i<wordObjects.length-1;i++){
               	if(wordObjects[i].spk!=null){
-                 if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
-                   hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk,defaultColor);
-                   hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
-                 }
-                 else{
+					if(typeof hashSpeakers[wordObjects[i].spk.id]=='undefined'){
+					  hashSpeakers[wordObjects[i].spk.id]=new SpeakerData(wordObjects[i].spk,defaultColor);
+					  hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
+					}
+					else{
 					  //We merge the consecutive speaking periods so the bar is not so that the bar is not hatched.
 					  if(hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]==wordObjects[i].start){
-              hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]=wordObjects[i+1].start;
-            }
-            else{
-              hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
-            }
-          }
-        }
-      }
-      var s;
-      for(s in hashSpeakers){
-        this.speakers.push(hashSpeakers[s]);
-      }
+						hashSpeakers[wordObjects[i].spk.id].speakingPeriods[hashSpeakers[wordObjects[i].spk.id].speakingPeriods.length-1][1]=wordObjects[i+1].start;
+					  }
+					  else{
+						hashSpeakers[wordObjects[i].spk.id].addSpeakingPeriod(wordObjects[i].start,wordObjects[i+1].start);
+					  }
+					}
+				}
+              }
+              var s;
+              for(s in hashSpeakers){
+                this.speakers.push(hashSpeakers[s]);
+              }
               //We sort the speakers so the first one are those who talk the most.
               this.speakers.sort(function (a, b) {
-                return b.totalTime()-a.totalTime();
-              });
+                              return b.totalTime()-a.totalTime();
+                          });
               for(var i=0;i<this.speakers.length;i++){
                 //If we don't have enough colors for all the speakers, the last speakers(who talk the less) will keep the default color.
                 if(i<this.colors.length-1){
@@ -591,44 +591,44 @@
               }
               
               if(this.speakers.length>this.colors.length){
-                var indLim=0;
-                for(var i=0;i<this.speakers.length;i++){
-                 if(this.speakers[i].color==this.colors[this.colors.length-1]){
-                  indLim=i;
-                  break;
-                }
+			  	var indLim=0;
+				for(var i=0;i<this.speakers.length;i++){
+					if(this.speakers[i].color==this.colors[this.colors.length-1]){
+						indLim=i;
+						break;
+					}
+				}
+				this.mainSpeakers=this.speakers.slice(0,indLim);
+			  }
+			  else{
+			  	this.mainSpeakers=this.speakers;
+			  }
+			  
+			  if(this.speakers.length>this.colors.length){
+              	indLim=0;
+				for(var i=0;i<this.speakers.length;i++){
+					if(this.speakers[i].color==this.colors[this.colors.length-1]){
+						indLim=i;
+						break;
+					}
+				}
+				this.secondarySpeakers=this.speakers.slice(indLim,this.speakers.length);
               }
-              this.mainSpeakers=this.speakers.slice(0,indLim);
-            }
-            else{
-              this.mainSpeakers=this.speakers;
-            }
-            
-            if(this.speakers.length>this.colors.length){
-             indLim=0;
-             for(var i=0;i<this.speakers.length;i++){
-               if(this.speakers[i].color==this.colors[this.colors.length-1]){
-                indLim=i;
-                break;
+			  else{
+				this.secondarySpeakers=[];
+			  }
+            	
+              this.mainSpeakersTitle=" Principal speakers ["+this.mainSpeakers.length+"]";
+              if(this.speakers.length>this.colors.length){
+                this.secondarySpeakersTitle=" Secondary speakers (who talk the less) ["+this.secondarySpeakers.length+"]";
               }
+              
             }
-            this.secondarySpeakers=this.speakers.slice(indLim,this.speakers.length);
-          }
-          else{
-            this.secondarySpeakers=[];
-          }
-          
-          this.mainSpeakersTitle=" Principal speakers ["+this.mainSpeakers.length+"]";
-          if(this.speakers.length>this.colors.length){
-            this.secondarySpeakersTitle=" Secondary speakers (who talk the less) ["+this.secondarySpeakers.length+"]";
-          }
-          
-        }
             //Sets the current color to fill the canvas.
             this.setColor=function(color){         
 				// Fill with gradient
 				this.grd.addColorStop(0,color);
-      }
+            }
             //Draws a segment in the canvas.
             this.drawSegment=function(start,width){
               var fractionStart=(start-this.timeStart)/this.duration;
@@ -660,21 +660,21 @@
               if(currentSpeakerIndex>=0 && this.transcription.content[currentSpeakerIndex].spk!=null){
               	var currentSpeakerId=this.transcription.content[currentSpeakerIndex].spk.id;
               	for(var i=0;i<this.speakers.length;i++){
-                 if(this.speakers[i].spkId==currentSpeakerId){
-                  this.speakers[i].speakingStatus="active";
-                }
-                else{
-                  this.speakers[i].speakingStatus="none";
-                }
+					if(this.speakers[i].spkId==currentSpeakerId){
+						this.speakers[i].speakingStatus="active";
+					}
+					else{
+						this.speakers[i].speakingStatus="none";
+					}
+              	}
               }
+              else{
+              	for(var i=0;i<this.speakers.length;i++){
+					this.speakers[i].speakingStatus="none";
+              	}
+              }
+              
             }
-            else{
-             for(var i=0;i<this.speakers.length;i++){
-               this.speakers[i].speakingStatus="none";
-             }
-           }
-           
-         }
             //Update the video in terms of the spot we clicked on the bar
             this.clickUpdate=function(event) {
               var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
@@ -709,23 +709,23 @@
               
               this.popoverText="speaker: "+currentSpeakerId+", time: "+timeString;
               
-              var left = event.pageX;
-              var top = event.pageY;
-              var theHeight = $('#popover').height();
-              $('#popover').show();
-              $('#popover').css('left', (left+10) + 'px');
-              $('#popover').css('top', (top-(theHeight/2)-10) + 'px');
-            }
-            this.closePopover=function () {
-              $('#popover').hide();
-            }
-          }
+			  var left = event.pageX;
+			  var top = event.pageY;
+			  var theHeight = $('#popover').height();
+		      $('#popover').show();
+			  $('#popover').css('left', (left+10) + 'px');
+		      $('#popover').css('top', (top-(theHeight/2)-10) + 'px');
+			}
+			this.closePopover=function () {
+				$('#popover').hide();
+			}
         }
-      });
+      }
+    });
 
 
-  angular.module('searchServices', []).
-  factory('BinarySearch', function(){
+angular.module('searchServices', []).
+    factory('BinarySearch', function(){
       //Work derived from
       //http://www.nczonline.net/blog/2009/09/01/computer-science-in-javascript-binary-search/
       //Copyright 2009 Nicholas C. Zakas, MIT-Licensed
@@ -735,8 +735,8 @@
           accessFunction = typeof accessFunction !== 'undefined' ? accessFunction : function(b) { return b; };
 
           var startIndex  = 0,
-          stopIndex   = items.length - 1,
-          middle      = Math.floor((stopIndex + startIndex)/2);
+              stopIndex   = items.length - 1,
+              middle      = Math.floor((stopIndex + startIndex)/2);
 
           var found = function(index, collection, toFind) {
             if (index <= 0 || index >= collection.length -1) {
@@ -751,10 +751,10 @@
             }
             else{
             	if(toFind >= value && toFind < accessFunction(collection[index+1])) {
-                return true;
-              } else {
-                return false;
-              }
+                  return true;
+                } else {
+                  return false;
+                }
             }
             
           }
@@ -775,184 +775,184 @@
           while(!found(middle, items, value) && startIndex < stopIndex){
               //adjust search area
               if (value < accessFunction(items[middle])){
-                stopIndex = middle - 1;
+                  stopIndex = middle - 1;
               } else if (value > accessFunction(items[middle])){
-                startIndex = middle + 1;
+                  startIndex = middle + 1;
               } else if (value != accessFunction(items[middle])) {
                   //value is not < or > and is not equal: we are comparing apples and bananas
                   return -1;
-                }
+              }
 
               //recalculate middle
               middle = Math.floor((stopIndex + startIndex)/2);
-            }
-            
-            return middle;
           }
+          
+          return middle;
         }
-      });
+    }
+});
 
 
-  angular.module('fileServices', ['ngResource'])
-  .factory('File', function($resource){
-    return $resource('/assets/files/:fileId',{},{get  : {method:'GET', isArray: true}}  );
-  })
-  .factory('SentenceBoundaries', function(){
+angular.module('fileServices', ['ngResource'])
+	.factory('File', function($resource){
+        return $resource('/assets/files/:fileId',{},{get  : {method:'GET', isArray: true}}  );
+    })
+    .factory('SentenceBoundaries', function(){
         //Extracts the sentence boundaries from the content of a .seg file and returns it in an array.
         return {
         	get : function(segfileContent){
-           var s="";
-           var bounds=new Array();
-           for(var i=0;i<segfileContent.length;i++){
-             s=s+segfileContent[i][0];
-           }
-           var reg=new RegExp("\n+", "g");
-           var reg2=new RegExp(" +", "g");
-           var tab=s.split(reg);
-           
-           for(var i=0;i<tab.length;i++){
-             var tab2=tab[i].split(reg2);
-             bounds.push({"start":parseInt(tab2[1])/100,"end":parseInt(tab2[2])/100});
-           }
-           
-           bounds.sort(function (a, b) {
-            return a.start-b.start;
-          });
-           
-           return bounds;
-         }
-       }
-     });
+   				var s="";
+   				var bounds=new Array();
+    			for(var i=0;i<segfileContent.length;i++){
+    	 			s=s+segfileContent[i][0];
+    			}
+    			var reg=new RegExp("\n+", "g");
+    			var reg2=new RegExp(" +", "g");
+    			var tab=s.split(reg);
+    			
+    			for(var i=0;i<tab.length;i++){
+    	 			var tab2=tab[i].split(reg2);
+    	 			bounds.push({"start":parseInt(tab2[1])/100,"end":parseInt(tab2[2])/100});
+    			}
+    			
+    			bounds.sort(function (a, b) {
+              		return a.start-b.start;
+            	});
+    			
+    			return bounds;
+        	}
+        }
+});
 
-  angular.module('videoServices', [])
-  .factory('Video', function(){
-    return {
+angular.module('videoServices', [])
+    .factory('Video', function(){
+        return {
             //Starts the video at a specific time. We give the corresponding transcriptionsData to init its display.
-            startVideo : function(timeStart,transcriptionsData){
+        	startVideo : function(timeStart,transcriptionsData){
         		$('#mediafile')["0"].player.setCurrentTime(timeStart); //The video have to exist with this id
-            transcriptionsData.initDisplay(timeStart);
-          },
+  				transcriptionsData.initDisplay(timeStart);
+        	},
         	//Move the video at the time corresponding to the word(event) we click on.
         	moveVideo : function(eventObject){
         		var time = eventObject.currentTarget.attributes["data-start"].value;
-            $('#mediafile')["0"].player.setCurrentTime(time);
-          },
+  				$('#mediafile')["0"].player.setCurrentTime(time);
+        	},
         	//Move the video at a specific time.
         	moveVideoTo : function(time){
-            $('#mediafile')["0"].player.setCurrentTime(time);
-          }
+  				$('#mediafile')["0"].player.setCurrentTime(time);
+        	}
         }
-      })
-  .factory('Time', function(){
-    return {
+	})
+	.factory('Time', function(){
+		return {
 			//Gives a string representation of a time in second. Rounded to the lower value.
 			format : function(time) {
-        var hours = Math.floor(time / 3600);
-        var mins  = Math.floor((time % 3600) / 60);
-        var secs  = Math.floor(time % 60);
-        
-        if (secs < 10) {
-          secs = "0" + secs;
-        } 
-        if (hours) {
-          if (mins < 10) {
-           mins = "0" + mins;
-         }
+  				var hours = Math.floor(time / 3600);
+  				var mins  = Math.floor((time % 3600) / 60);
+  				var secs  = Math.floor(time % 60);
+	
+  				if (secs < 10) {
+    				secs = "0" + secs;
+  				} 
+  				if (hours) {
+    				if (mins < 10) {
+      					mins = "0" + mins;
+    				}
     				return hours + ":" + mins + ":" + secs; // hh:mm:ss
-          } 
-          else {
+ 				 } 
+  				else {
     				return mins + ":" + secs; // mm:ss
-          }
-        }
-      }
-      
-    });
-  
-  angular.module('positionServices', []).
-  factory('Position', function(){
-    return {
+  				}
+			}
+		}
+	
+	});
+	
+angular.module('positionServices', []).
+	factory('Position', function(){
+        return {
             //Gives the absolute position of the element in the page.
-            getElementPosition : function(element){
-              var top = 0, left = 0;
-              
-              while (element) {
-               left   += element.offsetLeft;
-               top    += element.offsetTop;
-               element = element.offsetParent;
-             }
-             return { x: left, y: top };
-           },
+        	getElementPosition : function(element){
+  				var top = 0, left = 0;
+    
+  				while (element) {
+   	 				left   += element.offsetLeft;
+    				top    += element.offsetTop;
+    				element = element.offsetParent;
+  				}
+  				return { x: left, y: top };
+			},
 			//Gives the coordinates of the mouse position.
 			getMousePosition : function(event) {
-        if (event.pageX) {
-          return {
-            x: event.pageX,
-            y: event.pageY
-          };
-        } else {
-          return { 
-            x: event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft, 
-            y: event.clientY + document.body.scrollTop  + document.documentElement.scrollTop
-          };
+  				if (event.pageX) {
+    				return {
+             			x: event.pageX,
+             			y: event.pageY
+           			};
+  				} else {
+    				return { 
+             			x: event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft, 
+             			y: event.clientY + document.body.scrollTop  + document.documentElement.scrollTop
+           			};
+  				}
+			}
         }
-      }
-    }
-  });
-  
-  angular.module('controllerServices', []).
-  factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
-    return {
-     initializeTranscriptionComparisonCtrl : function(scope,globalStep,colors){
-      scope.startVideo=function(timeStart){
-       Video.startVideo(timeStart,scope.transcriptionsData);
-     }
-     
-     scope.moveVideo=function(eventObject){
-       Video.moveVideo(eventObject);
-     }
-     
-     scope.clickUpdate=function(event) {
-      scope.speakerBar.clickUpdate(event);
-    }
-    
-    var refresh=function(){
-     scope.$apply();
-   }
-   
-   $('#calculationOverAlert').hide();
-   $('#outTranscriptionAlert').hide();
-   $('#progressBar').hide();
+	});
+	
+angular.module('controllerServices', []).
+	factory('Controller', function(Video, File, Restangular, SentenceBoundaries, TranscriptionsData, SpeakerBar){
+        return {
+        	initializeTranscriptionComparisonCtrl : function(scope,globalStep,colors){
+                scope.startVideo=function(timeStart){
+                	Video.startVideo(timeStart,scope.transcriptionsData);
+                }
+                
+                scope.moveVideo=function(eventObject){
+                	Video.moveVideo(eventObject);
+                }
+                
+                scope.clickUpdate=function(event) {
+              		scope.speakerBar.clickUpdate(event);
+            	}
+                
+                var refresh=function(){
+                	scope.$apply();
+                }
+                
+                $('#calculationOverAlert').hide();
+                $('#outTranscriptionAlert').hide();
+                $('#progressBar').hide();
                 //Get the transcription from the server: if the transcription enhanced with the dtw exist, we use it. Otherwise we make the calculation.
                 File.get({fileId: 'enhanced-trsanscription.json'}, 
-                  function(transcriptions) {
+                    function(transcriptions) {
                   	scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
                   	
                   	scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
-                    scope.speakerBar.initialize();
-                    
+            		scope.speakerBar.initialize();
+                  	
                   	//We make sure that the nextWordToDisplay value is correct
                   	scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
-                  },
-                  function(){
-                    Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
-                     scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
-                     scope.transcriptionsData.adjustTranscriptions();
-                     
-                     scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
-                     scope.speakerBar.initialize();
-                     
-                     File.get({fileId: 'sentence_bounds.seg'}, 
-                      function(data) {
+                    },
+                    function(){
+                      Restangular.one('audiofiles.json', 2).getList('transcriptions').then(function(transcriptions) {
+                	      scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
+                	      scope.transcriptionsData.adjustTranscriptions();
+                	      
+                	      scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[0],0,colors);
+            			  scope.speakerBar.initialize();
+                	      
+                        File.get({fileId: 'sentence_bounds.seg'}, 
+                          function(data) {
                   	      //We get the bounds of the sentences we will use for the DTWs
                   	      scope.sentenceBounds=SentenceBoundaries.get(data);	
                   	      scope.transcriptionsData.updateTranscriptionsWithDtw(scope.sentenceBounds,refresh);
                   	      //We make sure that the nextWordToDisplay value is correct
                   	      scope.startVideo(scope.transcriptionsData.fullTranscription[0].content[0].start);
-                        }
+                          }
                         );
-                   });
-}
-);
+                      });
+                    }
+                );
 
                 //Non angular events
                 $("#mediafile").on("timeupdate", function (e) {
@@ -967,42 +967,42 @@
                     scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
                   });
                 });
-              },
-              initializeDiarizationCtrl : function(scope,globalStep,transcriptionNum,colors) {
-               scope.startVideo=function(timeStart){
-                Video.startVideo(timeStart,scope.transcriptionsData);
-              }
-              
-              scope.moveVideo=function(eventObject){
-                Video.moveVideo(eventObject);
-              }
-              
-              scope.clickUpdate=function(event) {
-                scope.speakerBar.clickUpdate(event);
-              }
-              
+			},
+			initializeDiarizationCtrl : function(scope,globalStep,transcriptionNum,colors) {
+            	scope.startVideo=function(timeStart){
+            		Video.startVideo(timeStart,scope.transcriptionsData);
+            	}
+            
+            	scope.moveVideo=function(eventObject){
+            		Video.moveVideo(eventObject);
+            	}
+            
+            	scope.clickUpdate=function(event) {
+              		scope.speakerBar.clickUpdate(event);
+            	}
+            
             	//Get the transcription from the server
             	Restangular.one('audiofiles.json', 1).getList('transcriptions').then(function(transcriptions) {
             		scope.transcriptionsData=new TranscriptionsData.instance(transcriptions,globalStep);
             		scope.transcriptionsData.adjustTranscriptions();
             		scope.speakerBar=new SpeakerBar.instance(scope.transcriptionsData.fullTranscription[transcriptionNum],transcriptionNum,colors);
             		scope.speakerBar.initialize();
-                scope.startVideo(scope.transcriptionsData.fullTranscription[transcriptionNum].content[transcriptionNum].start);
-              });
+              		scope.startVideo(scope.transcriptionsData.fullTranscription[transcriptionNum].content[transcriptionNum].start);
+            	});
 
             	//Non angular events
             	$("#mediafile").on("timeupdate", function (e) {
-                scope.$apply( function() {
-                  scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
-                  scope.speakerBar.timeUpdate(e.target.currentTime);
-                });
-              });
+              		scope.$apply( function() {
+                		scope.transcriptionsData.timeUpdateDisplay(e.target.currentTime);
+                		scope.speakerBar.timeUpdate(e.target.currentTime);
+              		});
+            	});
 
             	$("#mediafile").on("seeking", function (e) {
-                scope.$apply( function() {
-                  scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
-                });
-              });
-            }
-          }
-        });
+              		scope.$apply( function() {
+                		scope.transcriptionsData.seekingUpdateDisplay(e.target.currentTime);
+              		});
+            	});
+			}
+    	}
+	});

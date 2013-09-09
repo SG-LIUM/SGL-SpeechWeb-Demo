@@ -5,10 +5,10 @@
 <!-- Main Wrapper -->
 <div id="main-wrapper" ng-controller="SpeakerCtrl">
 
-	<div class="container">
-		
-		<!-- ROW 0 -->
-		<div class="row">
+  <div class="container">
+  
+  		<!-- ROW 0 -->
+  		<div class="row">
 			<!-- Togglable tabs -->
 			<div class="span12">
 				<div class="bloc">
@@ -20,98 +20,98 @@
 						</ul>
 						<div class="tab-content">
 							<div class="tab-pane active" id="main">
-								<div class="container-fluid">
-									<!-- ROW 1 -->
-									<div class="row-fluid">
-										<!-- Title and information zone -->
-										<div class="span12">
-											<div class="bloc">
+									<div class="container-fluid">
+										<!-- ROW 1 -->
+										<div class="row-fluid">
+											<!-- Title and information zone -->
+											<div class="span12">
+												<div class="bloc">
+				
+													
+														<div id="outTranscriptionAlert" class="alert alert-error">
+														  <button type="button" class="close" data-dismiss="alert">&times;</button>
+														  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+														  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+														</div>
+
 												
-												
-												<div id="outTranscriptionAlert" class="alert alert-error">
-													<button type="button" class="close" data-dismiss="alert">&times;</button>
-													<h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
-													{{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
 												</div>
 
-												
 											</div>
-
 										</div>
-									</div>
-									
-									<!-- ROW 2 -->
-									<div class="row-fluid">
-										<!-- Transcription -->
-										<div class="span6">
-											<div class="bloc">
-												<div class="accordion-group" style="background-color: #FFFFEB;">
-													<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item1" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Transcription</span> </a> </div>
-													<div id="item1" class="collapse in">
-														<div class="accordion-inner">
-															<span class="italic"><i>{{transcriptionsData.displayedTranscriptions[0].message}}</i></span>
-															<article id="content0">
-																<p>
-																	<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="none">{{jsonWord.word}} </span>
-																</p>
-															</article>
+		
+										<!-- ROW 2 -->
+										<div class="row-fluid">
+											<!-- Transcription -->
+											<div class="span6">
+												<div class="bloc">
+													<div class="accordion-group" style="background-color: #FFFFEB;">
+														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item1" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Transcription</span> </a> </div>
+														<div id="item1" class="collapse in">
+															<div class="accordion-inner">
+																<span class="italic"><i>{{transcriptionsData.displayedTranscriptions[0].message}}</i></span>
+																<article id="content0">
+																	<p>
+																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="none">{{jsonWord.word}} </span>
+																	</p>
+																</article>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- Media -->
+											<div class="span6">
+												<div class="bloc">
+													<div class="accordion-group" style="background-color: #EBFFEB;">
+														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item2" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Your File</span> </a> </div>
+														<div id="item2" class="collapse in">
+															<div class="accordion-inner">
+																<video width="490" height="276" id="mediafile" controls preload>
+																	<!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
+																	<source type="video/mp4" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.mp4" />
+																	<!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
+																	<source type="video/webm" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.webm" />
+																</video>
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-										<!-- Media -->
-										<div class="span6">
+		
+										<div id="popover" class="popover">
 											<div class="bloc">
-												<div class="accordion-group" style="background-color: #EBFFEB;">
-													<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item2" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Your File</span> </a> </div>
-													<div id="item2" class="collapse in">
-														<div class="accordion-inner">
-															<video width="490" height="276" id="mediafile" controls preload>
-																<!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
-																<source type="video/mp4" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.mp4" />
-																<!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
-																<source type="video/webm" src="http://localhost/tmp/BFMTV_BFMStory_2012-01-10_175800.webm" />
-															</video>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									<div id="popover" class="popover">
-										<div class="bloc">
 											<h4>Speaker Bar Info</h4>
 											<span>{{speakerBar.popoverText}}</span>
-										</div class="bloc">
-									</div>
-									
-									<!-- ROW 3 -->
-									<div class="row-fluid">
-										<!-- Speaker Bar -->
-										<div class="span12">
-											<div class="bloc">
-												<div class="accordion-group" style="background-color: #EBFFFF;">
-													<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Speaker Bar</span> </a> </div>
-													<div id="item3" class="collapse in">
-														<div class="accordion-inner">
-															<!-- SpeakerBar -->
-															<canvas width="1040" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
-																<p>updates are necessary</p>
-															</canvas>
-															<p><span id="progressTime0">--:--</span></p>	
-															<!-- Main Speaker -->
-															<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
-															<div class="container-fluid">
-																<div class="row-fluid">
+											</div class="bloc">
+										</div>
+		
+										<!-- ROW 3 -->
+										<div class="row-fluid">
+											<!-- Speaker Bar -->
+											<div class="span12">
+												<div class="bloc">
+													<div class="accordion-group" style="background-color: #EBFFFF;">
+														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <i class="icon-chevron-up"></i> <span class="title">Speaker Bar</span> </a> </div>
+														<div id="item3" class="collapse in">
+															<div class="accordion-inner">
+																<!-- SpeakerBar -->
+																<canvas width="1040" height="50" class="canvas" id="canvas0" ng-click="clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
+																  <p>updates are necessary</p>
+																</canvas>
+																<p><span id="progressTime0">--:--</span></p>	
+																<!-- Main Speaker -->
+																<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
+																<div class="container-fluid">
+																  <div class="row-fluid">
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" ngModel="speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
 																				<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.totalTimeString()}}</span> </a>
 																			</li>
 																		</ul>
-																		
+															
 																	</div>
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
@@ -120,12 +120,12 @@
 																			</li>
 																		</ul>
 																	</div>
+																  </div>
 																</div>
-															</div>
-															<!-- Secondary Speaker -->
-															<span class="bold">{{speakerBar.secondarySpeakersTitle}}</span>
-															<div class="container-fluid">
-																<div class="row-fluid">
+																<!-- Secondary Speaker -->
+																<span class="bold">{{speakerBar.secondarySpeakersTitle}}</span>
+																<div class="container-fluid">
+																  <div class="row-fluid">
 																	<div class="span6">
 																		<ul class="nav nav-pills nav-stacked">
 																			<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" ngModel="speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
@@ -140,17 +140,17 @@
 																			</li>
 																		</ul>
 																	</div>
-																</div>
-															</div>	
+																  </div>
+																</div>	
+															</div>
 														</div>
 													</div>
-												</div>
-											</div>	
+												</div>	
+											</div>
 										</div>
 									</div>
-								</div>
 
-								
+							
 							</div>
 							<div class="tab-pane" id="info">
 								<div class="container-fluid">
@@ -159,74 +159,74 @@
 										<!-- Title and information zone -->
 										<div class="span12">
 											<div class="bloc">
-												
+		
 												<div class="hero-unit">
-													
+		
 													<h2>Information <br></h2>
 													<hr>
 													<p>Some Explanation...</p>
-													
+				
 													<span class="title">Features</span>
 													<br><br>
 													<p>_ Click on the <span class="bold">box titles</span> to open/close them.<br>
-														_ Click on a <span class="bold">word</span> in a transcription to set the media at the moment the word is pronounced.<br>
-														_ Place your mouse over a <span class="bold">word</span> to see when it starts.<br>
-														_ Click on the <span class="bold">speaker bar</span> to navigate in the media.<br>
-														_ Place your mouse over the <span class="bold">speaker bar</span> to see information about the current time and the current speaker.<br>
-														_ Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<br>
-														_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>
-														
-
-													</div>
-												</div>
-
-											</div>
-										</div>
-										
-									</div>
-								</div>
-								<div class="tab-pane" id="about">
-									<div class="container-fluid">
-										<!-- ROW 1 -->
-										<div class="row-fluid">
-											<!-- Title and information zone -->
-											<div class="span12">
-												<div class="bloc">
+													_ Click on a <span class="bold">word</span> in a transcription to set the media at the moment the word is pronounced.<br>
+													_ Place your mouse over a <span class="bold">word</span> to see when it starts.<br>
+													_ Click on the <span class="bold">speaker bar</span> to navigate in the media.<br>
+													_ Place your mouse over the <span class="bold">speaker bar</span> to see information about the current time and the current speaker.<br>
+													_ Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<br>
+													_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>
 													
-													<div class="hero-unit">
-														
-														<h2>About <br></h2>
-														<hr>
-														<p>View this project on <a href="https://github.com/SG-LIUM/SGL-SpeechWeb-Demo">GitHub</a>. <p>
-															<p>Web demonstrator designed by <a href="https://github.com/eSim">Edwin Simonnet</a>, <a href="http://sciences.univ-lemans.fr/Licence-Sciences-Pour-l-Ingenieur">Licence Science Pour l'Ingénieur</a>, <a href="http://www.univ-lemans.fr">Université du Maine</a>, Le Mans, France.<p>
 
-															</div>
-														</div>
-
-													</div>
 												</div>
-												
 											</div>
-											
+
 										</div>
 									</div>
+					
 								</div>
+							</div>
+							<div class="tab-pane" id="about">
+								<div class="container-fluid">
+									<!-- ROW 1 -->
+									<div class="row-fluid">
+										<!-- Title and information zone -->
+										<div class="span12">
+											<div class="bloc">
+		
+												<div class="hero-unit">
+		
+													<h2>About <br></h2>
+													<hr>
+													<p>View this project on <a href="https://github.com/SG-LIUM/SGL-SpeechWeb-Demo">GitHub</a>. <p>
+													<p>Web demonstrator designed by <a href="https://github.com/eSim">Edwin Simonnet</a>, <a href="http://sciences.univ-lemans.fr/Licence-Sciences-Pour-l-Ingenieur">Licence Science Pour l'Ingénieur</a>, <a href="http://www.univ-lemans.fr">Université du Maine</a>, Le Mans, France.<p>
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+					
+								</div>
+							
 							</div>
 						</div>
 					</div>
-					
-					
 				</div>
 			</div>
+		</div>
+  
+  
+  </div>
+</div>
 
-			<script>
+<script>
 // jQuery method
 $('#mediafile').mediaelementplayer();
 
 $('.collapse').on('show', function(){
-	$(this).parent().find(".icon-chevron-down").removeClass("icon-chevron-down").addClass("icon-chevron-up");
+    $(this).parent().find(".icon-chevron-down").removeClass("icon-chevron-down").addClass("icon-chevron-up");
 }).on('hide', function(){
-	$(this).parent().find(".icon-chevron-up").removeClass("icon-chevron-up").addClass("icon-chevron-down");
+    $(this).parent().find(".icon-chevron-up").removeClass("icon-chevron-up").addClass("icon-chevron-down");
 });
 
 </script>

@@ -4,9 +4,7 @@
 angular.module('liumsg', ['restangular', 'searchServices', 'transcriptionServices', 'ngUpload','fileServices','videoServices','positionServices','controllerServices'])
   .config(function(RestangularProvider) {
     RestangularProvider.setBaseUrl("http://localhost\\:9000");
-})
-/* Allows tooltips */
-.directive('tooltip', function () {
+  }).directive('tooltip', function () {
     return {
         restrict:'A',
         link: function(scope, element, attrs)
