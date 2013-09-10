@@ -108,7 +108,22 @@ The diarization viewer has to call the service :
 As we have seen before, the json data are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription). `numTranscription` is the index in the array of the transcription that will be used.    
 `colors` represents the same thing that before.   
 
-#### 2) Elements to use in the html pages
+#### 2) Allowing tooltips
+
+Allow the tooltips in your web pages by inserting this directive in your project:
+
+	.directive('tooltip', function () {
+	    return {
+	        restrict:'A',
+	        link: function(scope, element, attrs)
+	        {
+	            $(element)
+	                .attr('title',scope.$eval(attrs.tooltip));
+	        }
+	    }
+	});
+
+#### 3) Elements to use in the html pages
 
 Here is the description of the different tags to dispose in the pages.
 
@@ -124,11 +139,22 @@ Here is the description of the different tags to dispose in the pages.
 
 	Some messages are provided to inform the user on what is happening.
 
-		<p> <span class="message">{{transcriptionsData.calculationMessage}}</p>
-		<p> 
-			<span class="message">{{transcriptionsData.message}} </span>	
-			<span ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)" class="clickableMessage">{{transcriptionsData.clickableMessage}}</span> 
-		</p>
+		<div id="progressBar">
+		  <div class="progress progress-striped active">
+			<div id="progressBarContent" class="bar"></div>
+		  </div>
+		  <p>Dtw Calculation ({{transcriptionsData.progressBarContent[0].style.width}})</p>
+		</div>
+		<div id="calculationOverAlert" class="alert alert-success">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  <h4>Calculation Over!</h4>
+		  You can <button class=" btn btn-success  btn-large" ng-click="transcriptionsData.copyTranscription()">get the get the transcriptions json data</button> (with the comparison information added) .
+		</div>
+		<div id="outTranscriptionAlert" class="alert alert-error">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+		  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+		</div>
 
 `transcriptionsData.calculationMessage` is a message indicating if there are still comparison calculation in progress. If not, the message is empty.   
 `transcriptionsData.message` and `transcriptionsData.clickableMessage` compose a complete message indicating if the video is outside of the transcribed part (taking the first transcription as a reference too for the limits). `transcriptionsData.clickableMessage` contains the time when the transcription start and is dedicated to be bounded to the action: `startVideo(transcriptionsData.fullTranscription[0].content[0].start)` which set video to the start of the transcription. The start chosen here is the one of the reference.   
