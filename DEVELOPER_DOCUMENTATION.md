@@ -20,7 +20,7 @@ The structures which have to be employed are described bellow:
 
 #### 1) ctm files
 
-TODO: decription of a ceg file and where they have to be placed by the developer
+TODO: decription of a ctm file and where they have to be placed by the developer
 
 The information extracted from the ctm files will be stored in a json format. Here is a description of the resulting json data:   
 
@@ -90,21 +90,23 @@ The computation of the comparison can be long. The plugin is made so it will not
 #### 1) Initializing the controllers
 
 Two different controllers are necessary for the transcription comparator and for the diarization viewer. The service `Controller` from the `controllerServices` is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages.     
-The instance manipulated for the transcription comparator is `transcriptionData` which contain the important information built from the seg and json files given by the developer (or only the enhanced json data file if present). The instance manipulated for the diarization viewer is `transcriptionData` again and `speakerBar` which contain the information built from `transcriptionData` and which permit to handle the interactive bar.
+The instances manipulated are `transcriptionData` which contains the important information built from the seg and ctm files given by the developer and `speakerBar` which contain the information built from `transcriptionData` and which permits to handle the interactive bar.
 
 The transcription comparator has to call the service :
 
-	Controller.initializeTranscriptionComparisonCtrl($scope,step);
+	Controller.initializeTranscriptionComparisonCtrl($scope,step,colors);
 
 `step` is the integer value representing the number of word displayed at the same time.
+`colors` is an array of color names. One color is attributed to one speaker on the bar: they will be given in the order of the array to the speakers sorted (decreasing) by their speaking time. Nevertheless, if they are less speakers in the transcriptions than colors given, only the first colors will be used. And if they are more speakers than colors given, the last color will be used several time for the speakers whose talk the less.    
+The speaker bar will automatically represent the first transcription (index 0 in the json data array).
 
 The diarization viewer has to call the service :
 
 	Controller.initializeDiarizationCtrl($scope,step,numTranscription,colors);
 
 `step` has the same signification as previously.    
-As we have seen before, the json data given by the developer are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription). `numTranscription` is the index in the array of the transcription that will be used.    
-`colors` is an array of color names. One color is attributed to one speaker on the bar: they will be given in the order of the array to the speakers sorted (decreasing) by their speaking time. Nevertheless, if they are less speakers in the transcriptions than colors given, only the first colors will be used. And if they are more speakers than colors given, the last color will be used several time for the speakers whose talk the less.
+As we have seen before, the json data are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription). `numTranscription` is the index in the array of the transcription that will be used.    
+`colors` represents the same thing that before.   
 
 #### 2) Elements to use in the html pages
 
