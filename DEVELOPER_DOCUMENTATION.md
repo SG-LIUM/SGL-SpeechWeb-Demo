@@ -9,15 +9,20 @@ Every time given is in second except the contrary is said.
 
 ### A) Installing the plugins
 
-The plugins are implemented in javascript using the "AngularJs" framework. They also use the "Restangular" service. Two files are provided to make them work: "services.js" and "main.css".    
+The plugins are implemented in javascript using the ["AngularJs" framework](http://angularjs.org). They also use the ["Restangular" service](https://github.com/mgonto/restangular). Some element of the page use the ["Bootstrap" framework](http://getbootstrap.com/2.3.2/).    
+Two files are provided to make them work: "services.js" and "main.css".     
 To use those plugins, the developer has to insert the services contained in "services.js" to his services and to insert (or adapt) the styles contained in "main.css" to his css styles.   
 
 ### B) Elements required
 
-To work, the plugins need a transcription file, a segment file for the analyze of the transcription file  and a video (from which the transcription was made) to synchronize the transcription display in real-time with.   
-The transcription file is a json file containing the information of the different transcriptions of the same video. The structures which have to be employed are described bellow:   
+To work, the plugins need several transcription files (.ctm) for each transcription system, a segment file (.seg) for the analyze of the transcriptions and a video or audio file (from which the transcriptions were made) to synchronize the transcription displays in real-time with.   
+The structures which have to be employed are described bellow:   
 
-#### 1) Json file
+#### 1) ctm files
+
+TODO: decription of a ceg file and where they have to be placed by the developer
+
+The information extracted from the ctm files will be stored in a json format. Here is a description of the resulting json data:   
 
 * data in the json file:
 
@@ -56,7 +61,7 @@ Here is an example of the json file content:
 		{"system": “SYST2” ,"content":[{"start":"0","word":"Cello","spk":{"id":"S1","gender":"m"}},{"start":"0.2","word":"Word","spk":	{"id":"S1","gender":"m"}}, … ]}
 	]
 
-#### 2) Segment file
+#### 2) seg file
 
 The segment file (.seg) is a text document which contain the sentences' time delimitations that were used during the transcription process. They are necessary to make the comparison between the transcriptions. The segment file has to be named "sentence_bounds.seg" and to be stored in "/assets/files".     
 It has the following structure:
