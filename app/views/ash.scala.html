@@ -169,9 +169,11 @@
 															<div class="accordion-inner">
 																
 																<!-- SpeakerBar -->
-																<canvas width="1040" height="50" class="canvas" id="canvas0" ng-click="speakerBar.clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
-																  <p>updates are necessary</p>
-																</canvas>
+																<div id="canvas0container">
+																	<canvas class="canvas" id="canvas0" ng-click="speakerBar.clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
+																	  <p>updates are necessary</p>
+																	</canvas>
+																</div>
 																<p><span id="progressTime0">--:--</span></p>	
 																<!-- Main Speaker -->
 																<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>

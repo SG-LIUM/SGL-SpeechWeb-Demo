@@ -524,11 +524,13 @@ angular.module('transcriptionServices', [])
             this.transcription=transcription;
             this.timeStart=this.transcription.content[0].start;
             this.timeEnd=this.transcription.content[this.transcription.content.length-1].start;
-            this.context = $('#canvas'+transcriptionNum)["0"].getContext('2d');
+            this.canvas = $('#canvas'+transcriptionNum)["0"];
+            this.canvasContainer = $('#canvas'+transcriptionNum+'container');
+            this.context = this.canvas.getContext('2d');
             this.timer  = $('#progressTime'+transcriptionNum)["0"];
             this.context.lineWidth  = "5";
-            this.canvasWidth=$('#canvas'+transcriptionNum)["0"].width;
-            this.canvasHeight=$('#canvas'+transcriptionNum)["0"].height;
+            this.canvasWidth;
+            this.canvasHeight;
             this.duration=this.timeEnd-this.timeStart;
             this.colors=colors;
             this.speakers=new Array();
@@ -537,9 +539,7 @@ angular.module('transcriptionServices', [])
             this.secondarySpeakersTitle="";
             this.mainSpeakersTitle="";
 			// Creates gradient
-			this.grd=this.context.createLinearGradient(this.canvasWidth/2,0,this.canvasWidth/2,this.canvasHeight*1.8);
-			this.context.fillStyle=this.grd;
-			this.grd.addColorStop(1,"grey");
+			this.grd;
 			this.contextCopy=null;
 			this.popoverText="";
                
@@ -670,13 +670,13 @@ angular.module('transcriptionServices', [])
             }
             //Updates the video in terms of the spot we clicked on the bar
             this.clickUpdate=function(event) {
-              var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
+              var parent = Position.getElementPosition(this.canvas);  
               var target = Position.getMousePosition(event); 
               
               var x = target.x - parent.x;
               var y = target.y - parent.y;
               
-              var wrapperWidth = $('#canvas'+this.transcriptionNum)["0"].offsetWidth;
+              var wrapperWidth = this.canvas.offsetWidth;
               
               var percent  = Math.ceil((x / wrapperWidth) * 100);
               
@@ -684,17 +684,26 @@ angular.module('transcriptionServices', [])
             }
             //Initializes the speaker bar for the first time.
             this.initialize=function(){
+            	this.canvas.width = this.canvasContainer.innerWidth()*(1-0.02);
+            	this.canvas.height = 50;	
+            	this.canvasWidth=this.canvas.width;
+            	this.canvasHeight=this.canvas.height;
+            	// Creates gradient
+				this.grd=this.context.createLinearGradient(this.canvasWidth/2,0,this.canvasWidth/2,this.canvasHeight*1.8);
+				this.context.fillStyle=this.grd;
+				this.grd.addColorStop(1,"grey");
+            	
             	this.updateSpeakers();
             	this.drawSpeakers();
             	this.contextCopy = this.context.getImageData(0,0,this.canvasWidth,this.canvasHeight);
             }
             //Opens the popover which describe the bar.
             this.openPopover=function (event) {
-              var parent = Position.getElementPosition($('#canvas'+this.transcriptionNum)["0"]);  
+              var parent = Position.getElementPosition(this.canvas);  
               var target = Position.getMousePosition(event); 
               var x = target.x - parent.x;
               var y = target.y - parent.y;
-              var wrapperWidth = $('#canvas'+this.transcriptionNum)["0"].offsetWidth;
+              var wrapperWidth = this.canvas.offsetWidth;
               var percent  = Math.ceil((x / wrapperWidth) * 100);
               var time=((this.duration * percent) / 100)+this.timeStart;
               var timeString=Time.format(time);
