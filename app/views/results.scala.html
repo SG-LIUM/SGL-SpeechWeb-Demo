@@ -4,7 +4,6 @@
 
 <!-- Main Wrapper -->
 <div id="main-wrapper" ng-controller="SpeakerCtrl">
-
   <div class="container">
   
   		<!-- ROW 0 -->
@@ -26,17 +25,12 @@
 											<!-- Title and information zone -->
 											<div class="span12">
 												<div class="bloc">
-				
-													
-														<div id="outTranscriptionAlert" class="alert alert-error">
-														  <button type="button" class="close" data-dismiss="alert">&times;</button>
-														  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
-														  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
-														</div>
-
-												
+													<div id="outTranscriptionAlert" class="alert alert-error">
+													  <button type="button" class="close" data-dismiss="alert">&times;</button>
+													  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+													  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+													</div>
 												</div>
-
 											</div>
 										</div>
 		
@@ -149,8 +143,6 @@
 											</div>
 										</div>
 									</div>
-
-							
 							</div>
 							<div class="tab-pane" id="info">
 								<div class="container-fluid">
@@ -175,14 +167,10 @@
 													_ Place your mouse over the <span class="bold">speaker bar</span> to see information about the current time and the current speaker.<br>
 													_ Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<br>
 													_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>
-													
-
 												</div>
 											</div>
-
 										</div>
 									</div>
-					
 								</div>
 							</div>
 							<div class="tab-pane" id="about">
@@ -192,30 +180,23 @@
 										<!-- Title and information zone -->
 										<div class="span12">
 											<div class="bloc">
-		
 												<div class="hero-unit">
-		
 													<h2>About <br></h2>
 													<hr>
 													<p>View this project on <a href="https://github.com/SG-LIUM/SGL-SpeechWeb-Demo">GitHub</a>. <p>
 													<p>Web demonstrator designed by <a href="https://github.com/eSim">Edwin Simonnet</a>, <a href="http://sciences.univ-lemans.fr/Licence-Sciences-Pour-l-Ingenieur">Licence Science Pour l'Ingénieur</a>, <a href="http://www.univ-lemans.fr">Université du Maine</a>, Le Mans, France.<p>
-
 												</div>
 											</div>
-
 										</div>
 									</div>
-					
 								</div>
-							
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-  
-  
+		
   </div>
 </div>
 

@@ -4,7 +4,6 @@
 
 <!-- Main Wrapper -->
 <div id="main-wrapper" ng-controller="TranscriptionCtrl">
-
 	<div class="container">
 
 		<!-- ROW 0 -->
@@ -19,41 +18,32 @@
 							<li><a style="text-decoration:none;" href="#about" data-toggle="tab"><i class="icon-question-sign"></i> About</a></li>
 						</ul>
 						<div class="tab-content">
+						
+						
 							<div class="tab-pane active" id="main">
 									<div class="container-fluid">
-
-											
-
-
-
 										<!-- ROW 1 -->
 										<div class="row-fluid">
 											<!-- Title and information zone -->
 											<div class="span12">
 												<div class="bloc">
-													
-														
-														<div id="progressBar">
-															<div class="progress progress-striped active">
-															  <div id="progressBarContent" class="bar"></div>
-															</div>
-															<p>Dtw Calculation ({{transcriptionsData.progressBarContent[0].style.width}})</p>
-														</div>
-					
-														<div id="calculationOverAlert" class="alert alert-success">
-														  <button type="button" class="close" data-dismiss="alert">&times;</button>
-														  <h4>Calculation Over!</h4>
-														  You can <button class=" btn btn-success  btn-large" ng-click="transcriptionsData.copyTranscription()">get the get the transcriptions json data</button> (with the comparison information added) .
-														</div>
-														<div id="outTranscriptionAlert" class="alert alert-error">
-														  <button type="button" class="close" data-dismiss="alert">&times;</button>
-														  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
-														  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
-														</div>
-
-													
+													<div id="progressBar">
+													  <div class="progress progress-striped active">
+														<div id="progressBarContent" class="bar"></div>
+													  </div>
+													  <p>Dtw Calculation ({{transcriptionsData.progressBarContent[0].style.width}})</p>
+													</div>
+													<div id="calculationOverAlert" class="alert alert-success">
+													  <button type="button" class="close" data-dismiss="alert">&times;</button>
+													  <h4>Calculation Over!</h4>
+													  You can <button class=" btn btn-success  btn-large" ng-click="transcriptionsData.copyTranscription()">get the get the transcriptions json data</button> (with the comparison information added) .
+													</div>
+													<div id="outTranscriptionAlert" class="alert alert-error">
+													  <button type="button" class="close" data-dismiss="alert">&times;</button>
+													  <h4>Warning, you are out of the {{transcriptionsData.displayedTranscriptions[0].id}} transcription !</h4>
+													  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
+													</div>
 												</div>
-
 											</div>
 										</div>
 
@@ -168,7 +158,6 @@
 											</div class="bloc">
 										</div>
 	
-	
 										<!-- ROW 5 -->
 										<div class="row-fluid">
 											<!-- Speaker Bar & Caption -->
@@ -223,10 +212,8 @@
 																			</li>
 																		</ul>
 																	</div>
-																  </div>
-																</div>	
-															
-															</div>
+																</div>
+															</div>				
 														</div>
 													</div>
 												</div>
@@ -234,6 +221,9 @@
 										</div>
 									</div>
 								</div>
+							</div>
+								
+								
 							<div class="tab-pane" id="info">
 								<div class="container-fluid">
 									<!-- ROW 1 -->
@@ -267,16 +257,15 @@
 													_ Click on the <span class="bold">speaker bar</span> to navigate in the media.<br>
 													_ Place your mouse over the <span class="bold">speaker bar</span> to see information about the current time and the current speaker.<br>
 													_ Click on the <span class="bold">colored rectangles</span> under the speaker bar to start the video at the first speech of the corresponding speaker.<br>
-													_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>
-													
+													_ Place your mouse over a <span class="bold">colored rectangles</span> under the speaker bar to see the time when the speaker talk for the first time.</p>	
 												</div>
 											</div>
-
 										</div>
 									</div>
-					
 								</div>
 							</div>
+							
+							
 							<div class="tab-pane" id="about">
 								<div class="container-fluid">
 									<!-- ROW 1 -->
@@ -294,12 +283,9 @@
 
 												</div>
 											</div>
-
 										</div>
 									</div>
-					
 								</div>
-							
 							</div>
 						</div>
 					</div>
@@ -307,8 +293,6 @@
 			</div>
 		</div>
 								
-									
-    
   </div>
 </div>
 
