@@ -156,6 +156,8 @@ Here is the description of the different tags to dispose in the pages.
 		  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
 		</div>
 
+The id `progressBar`, `calculationOverAlert` and `outTranscriptionAlert` must be present.   
+The progressBar represents the percentage of the Dtw calculation done and it will automaticaly be updated. `transcriptionsData.progressBarContent[0].style.width` is the actual percentage.
 `transcriptionsData.calculationMessage` is a message indicating if there are still comparison calculation in progress. If not, the message is empty.   
 `transcriptionsData.message` and `transcriptionsData.clickableMessage` compose a complete message indicating if the video is outside of the transcribed part (taking the first transcription as a reference too for the limits). `transcriptionsData.clickableMessage` contains the time when the transcription start and is dedicated to be bounded to the action: `startVideo(transcriptionsData.fullTranscription[0].content[0].start)` which set video to the start of the transcription. The start chosen here is the one of the reference.   
 `transcriptionsData.fullTranscription` is the array extracted from the json file.
