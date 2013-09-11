@@ -233,21 +233,17 @@ Here is the description of the different tags to dispose in the pages.
 
 	It could be interesting to give some explanation to the users. The developer can use something like this if he brought four transcription systems for example:
 
-		<h3>Caption</h3>
- 		<p>
-			We choose the {{transcriptionsData.displayedTranscriptions[0].id}} system as a reference for the comparison.
-		</p>
- 		<p>
-			<span class="substCaption">hypothesisWord(->referenceWord) </span>
-			: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be substituted with the referenceWord to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
-			<br>
-    		<span class="supprCaption">-hypothesisWord- </span>
-			: the hypothesisWord({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) must be deleted to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
-			<br>
-    		<span class="inserCaption">+referenceWord+</span>
-			: the referenceWord({{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted into the hypothesis({{transcriptionsData.displayedTranscriptions[3].id}}, {{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}}) to match with the reference({{transcriptionsData.displayedTranscriptions[0].id}}).
-		</p>
-
+		<span class="title">Caption</span>
+		<br><br>
+		<p>The comparisons between the transcriptions are made with a Dynamic time warping (DTW) algorithm wich mesures similarity between two transcriptions sentence by sentence: a reference and a hypothesis. We can then determine the modifications that should be done in the hypothesis so it matches with the reference.</p>
+		<p>We choose the {{transcriptionsData.displayedTranscriptions[0].id}} transcription as a reference for the comparisons. The {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} and {{transcriptionsData.displayedTranscriptions[2].id}} transcriptions are the hypothesis.<br>Here are the caption of the modifications that must be applied to the hypothesis ({{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) so it matches with the reference ({{transcriptionsData.displayedTranscriptions[0].id}} transcription) :</p>
+		<p>_ <span class="{{transcriptionsData.substitutionStyle}}">hypothesisWord(>>referenceWord) </span> : hypothesisWord (from {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) must be substituted with referenceWord (from {{transcriptionsData.displayedTranscriptions[0].id}} transcription) to match.<br>
+		_ <span class="{{transcriptionsData.suppressionStyle}}">hypothesisWord </span> : hypothesisWord (from {{transcriptionsData.displayedTranscriptions[3].id}},{{transcriptionsData.displayedTranscriptions[1].id}} or {{transcriptionsData.displayedTranscriptions[2].id}} transcription) must be deleted to match.<br>
+		_ <span class="{{transcriptionsData.insertionStyle}}">referenceWord </span> : referenceWord (from {{transcriptionsData.displayedTranscriptions[0].id}}) must be inserted to match.</p>
+		<p>Other information:</p>
+		<p>_ <span class="{{transcriptionsData.showStyle}}">referenceWord </span> : When your mouse is over an inserted or substituted word in a hypothesis, the corresponding word in the reference is highlighted.<br>
+		_ <span class="untreatedDtw">word </span> : This word has not been treated by a DTW because it does not belong to any sentence.</p>
+		
 ##### ii. Diarization Viewer:
 
 * remember to indicate the right controller again:
@@ -258,7 +254,7 @@ Here is the description of the different tags to dispose in the pages.
 
 * User messages:
 
-	`transcriptionsData.message` and `transcriptionData.clickableMessage` are still present in this controller.
+	`transcriptionsData.message` and `transcriptionData.clickableMessage` are still present in this controller. The element concerning the DTW calculation 
 
 * Title:
 
