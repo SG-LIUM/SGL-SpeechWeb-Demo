@@ -245,7 +245,7 @@ Here is the description of the different tags to dispose in the pages.
 		
 * Interactive speaker bar:
 
-	The interactive speaker bar is composed of a clickable bar to navigate in the video (this bar also show the repartition of the speakers), a timer and also a popver which give some information when the mouse is over the bar. Here is the way the developer should insert the bar in his page (for the transcription n°0 because it will automatically corespond to th reference):   
+	The interactive speaker bar is composed of a clickable bar to navigate in the video (this bar also show the repartition of the speakers), a timer and also a popver which give some information when the mouse is over the bar. Here is the way the developer should insert the bar in his page (for the transcription n°i=0 because it will automatically corespond to th reference):   
 
 		<div id="popover" class="popover">
 			<div class="bloc">
@@ -346,52 +346,10 @@ Here is the description of the different tags to dispose in the pages.
 	Quite the same thing except that the developer should not place the `class="{{jsonWord.wordClass}}"` attribute in the span tag where `ng-repeat` is. Indeed this `wordClass` is a part of the information added by the comparison. It is different depending if the word must be substituted, inserted, deleted. Beside if a part of a transcription have not been treated by the DTW (if it is outside of any sentence bounds) then the corresponding word will have the wordClass "untreatedDtw" (should appear as grey text). Or as we seen before the comparison is not made in the diarization controller so the developer should not place the class attribute if he do not want to see the all text appear in grey. However he may use the "none" class (a default style).   
 	The `ng-mouseenter` and `ng-mouseleave` are not necessary too.
 
-* Interactive bar:
+* Interactive speaker bar and list:
 
-	The interactive bar is composed of a clickable bar to navigate in the video (this bar also show the repartition of the speakers) and a timer. Here is the way the developer should insert the bar in his page (for the transcription n°i):
+	Same thing too except here, i can be >0.
 
-		<canvas width="1125" height="70" class="canvas" id="canvasi" ng-click="clickUpdate($event)">
-          		<p>updates are necessary</p>
-		</canvas>
- 		<p><span id="progressTimei">--:--</span></p>	
-
-	As before, the canvas tag must have the id "canvasi" and the timer the id "progressTimei" where i is the index of the transcription. The canvas must be bounded to the `clickUpdate` function.   
-	The message "updates are necessary" is useful to inform if the browser does not support canvas.
-
-* Caption:
-
-	A interactive caption is available. The user can see the different speakers and their respective color but it also display the speaker that is currently talking. Beside if the user click on the colored rectangle of a speaker, the video will be settled on the first time when the speaker talks. Here is the way the caption can be made:
-
-		<h3>Caption</h3>
-		<p>Click on the <span class="bold">colored rectangles</span> to start the video at the first speech of the corresponding speaker. <p>
-
-		<p class="bold"> Principal speakers [{{speakerBar.mainSpeakers().length}}]<p>
-		<ul>
-			<li ng-repeat="speaker in speakerBar.mainSpeakers()" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
-				<span style="background:white;padding:2px 10px 2px;">   </span>
-				<span style="cursor:pointer;color:{{speaker.color}};background:	{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
-				<span style="background:white;padding:2px 10px 2px;">   </span>
-				name: <span class="bold">{{speaker.spkId}}</span>,
-				gender: <span class="bold">{{speaker.gender}}</span>, 
-				total time of speech=<span class="bold">{{speaker.totalTimeString()}}</span>
-			</li>
-		</ul>
-        	
-		<p class="bold">{{speakerBar.secondarySpeakersTitle}}<p>
-		<ul>
-			<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
-				<span style="background:white;padding:2px 10px 2px;">   </span>
-				<span style="cursor:pointer;color:{{speaker.color}};background: {{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
-				<span style="background:white;padding:2px 10px 2px;">   </span>	
-				name: <span class="bold">{{speaker.spkId}}</span>, 
-				gender: <span class="bold">{{speaker.gender}}</span>, 
-				total time of speech=<span class="bold">{{speaker.totalTimeString()}}</span> 
-			</li>
-		</ul>
-
-	The developer can access the data of the different speaker (their color, id, gender, speaking periods, speaking status) via `speakerBar.speakers` which is an array of `speakerData` objects. But here, it is more interesting to use the functions `speakerBar.mainSpeakers()` and `speakerBar.secondarySpeakers()` which return a subset of the `speakerBar.speakers` array. `speakerBar.mainSpeakers()` will return the speakers who talk the most and have their own color while `speakerBar.secondarySpeakers()` will return the speakers who talk the less and share the same color. It all depends of the colors the developer gave in first time when he initialized the controller. Now it is possible to separate the main speakers from the others in the caption.   
-	`speaker.speakingStatus` correspond to a css style different if the speaker is currently speaking or not and it is frequently updated.    
-	The colored rectangle has to be bounded to the function `speaker.moveVideoToSpeechStart()` which set the video to the moment when the speaker talk for the first time.
 
 ## II) Detailed code documentation
 
@@ -403,41 +361,21 @@ The css file contains styles used by the plugins.
 
 current : The displayed part of one transcription is progressively highlighted as the video is read. This style is given to a word highlighted.
 
-suppr : This style is given to a word that should be suppressed from a hypothesis transcription if we want it to match with the reference transcription.
-
-inser : This style is given to a word that should be inserted in a hypothesis transcription if we want tit to match with the reference transcription.
-
-subst : This style is given to a word that should be substituted in a hypothesis transcription with an other one from the reference transcription if we want the hypothesis to match with the reference.
-
-supprCaption : A style to represent what a suppressed word looks like in the caption (practically the same as suppr  style except some details: like the cursor that must not be transformed into a pointer when it is over).
-
-InserCaption : same thing that supprCaption. 
-
-substCaption : same thing that supprCaption. 
-
-ShowInser : This style is given to a word in the reference transcription that correspond to a word inserted somewhere in a hypothesis transcription.
-
-ShowSubst : This style is given to a word in the reference transcription that has substituted a word somewhere in a hypothesis transcription.
-
 none : This style is given for words that have not to be modified (but it means they have been treated by the Dtw).
 
 untreatedDtw : This style is given for words that have not been treated in the Dtw (grey text).
 
-#### 2) Styles for user messages
-
-message: A style for visible user message.
-
-clickableMessage : A style for the part of the message that can be clicked.
-
-bold : Bold style.
-
-#### 3) Styles for speaker diarization bar
+#### 2) Styles for speaker diarization bar
 
 canvas : The style of the speaker bar (form, shadows...)
 
-speaking : A style to distinguish which speaker is currently speaking.
+#### 3) General styles
 
-notSpeaking : A style for every other speakers not speaking.
+bold, italic, title and bloc (for certain container).
+
+#### 4) Popover styles
+
+popover styles are defined for the speaker bar popover.
 
 ### B) service.js
 
