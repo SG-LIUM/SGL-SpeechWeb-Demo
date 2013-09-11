@@ -166,39 +166,45 @@ Here is the description of the different tags to dispose in the pages.
 
 	The developer can access the transcription system n°i name like this:
 	
-		<h2>{{transcriptionsData.displayedTranscriptions[i].id}} Transcription</h2>
+		<span class="title">{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</span>
 
 
 * Displayed Transcription:
 
 	The transcriptions are displayed part by part in synchronization with the video (a whole transcription is too big to be displayed at once). The developer can access these transcription pieces with `transcriptionsData.displayedTranscriptions[i]` (for the transcription n°i). Here is an example to show the displayed part of the reference:
 
+		<span class="italic">{{transcriptionsData.displayedTranscriptions[0].message}}</span>
 		<article id="content0">
 			<p>
 				<span 
-				ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription"
-	 			ngModel="transcriptionsData.displayedTranscriptions[0].transcription"
-				data-start="{{jsonWord.start}}"
-				ng-click="moveVideo($event)"
-				class="{{jsonWord.wordClass}}">
-					{{jsonWord.word}} 
+				style="cursor: pointer;"
+				ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" 
+				ngModel="transcriptionsData.displayedTranscriptions[0].transcription" 
+				data-start="{{jsonWord.start}}" 
+				ng-click="moveVideo($event)" 
+				rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" 
+				class="{{jsonWord.wordClass}}">    
+					{{jsonWord.word}}    
 				</span>
 			</p>
 		</article>
 
 	And here is an example to show the displayed part of the hypothesis (transcription n°i with i>0) which is slightly different because of the  `ng-mouseenter` and `ng-mouseleave` fields:
 
-		<article class="last" id="contenti">
+		<span class="italic">{{transcriptionsData.displayedTranscriptions[i].message}}</span>
+		<article id="contenti">
 			<p>
 				<span 
-				ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[i].transcription" 				
+				style="cursor: pointer;" 
+				ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[i].transcription" 
 				ngModel="transcriptionsData.displayedTranscriptions[i].transcription" 
 				data-start="{{jsonWord.start}}" 
 				ng-click="moveVideo($event)" 
 				ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" 
-				ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" 			
-				class="{{jsonWord.wordClass}}">
-					{{jsonWord.word}} 
+				ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" 
+				rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" 
+				class="{{jsonWord.wordClass}}">    
+					{{jsonWord.word}}   
 				</span>
 			</p>
 		</article>
@@ -206,7 +212,9 @@ Here is the description of the different tags to dispose in the pages.
 	The code of the displayed transcription must be inside of a container having the id "contenti" where i is the index of the transcription (content0 for the transcription n°0).   
 	`transcriptionsData.displayedTranscriptions` is an array of `displayedTranscription` objects which regroups the information of the displayed part of a transcription (one for each complete transcription). The word objects (same structure as those of the original json file) are accessible via `transcriptionsData.displayedTranscriptions[i].transcription`.   
 	`data-start="{{jsonWord.start}}"` and `ng-click="moveVideo($event)"` are important because they allow the user to click on a word to set the video at the start of this word.   
-	Two more field are presents in the hypothesis displays. As it was told before, information has been added to word if they are word to delete, insert (word that comes from the reference) or substitute (by a word from the reference). In the insert and substitute case, it could be interesting for the user to see to which word it correspond in the reference. That what the `transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)` and `transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)` functions are for. When the user points his mouse on a inserted or substituted word in a hypothesis, it will change the style or the corresponding word in the reference. When his mouse leaves it, the original style is restituted.
+	Two more field are presents in the hypothesis displays. As it was told before, information has been added to word if they are word to delete, insert (word that comes from the reference) or substitute (by a word from the reference). In the insert and substitute case, it could be interesting for the user to see to which word it correspond in the reference. That what the `transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)` and `transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)` functions are for. When the user points his mouse on a inserted or substituted word in a hypothesis, it will change the style or the corresponding word in the reference. When his mouse leaves it, the original style is restituted.   
+	A tooltip can be configured on each word.   
+	`transcriptionsData.displayedTranscriptions[i].message` is a message which is empty if there is a displayed part at this moment for the transcription n°i. If tere is not, the message indicate it.    
 
 * Video:
 
