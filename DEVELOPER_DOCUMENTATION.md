@@ -266,40 +266,55 @@ Here is the description of the different tags to dispose in the pages.
 	The popover is in a container with the id "popover". Its content is `speakerBar.popoverText`, a message automatically updated depanding on the position of the mouse on the bar. `ng-mousemove="speakerBar.openPopover($event)"` and `ng-mouseleave="speakerBar.closePopover()"` serve to bound the popover to the bar.      
 	The message "updates are necessary" is useful to inform if the browser does not support canvas.
 
-* Caption:
+* Interactive speaker list:
 
-	A interactive caption is available. The user can see the different speakers and their respective color but it also display the speaker that is currently talking. Beside if the user click on the colored rectangle of a speaker, the video will be settled on the first time when the speaker talks. Here is the way the caption can be made:
+	A interactive speaker list is available. The user can see the different speakers and their respective color but it also display the speaker that is currently talking. Beside if the user click on the colored rectangle of a speaker, the video will be settled on the first time when the speaker talks. Here is the way the caption can be made:
 
-		<h3>Caption</h3>
-		<p>Click on the <span class="bold">colored rectangles</span> to start the video at the first speech of the corresponding speaker. <p>
+		<!-- Main Speaker -->
+		<span class="bold">{{speakerBar.mainSpeakersTitle}}</span>
+		<div class="container-fluid">
+		  <div class="row-fluid">
+			<div class="span6">
+				<ul class="nav nav-pills nav-stacked">
+					<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" ngModel="speakerBar.mainSpeakers.slice(0,speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
+						<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.giveTotalTimeString()}}</span> </a>
+					</li>
+				</ul>
+	
+			</div>
+			<div class="span6">
+				<ul class="nav nav-pills nav-stacked">
+					<li ng-repeat="speaker in speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" ngModel="speakerBar.mainSpeakers.slice(speakerBar.mainSpeakers.length / 2+speakerBar.mainSpeakers.length % 2,speakerBar.mainSpeakers.length)" class="{{speaker.speakingStatus}}" >
+						<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.giveTotalTimeString()}}</span> </a>
+					</li>
+				</ul>
+			</div>
+		  </div>
+		</div>
+		<!-- Secondary Speaker -->
+		<span class="bold">{{speakerBar.secondarySpeakersTitle}}</span>
+		<div class="container-fluid">
+		  <div class="row-fluid">
+			<div class="span6">
+				<ul class="nav nav-pills nav-stacked">
+					<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" ngModel="speakerBar.secondarySpeakers.slice(0,speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2)" class="{{speaker.speakingStatus}}" >
+						<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>  id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.giveTotalTimeString()}}</span> </a>
+					</li>
+				</ul>
+			</div>
+			<div class="span6">
+				<ul class="nav nav-pills nav-stacked">
+					<li ng-repeat="speaker in speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" ngModel="speakerBar.secondarySpeakers.slice(speakerBar.secondarySpeakers.length / 2+speakerBar.secondarySpeakers.length % 2,speakerBar.secondarySpeakers.length)" class="{{speaker.speakingStatus}}" >
+						<a  style="text-decoration:none;"><button class=" btn btn-large" style="background:{{speaker.color}};" ng-click="speaker.moveVideoToSpeechStart()" rel="tooltip" tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()">   </button>	id: <span class="badge badge">{{speaker.spkId}}</span> , gender: <span class="badge badge">{{speaker.gender}}</span> , total speech time= <span class="badge badge">{{speaker.giveTotalTimeString()}}</span> </a>
+					</li>
+				</ul>
+			</div>
+		</div>
 
-		<p class="bold"> Principal speakers [{{speakerBar.mainSpeakers().length}}]<p>
-		<ul>
-			<li ng-repeat="speaker in speakerBar.mainSpeakers()" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
-				<span style="background:white;padding:2px 10px 2px;">   </span>
-				<span style="cursor:pointer;color:{{speaker.color}};background:	{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
-				<span style="background:white;padding:2px 10px 2px;">   </span>
-				name: <span class="bold">{{speaker.spkId}}</span>,
-				gender: <span class="bold">{{speaker.gender}}</span>, 
-				total time of speech=<span class="bold">{{speaker.totalTimeString()}}</span>
-			</li>
-		</ul>
-        	
-		<p class="bold">{{speakerBar.secondarySpeakersTitle}}<p>
-		<ul>
-			<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
-				<span style="background:white;padding:2px 10px 2px;">   </span>
-				<span style="cursor:pointer;color:{{speaker.color}};background: {{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
-				<span style="background:white;padding:2px 10px 2px;">   </span>	
-				name: <span class="bold">{{speaker.spkId}}</span>, 
-				gender: <span class="bold">{{speaker.gender}}</span>, 
-				total time of speech=<span class="bold">{{speaker.totalTimeString()}}</span> 
-			</li>
-		</ul>
-
-	The developer can access the data of the different speaker (their color, id, gender, speaking periods, speaking status) via `speakerBar.speakers` which is an array of `speakerData` objects. But here, it is more interesting to use the functions `speakerBar.mainSpeakers()` and `speakerBar.secondarySpeakers()` which return a subset of the `speakerBar.speakers` array. `speakerBar.mainSpeakers()` will return the speakers who talk the most and have their own color while `speakerBar.secondarySpeakers()` will return the speakers who talk the less and share the same color. It all depends of the colors the developer gave in first time when he initialized the controller. Now it is possible to separate the main speakers from the others in the caption.   
-	`speaker.speakingStatus` correspond to a css style different if the speaker is currently speaking or not and it is frequently updated.    
-	The colored rectangle has to be bounded to the function `speaker.moveVideoToSpeechStart()` which set the video to the moment when the speaker talk for the first time.		
+	The developer can access the data of the different speaker (their color, id, gender, speaking periods, speaking status) via `speakerBar.speakers` which is an array of `speakerData` objects. But here, it is more interesting to use `speakerBar.mainSpeakers` and `speakerBar.secondarySpeakers` which contain both a subset of the `speakerBar.speakers` array. `speakerBar.mainSpeakers` are the speakers who talk the most and have their own color while `speakerBar.secondarySpeakers`are the speakers who talk the less and share the same color. It all depends of the colors the developer gave in first time when he initialized the controller. Now it is possible to separate the main speakers from the others in the caption. The speakers are split in two columns in this example.    
+	`speaker.speakingStatus` correspond to a css (bootstrap css) style different if the speaker is currently speaking or not and it is frequently updated.    
+	The colored button has to be bounded to the function `speaker.moveVideoToSpeechStart()` which set the video to the moment when the speaker talk for the first time.    
+	Titles are available (`speakerBar.mainSpeakersTitle`and `speakerBar.secondarySpeakersTitle`) as well as a tooltip message (`tooltip="'first speech: '+speaker.giveFirstSpeechTimeString()"`).
 
 		
 ##### ii. Diarization Viewer:
@@ -312,7 +327,7 @@ Here is the description of the different tags to dispose in the pages.
 
 * User messages:
 
-	`transcriptionsData.message` and `transcriptionData.clickableMessage` are still present in this controller. The element concerning the DTW calculation 
+	`transcriptionsData.message` and `transcriptionData.clickableMessage` are still present in this controller. The element concerning the DTW calculation are not necessary.
 
 * Title:
 
@@ -328,7 +343,7 @@ Here is the description of the different tags to dispose in the pages.
 
 * Displayed Transcription: 
 
-	Quite the same thing except that the developer should not place the `class="{{jsonWord.wordClass}}"` attribute in the span tag where `ng-repeat` is. Indeed this `wordClass` is a part of the information added by the comparison. It is different depending if the word must be substituted, inserted, deleted. Beside if a part of a transcription have not been treated by the Dtw (if it is outside of any sentence bounds) then the corresponding word will have the wordClass "untreatedDtw" (should appear as grey text). Or as we seen before the comparison is not made in the diarization controller so the developer should not place the class attribute if he do not want to see the all text appear in grey. However he may use the "none" class (a default style).   
+	Quite the same thing except that the developer should not place the `class="{{jsonWord.wordClass}}"` attribute in the span tag where `ng-repeat` is. Indeed this `wordClass` is a part of the information added by the comparison. It is different depending if the word must be substituted, inserted, deleted. Beside if a part of a transcription have not been treated by the DTW (if it is outside of any sentence bounds) then the corresponding word will have the wordClass "untreatedDtw" (should appear as grey text). Or as we seen before the comparison is not made in the diarization controller so the developer should not place the class attribute if he do not want to see the all text appear in grey. However he may use the "none" class (a default style).   
 	The `ng-mouseenter` and `ng-mouseleave` are not necessary too.
 
 * Interactive bar:
