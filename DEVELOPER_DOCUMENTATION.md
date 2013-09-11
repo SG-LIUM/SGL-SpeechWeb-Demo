@@ -89,7 +89,8 @@ The computation of the comparison can be long. The plugin is made so it will not
 
 #### 1) Initializing the controllers
 
-Two different controllers have been built in this project. One for a transcription comparator: it will . The service `Controller` from the `controllerServices` is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages.     
+Two different controllers have been built in this project. The first one is for a transcription comparator: it will display several transcription, show the difference between the reference and the hypothesis and also give a interactive speaker bar for the first transcription (reference). The second one takes care of one transcription only and give a speaker bar too (it is referencedd in this documentation as a diarization viewer). There is no DTW comparison.   
+The service `Controller` from the `controllerServices` is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages.     
 The instances manipulated are `transcriptionData` which contains the important information built from the seg and ctm files given by the developer and `speakerBar` which contain the information built from `transcriptionData` and which permits to handle the interactive bar.
 
 The transcription comparator has to call the service :
@@ -105,7 +106,7 @@ The diarization viewer has to call the service :
 	Controller.initializeDiarizationCtrl($scope,step,numTranscription,colors);
 
 `step` has the same signification as previously.    
-As we have seen before, the json data are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription). `numTranscription` is the index in the array of the transcription that will be used.    
+As we have seen before, the json data are an array of transcription. A diarization viewer's controller handle one transcription only (its goal his to give a graphical representation of the different stakeholders for one transcription).`numTranscription` is the index in the array of the transcription that will be used.    
 `colors` represents the same thing that before.   
 
 #### 2) Allowing tooltips
