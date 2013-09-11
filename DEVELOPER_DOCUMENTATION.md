@@ -157,10 +157,10 @@ Here is the description of the different tags to dispose in the pages.
 		  {{transcriptionsData.message}} <button class=" btn btn-danger  btn-large" ng-click="startVideo(transcriptionsData.fullTranscription[0].content[0].start)">{{transcriptionsData.clickableMessage}}</button>
 		</div>
 
-	The id `progressBar`, `calculationOverAlert` and `outTranscriptionAlert` must be present so those element can be updated.   
+	The id "progressBar", "calculationOverAlert" and "outTranscriptionAlert" must be present so those element can be updated.   
 	The progress bar represents the percentage of the Dtw calculation done and it will automaticaly be updated. `transcriptionsData.progressBarContent[0].style.width` is the actual percentage. The bar appears when there is DTW calculation (the enhanced json file is not found) and disapears when it is over.    
-	The `calculationOverAlert` message appears when the DTW calculation is over (if the enhanced json file was not found). The enhanced json data can be covered by clicking on the button connected to `transcriptionsData.copyTranscription()`.    
-	The `outTranscriptionAlert` message appears when the video is currently out of the transcripted part. `transcriptionsData.message` and `transcriptionsData.clickableMessage` compose a complete message indicating if the video is outside of the transcribed part (taking the first transcription as a reference too for the limits). `transcriptionsData.clickableMessage` contains the time when the transcription start and is dedicated to be bounded to the action: `startVideo(transcriptionsData.fullTranscription[0].content[0].start)` which set video to the start of the transcription. The start chosen here is the one of the reference.   
+	The "calculationOverAlert" message appears when the DTW calculation is over (if the enhanced json file was not found). The enhanced json data can be covered by clicking on the button connected to `transcriptionsData.copyTranscription()`.    
+	The "outTranscriptionAlert" message appears when the video is currently out of the transcripted part. `transcriptionsData.message` and `transcriptionsData.clickableMessage` compose a complete message indicating if the video is outside of the transcribed part (taking the first transcription as a reference too for the limits). `transcriptionsData.clickableMessage` contains the time when the transcription start and is dedicated to be bounded to the action: `startVideo(transcriptionsData.fullTranscription[0].content[0].start)` which set video to the start of the transcription. The start chosen here is the one of the reference.   
 	`transcriptionsData.fullTranscription` is the array created from the json files (or found in the enhanced transcription json file if founded).
 
 * Title:
@@ -222,9 +222,7 @@ Here is the description of the different tags to dispose in the pages.
 	The developer must place his video somewhere in the page like this
 
 		<video width="512" height="288" id="mediafile" controls preload>
-			<!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
 			<source type="video/mp4" src="http://your-video.mp4" />
-			<!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
 			<source type="video/webm" src="http://your-video .webm" />
 		</video>
 
@@ -244,6 +242,65 @@ Here is the description of the different tags to dispose in the pages.
 		<p>Other information:</p>
 		<p>_ <span class="{{transcriptionsData.showStyle}}">referenceWord </span> : When your mouse is over an inserted or substituted word in a hypothesis, the corresponding word in the reference is highlighted.<br>
 		_ <span class="untreatedDtw">word </span> : This word has not been treated by a DTW because it does not belong to any sentence.</p>
+		
+* Interactive speaker bar:
+
+	The interactive speaker bar is composed of a clickable bar to navigate in the video (this bar also show the repartition of the speakers), a timer and also a popver which give some information when the mouse is over the bar. Here is the way the developer should insert the bar in his page (for the transcription n°0 because it will automatically corespond to th reference):   
+
+		<div id="popover" class="popover">
+			<div class="bloc">
+			<h4>Speaker Bar Info</h4>
+			<span>{{speakerBar.popoverText}}</span>
+			</div class="bloc">
+		</div>
+		
+		<div id="canvasicontainer">
+			<canvas class="canvas" id="canvasi" ng-click="speakerBar.clickUpdate($event)" ng-mousemove="speakerBar.openPopover($event)" ng-mouseleave="speakerBar.closePopover()">
+			  <p>updates are necessary</p>
+			</canvas>
+		</div>
+		<p><span id="progressTimei">--:--</span></p>	
+
+	As before, the canvas tag must have the id "canvasi" and the timer the id "progressTimei" where i is the index of the transcription. The canvas must be in a container which have the id "canvasicontainer": it will permit the bar to be auto-sized.    
+	The canvas must be bounded to the `clickUpdate` function when the user click on it.   
+	The popover is in a container with the id "popover". Its content is `speakerBar.popoverText`, a message automatically updated depanding on the position of the mouse on the bar. `ng-mousemove="speakerBar.openPopover($event)"` and `ng-mouseleave="speakerBar.closePopover()"` serve to bound the popover to the bar.      
+	The message "updates are necessary" is useful to inform if the browser does not support canvas.
+
+* Caption:
+
+	A interactive caption is available. The user can see the different speakers and their respective color but it also display the speaker that is currently talking. Beside if the user click on the colored rectangle of a speaker, the video will be settled on the first time when the speaker talks. Here is the way the caption can be made:
+
+		<h3>Caption</h3>
+		<p>Click on the <span class="bold">colored rectangles</span> to start the video at the first speech of the corresponding speaker. <p>
+
+		<p class="bold"> Principal speakers [{{speakerBar.mainSpeakers().length}}]<p>
+		<ul>
+			<li ng-repeat="speaker in speakerBar.mainSpeakers()" ngModel="speakerBar.mainSpeakers()" class="{{speaker.speakingStatus}}" >
+				<span style="background:white;padding:2px 10px 2px;">   </span>
+				<span style="cursor:pointer;color:{{speaker.color}};background:	{{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
+				<span style="background:white;padding:2px 10px 2px;">   </span>
+				name: <span class="bold">{{speaker.spkId}}</span>,
+				gender: <span class="bold">{{speaker.gender}}</span>, 
+				total time of speech=<span class="bold">{{speaker.totalTimeString()}}</span>
+			</li>
+		</ul>
+        	
+		<p class="bold">{{speakerBar.secondarySpeakersTitle}}<p>
+		<ul>
+			<li ng-repeat="speaker in speakerBar.secondarySpeakers()" ngModel="speakerBar.secondarySpeakers()" class="{{speaker.speakingStatus}}" >
+				<span style="background:white;padding:2px 10px 2px;">   </span>
+				<span style="cursor:pointer;color:{{speaker.color}};background: {{speaker.color}};padding:2px 10px 2px;" ng-click="speaker.moveVideoToSpeechStart()">________</span>
+				<span style="background:white;padding:2px 10px 2px;">   </span>	
+				name: <span class="bold">{{speaker.spkId}}</span>, 
+				gender: <span class="bold">{{speaker.gender}}</span>, 
+				total time of speech=<span class="bold">{{speaker.totalTimeString()}}</span> 
+			</li>
+		</ul>
+
+	The developer can access the data of the different speaker (their color, id, gender, speaking periods, speaking status) via `speakerBar.speakers` which is an array of `speakerData` objects. But here, it is more interesting to use the functions `speakerBar.mainSpeakers()` and `speakerBar.secondarySpeakers()` which return a subset of the `speakerBar.speakers` array. `speakerBar.mainSpeakers()` will return the speakers who talk the most and have their own color while `speakerBar.secondarySpeakers()` will return the speakers who talk the less and share the same color. It all depends of the colors the developer gave in first time when he initialized the controller. Now it is possible to separate the main speakers from the others in the caption.   
+	`speaker.speakingStatus` correspond to a css style different if the speaker is currently speaking or not and it is frequently updated.    
+	The colored rectangle has to be bounded to the function `speaker.moveVideoToSpeechStart()` which set the video to the moment when the speaker talk for the first time.		
+
 		
 ##### ii. Diarization Viewer:
 
