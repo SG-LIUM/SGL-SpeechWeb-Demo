@@ -450,7 +450,7 @@ _ function instance: It returns an instance of the DtwTranscription class. This 
 	
 	* *return:* an array of PointDtwTranscription
 
-##### iii. TranscriptionsData (use the services BinarySearch,Indexes and DtwTranscription)
+##### iii. TranscriptionsData (use the services BinarySearch,Indexes,DtwTranscription,Video and Time)
 
 _ function instance: It returns an instance of the TranscriptionData class. This class contains information concerning the transcriptions.
 
@@ -470,13 +470,15 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 		
 	* *instance variables*
 	
+		**message:** a message usefull when the displayed part is out of the trancripted part
+            	**id:** the id of the transcription system
 		**nextWordToDisplay:** the index of the next word to display in the complete transcription   
-		**this.currentHighlightedIndex:** the index of the currently highlighted word in the displayed part  
-		**this.currentWordStart:** the index of the first word displayed in the complete transcription  
-		**this.currentWordEnd:** the index of the last word displayed in the complete transcription  
-		**this.step:** the number of word displayed at a time  
-		**this.nextTimeToDisplay:** the start of the next word to display  
-		**this.transcription:** an array of wordObject to display  
+		**currentHighlightedIndex:** the index of the currently highlighted word in the displayed part  
+		**currentWordStart:** the index of the first word displayed in the complete transcription  
+		**currentWordEnd:** the index of the last word displayed in the complete transcription  
+		**step:** the number of word displayed at a time  
+		**nextTimeToDisplay:** the start of the next word to display  
+		**transcription:** an array of wordObject to display  
 	
 	**WordToAdd:** represents a word object that will have to be inserted in a transcription (they are inserted at the end because of the shift)
 	
@@ -495,9 +497,16 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 	*fullTranscription:** the array of complete transcriptions issued from the json file  
 	**globalStep:** the step for all the displayedTranscription  
 	**displayedTranscriptions:** an array of DisplayedTranscription (one for each complete transcription)  
-	**calculationMessage:** a message about the calculation state of the plugin  
 	**message:** a message to inform the user if he is outside the transcription  
 	**clickableMessage:** the clickable part of the message  
+	**progressBarContent:** the progress bar content in the web page
+	**progressBar:** the progress bar in the web page
+	**outTranscriptionAlert:** the "outTranscriptionAlert" in the web page
+	**calculationOverAlert:** the "calculationOverAlert" in the web page
+	**insertionStyle:** the style used for inserton 
+	**suppressionStyle:** the style used for suppression 
+	**substitutionStyle:** the style used for substitution 
+	**showStyle:** the style used to show a corespondance in the reference
 
 * *methods*
 
@@ -536,7 +545,8 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 	* *parameter*
 		
 		**segments:** an array of bounds that delimit the sentences used in the DTWs. Each bounds is an size 2 array which contain the start and the end of a sentence
-		
+		**refresh:** a function to refresh the web page content during the calculation process
+
 	**showCorespondingWordInReferenceWord:** changes the style of a word in the reference (function used when the user point his mouse on a substituted or inserted word in the hypothesis)
 
 	* *parameter*
@@ -551,7 +561,9 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 
 	**adjustTranscriptions:** adds/modifies information to the transcriptions and adjust the hypothesis transcriptions to the reference before anything starts
 
-##### iv. SpeakerBar (use the services Time and Position)
+	**copyTranscription:** open a modal window for the user allowing him to get the json transcription data with the DTW information added
+
+##### iv. SpeakerBar (use the services Video,Time,Position and BinarySearch)
 
 _ function instance: It returns an instance of the SpeakerBar class. This class contains information concerning the speaker bar for the diarization.   
 
@@ -576,15 +588,15 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 		**gender:** the gender of the speaker (string)  
 		**color:** the color to identify the speaker  
 		**speakingPeriods:** an array of size 2 arrays that contains start and ends of a speaking period  
-		**speakingStatus:** a string determining if the speaker is actually speaking or not  
+		**speakingStatus:** a string determining if the speaker is actually speaking or not (corespond to a css style)
 		
 	* *methods*
 	
-		**totalTime:** gives the sum of the speaker speech
+		**giveTotalTime:** gives the sum of the speaker speech
 		
 		* *return:* the total amount of time cumulated in speakingPeriods
 		
-		**totalTimeString:** gives a string representing the sum of the speaker speech
+		**giveTotalTimeString:** gives a string representing the sum of the speaker speech
 		
 		* *return:* a string representing the total time of speech
 		
@@ -596,11 +608,6 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 			**end:** the end of the period
 		
 		**moveVideoToSpeechStart:** moves the video to the moment when the speaker speaks for the first time  
-		**updateSpeakingStatus:** sets the status to 'speaking' or 'notSpeaking'
-	
-		* *parameter*
-		
-			**time:** the time of the update
 
 * *instance variables*
 
@@ -609,24 +616,24 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 	**timeStart:** the moment when the video start  
 	**timeEnd:** the moment when the video end  
 	**canvas:** the canvas found in the html page  
+	**canvasContainer:** the canvas container found in the html page  
+	**context:** the context of the canvas
 	**timer:** the timer found in the html page  
 	**canvasWidth:** the width of the canvas  
 	**canvasHeight:** the height of the canvas  
 	**duration:** the duration of the transcription  
 	**colors:** the array of color  
 	**speakers:** an array of SpeakerData object  
-	**secondarySpeakersTitle:** a title used only if there is secondary speakers (those who share the same color)  
+	**mainSpeakers:** a sub-array of speakers which contains those who talk the more
+	**secondarySpeakers:** a sub-array of speakers which contains those who talk the less
+	**secondarySpeakersTitle:** a title used only if there is secondary speakers (those who share the same color) 
+	**mainSpeakersTitle:** a tittle for the main speakers
+	**this.grd:** a gradiant for the speaker bar coloration
+	**contextCopy:** a copy of the speaker bar context once it is colored. It is not necessary to draw again the bar for each update
+	**popoverText:** the information given in the popover
 
 * *methods*
 
-	**mainSpeakers:** gives a sub-array of the principal speakers (those who have their own color)
-	
-	* *return:* a sub-array of speakers array
-		
-	**secondarySpeakers:** gives a sub-array of the secondary speakers (those who share the same color)
-	
-	* *return:* a sub-array of speakers array
-		
 	**updateSpeakers:** fills the speakers array with SpeakerData objects corresponding to the transcription  
 	**setColor:** sets the current color to fill the canvas
 	
@@ -653,6 +660,16 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 	* *parameter*
 		
 		**event:** an $event object
+
+	**initialize:** initializes the speaker bar for the first time
+
+	**openPopover:** opens the popover which describe the bar
+	
+	* *parameter*
+		
+		**event:** an $event object
+
+	**closePopover:** closes the popover
 
 #### 2) searchServices
 
