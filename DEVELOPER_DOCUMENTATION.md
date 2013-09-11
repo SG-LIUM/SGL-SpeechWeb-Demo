@@ -89,14 +89,14 @@ The computation of the comparison can be long. The plugin is made so it will not
 
 #### 1) Initializing the controllers
 
-Two different controllers are necessary for the transcription comparator and for the diarization viewer. The service `Controller` from the `controllerServices` is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages.     
+Two different controllers have been built in this project. One for a transcription comparator: it will . The service `Controller` from the `controllerServices` is dedicated to the controllers initialization. They will attach specific instances to a root scope as well as useful functions that are then available in the html pages.     
 The instances manipulated are `transcriptionData` which contains the important information built from the seg and ctm files given by the developer and `speakerBar` which contain the information built from `transcriptionData` and which permits to handle the interactive bar.
 
 The transcription comparator has to call the service :
 
 	Controller.initializeTranscriptionComparisonCtrl($scope,step,colors);
 
-`step` is the integer value representing the number of word displayed at the same time.
+`step` is the integer value representing the number of word displayed at the same time.   
 `colors` is an array of color names. One color is attributed to one speaker on the bar: they will be given in the order of the array to the speakers sorted (decreasing) by their speaking time. Nevertheless, if they are less speakers in the transcriptions than colors given, only the first colors will be used. And if they are more speakers than colors given, the last color will be used several time for the speakers whose talk the less.    
 The speaker bar will automatically represent the first transcription (index 0 in the json data array).
 
