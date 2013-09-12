@@ -470,8 +470,8 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 		
 	* *instance variables*
 	
-		**message:** a message usefull when the displayed part is out of the trancripted part
-		**id:** the id of the transcription system
+		**message:** a message usefull when the displayed part is out of the trancripted part     
+		**id:** the id of the transcription system   
 		**nextWordToDisplay:** the index of the next word to display in the complete transcription   
 		**currentHighlightedIndex:** the index of the currently highlighted word in the displayed part  
 		**currentWordStart:** the index of the first word displayed in the complete transcription  
@@ -499,14 +499,14 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 	**displayedTranscriptions:** an array of DisplayedTranscription (one for each complete transcription)  
 	**message:** a message to inform the user if he is outside the transcription  
 	**clickableMessage:** the clickable part of the message  
-	**progressBarContent:** the progress bar content in the web page
-	**progressBar:** the progress bar in the web page
-	**outTranscriptionAlert:** the "outTranscriptionAlert" in the web page
-	**calculationOverAlert:** the "calculationOverAlert" in the web page
-	**insertionStyle:** the style used for inserton 
-	**suppressionStyle:** the style used for suppression 
-	**substitutionStyle:** the style used for substitution 
-	**showStyle:** the style used to show a corespondance in the reference
+	**progressBarContent:** the progress bar content in the web page   
+	**progressBar:** the progress bar in the web page   
+	**outTranscriptionAlert:** the "outTranscriptionAlert" in the web page   
+	**calculationOverAlert:** the "calculationOverAlert" in the web page   
+	**insertionStyle:** the style used for inserton   
+	**suppressionStyle:** the style used for suppression   
+	**substitutionStyle:** the style used for substitution   
+	**showStyle:** the style used to show a corespondance in the reference   
 
 * *methods*
 
@@ -544,7 +544,7 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 	
 	* *parameter*
 		
-		**segments:** an array of bounds that delimit the sentences used in the DTWs. Each bounds is an size 2 array which contain the start and the end of a sentence
+		**segments:** an array of bounds that delimit the sentences used in the DTWs. Each bounds is an size 2 array which contain the start and the end of a sentence    
 		**refresh:** a function to refresh the web page content during the calculation process
 
 	**showCorespondingWordInReferenceWord:** changes the style of a word in the reference (function used when the user point his mouse on a substituted or inserted word in the hypothesis)
@@ -569,7 +569,7 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 
 * *parameters*
 
-	**transcription:**  the complete transcription that the bar will describe   
+	**transcription:**  the complete transcription that the bar will describe    
 	**transcriptionNum:**  the number of this transcription to identify the bar elements in the page.   
 	**colors:** an array of colors that will be used to identify the speakers  
 
@@ -604,7 +604,7 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 	
 		* *parameters:*
 		
-			**start:** the start of the period
+			**start:** the start of the period    
 			**end:** the end of the period
 		
 		**moveVideoToSpeechStart:** moves the video to the moment when the speaker speaks for the first time  
@@ -617,24 +617,24 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 	**timeEnd:** the moment when the video end  
 	**canvas:** the canvas found in the html page  
 	**canvasContainer:** the canvas container found in the html page  
-	**context:** the context of the canvas
+	**context:** the context of the canvas   
 	**timer:** the timer found in the html page  
 	**canvasWidth:** the width of the canvas  
 	**canvasHeight:** the height of the canvas  
 	**duration:** the duration of the transcription  
 	**colors:** the array of color  
 	**speakers:** an array of SpeakerData object  
-	**mainSpeakers:** a sub-array of speakers which contains those who talk the more
-	**secondarySpeakers:** a sub-array of speakers which contains those who talk the less
-	**secondarySpeakersTitle:** a title used only if there is secondary speakers (those who share the same color) 
-	**mainSpeakersTitle:** a tittle for the main speakers
-	**this.grd:** a gradiant for the speaker bar coloration
-	**contextCopy:** a copy of the speaker bar context once it is colored. It is not necessary to draw again the bar for each update
-	**popoverText:** the information given in the popover
+	**mainSpeakers:** a sub-array of speakers which contains those who talk the more   
+	**secondarySpeakers:** a sub-array of speakers which contains those who talk the less   
+	**secondarySpeakersTitle:** a title used only if there is secondary speakers (those who share the same color)   
+	**mainSpeakersTitle:** a tittle for the main speakers   
+	**this.grd:** a gradiant for the speaker bar coloration    
+	**contextCopy:** a copy of the speaker bar context once it is colored. It is not necessary to draw again the bar for each update   
+	**popoverText:** the information given in the popover   
 
 * *methods*
 
-	**updateSpeakers:** fills the speakers array with SpeakerData objects corresponding to the transcription  
+	**updateSpeakers:** fills the speakers array with SpeakerData objects corresponding to the transcription    
 	**setColor:** sets the current color to fill the canvas
 	
 	* *parameter*
@@ -645,10 +645,10 @@ _ function instance: It returns an instance of the SpeakerBar class. This class 
 	
 	* *parameters*
 	
-		**start:** the moment when when the period to draw begin  
+		**start:** the moment when when the period to draw begin     
 		**width:** the time length of the period to draw  
 		
-	**drawSpeakers:**  draws all the speakers in the bar  
+	**drawSpeakers:**  draws all the speakers in the bar   
 	**timeUpdate:**  updates the bar corresponding to a specific time  
 	
 	* *parameter*
@@ -679,9 +679,9 @@ _ function search: perform a binary search
 
 * *parameters*
 
-	**items:** an array in which we search something
-	**value:** the value to find
-	**accessFunction:** the function to apply on each item to extract the values we search on
+	**items:** an array in which we search something   
+	**value:** the value to find   
+	**accessFunction:** the function to apply on each item to extract the values we search on    
 
 * *return:* the index of the value if found. Otherwise an error is returned. -2 is returned if the value we search is inferior to the items given. -3 if it is superior. -1 is returned for the other cases.
 
@@ -715,7 +715,7 @@ _ function startVideo: starts the video at a specific time and init the display 
 
 * *parameters*
 
-	**timeStart:** time to start the video
+	**timeStart:** time to start the video    
 	**transcriptionsData:** a TranscriptionsData object to init
 
 _ function moveVideo: moves the video at the time corresponding to the word the user clicked on in the page
@@ -763,6 +763,7 @@ _ function getElementPosition: gives the absolute position of an element in the 
 _ getMousePosition: gives the coordinates of the mouse position
 
 * *parameter*
+
 	**event:** an $event object
 
 * *return:* an { “x”: abscissa, “y”: ordinate } object giving the coordinates of the left top of the mouse
