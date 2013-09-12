@@ -561,7 +561,7 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 
 	**adjustTranscriptions:** adds/modifies information to the transcriptions and adjust the hypothesis transcriptions to the reference before anything starts
 
-	**copyTranscription:** open a modal window for the user allowing him to get the json transcription data with the DTW information added
+	**copyTranscription:** opens a modal window for the user allowing him to get the json transcription data with the DTW information added
 
 ##### iv. SpeakerBar (use the services Video,Time,Position and BinarySearch)
 
@@ -711,7 +711,7 @@ _ function get: parses the content of a seg file in assets/files into an exploit
 
 ##### i. Video
 
-_ function startVideo: starts the video at at specific time
+_ function startVideo: starts the video at a specific time and init the display of the corresponding transcriptionsData
 
 * *parameters*
 
@@ -723,6 +723,20 @@ _ function moveVideo: moves the video at the time corresponding to the word the 
 * *parameter*
 
 	**event:** an $event object
+	
+_ function moveVideoTo: moves the video to a specific time
+
+* *parameter*
+
+	**time:** time to move the video
+	
+_ function giveCurrentTime: returns the current time of the video
+
+* *return:* the current time
+
+_ function giveDuration: returns the duration of the video
+
+* *return:* the duration
 
 ##### ii. Time
 
@@ -763,6 +777,7 @@ _ function initializeTranscriptionComparisonCtrl: initializes the controller for
 
 	**scope:** a $scope object  
 	**globalStep:** the step used for every displayed transcription  
+	**colors:** an array of the colors used to represent the speakers  
 
 _ function initializeDiarizationCtrl: initializes the controller for the diarization viewer
 
