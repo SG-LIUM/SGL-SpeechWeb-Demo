@@ -471,7 +471,7 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 	* *instance variables*
 	
 		**message:** a message usefull when the displayed part is out of the trancripted part
-            	**id:** the id of the transcription system
+		**id:** the id of the transcription system
 		**nextWordToDisplay:** the index of the next word to display in the complete transcription   
 		**currentHighlightedIndex:** the index of the currently highlighted word in the displayed part  
 		**currentWordStart:** the index of the first word displayed in the complete transcription  
@@ -494,7 +494,7 @@ _ function instance: It returns an instance of the TranscriptionData class. This
 
 * *instance variables*
 
-	*fullTranscription:** the array of complete transcriptions issued from the json file  
+	**fullTranscription:** the array of complete transcriptions issued from the json file  
 	**globalStep:** the step for all the displayedTranscription  
 	**displayedTranscriptions:** an array of DisplayedTranscription (one for each complete transcription)  
 	**message:** a message to inform the user if he is outside the transcription  
