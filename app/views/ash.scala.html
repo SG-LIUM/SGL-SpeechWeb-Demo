@@ -75,7 +75,7 @@
 														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item2" data-toggle="collapse"> <i class="icon-chevron-up"></i>  <span class="title">{{transcriptionsData.displayedTranscriptions[0].id}} Transcription</span> </a> </div>
 														<div id="item2" class="collapse in">
 															<div class="accordion-inner">
-																<span class="italic"><i>{{transcriptionsData.displayedTranscriptions[0].message}}</i></span>
+																<span class="italic">{{transcriptionsData.displayedTranscriptions[0].message}}</span>
 																<article id="content0">
 																	<p>
 																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[0].transcription" ngModel="transcriptionsData.displayedTranscriptions[0].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
@@ -97,7 +97,7 @@
 														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item3" data-toggle="collapse"> <i class="icon-chevron-up"></i>  <span class="title">{{transcriptionsData.displayedTranscriptions[1].id}} Transcription ({{transcriptionsData.displayedTranscriptions[0].id}} auxiliary system)</span></a> </div>
 														<div id="item3" class="collapse in">
 															<div class="accordion-inner">
-															    <span class="italic"><i>{{transcriptionsData.displayedTranscriptions[1].message}}</i></span>
+															    <span class="italic">{{transcriptionsData.displayedTranscriptions[1].message}}</span>
 																<article id="content1">
 																	<p>
 																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[1].transcription" ngModel="transcriptionsData.displayedTranscriptions[1].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
@@ -116,7 +116,7 @@
 														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item4" data-toggle="collapse"> <i class="icon-chevron-up"></i>  <span class="title">{{transcriptionsData.displayedTranscriptions[2].id}} Transcription ({{transcriptionsData.displayedTranscriptions[0].id}} auxiliary system)</span> </a> </div>
 														<div id="item4" class="collapse in">
 															<div class="accordion-inner">
-																<span class="italic"><i>{{transcriptionsData.displayedTranscriptions[2].message}}</i></span>
+																<span class="italic">{{transcriptionsData.displayedTranscriptions[2].message}}</span>
 																<article id="content2">
 																	<p>
 																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[2].transcription" ngModel="transcriptionsData.displayedTranscriptions[2].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>
@@ -138,7 +138,7 @@
 														<div class="accordion-heading"> <a class="accordion-toggle" style="text-decoration:none;" href="#item5" data-toggle="collapse"> <i class="icon-chevron-up"></i>  <span class="title">{{transcriptionsData.displayedTranscriptions[3].id}} Transcription</span> </a> </div>
 														<div id="item5" class="collapse in">
 															<div class="accordion-inner">
-																<span class="italic"><i>{{transcriptionsData.displayedTranscriptions[3].message}}</i></span>
+																<span class="italic">{{transcriptionsData.displayedTranscriptions[3].message}}</span>
 																<article id="content3">
 																	<p>
 																		<span style="cursor: pointer;" ng-repeat="jsonWord in transcriptionsData.displayedTranscriptions[3].transcription" ngModel="transcriptionsData.displayedTranscriptions[3].transcription" data-start="{{jsonWord.start}}" ng-click="moveVideo($event)" ng-mouseenter="transcriptionsData.showCorespondingWordInReferenceWord(jsonWord)" ng-mouseleave="transcriptionsData.hideCorespondingWordInReferenceWord(jsonWord)" rel="tooltip" tooltip="'start: '+jsonWord.start+' seconds'" class="{{jsonWord.wordClass}}">    {{jsonWord.word}}    </span>

@@ -463,6 +463,7 @@ angular.module('transcriptionServices', [])
                 }
               }
             }
+            //Opens a modal window for the user allowing him to get the json transcription data with the DTW information added
             this.copyTranscription=function(){
             	window.prompt ("Transcription with Dtw informations: Copy to clipboard: Ctrl+C (cmd+C), Enter", JSON.stringify(this.fullTranscription));
             }
