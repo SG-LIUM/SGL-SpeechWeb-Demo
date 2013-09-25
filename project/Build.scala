@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc,
     anorm,
-    "com.wordnik" %% "swagger-play2-utils" % "1.2.5",
+    "com.wordnik" %% "swagger-play2-utils" % "1.2.5" exclude("org.scala-stm", "scala-stm_2.10.0"),
     "commons-io" % "commons-io" % "2.4",
     "com.typesafe.play" %% "play-slick" % "0.5.0.2-SNAPSHOT",
     "org.xerial" % "sqlite-jdbc" % "3.7.2")
