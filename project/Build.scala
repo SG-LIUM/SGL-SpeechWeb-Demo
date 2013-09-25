@@ -27,7 +27,7 @@ object ApplicationBuild extends Build {
       "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
       "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases",
       "java-net" at "http://download.java.net/maven/2",
-      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/")).dependsOn(RootProject( uri("git://github.com/freekh/play-slick.git") ))
+      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"))
 
   //http://kailuowang.blogspot.fr/2013/05/define-arbitrary-tasks-in-play-21.html
   def registerTask(name: String, taskClass: String, description: String) = {
