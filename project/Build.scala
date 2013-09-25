@@ -14,7 +14,6 @@ object ApplicationBuild extends Build {
     anorm,
     "com.wordnik" %% "swagger-play2-utils" % "1.2.5",
     "commons-io" % "commons-io" % "2.4",
-    "com.typesafe.slick" %% "slick" % "1.0.1",
     "com.typesafe.play" %% "play-slick" % "0.5.0.2-SNAPSHOT",
     "org.xerial" % "sqlite-jdbc" % "3.7.2")
 
