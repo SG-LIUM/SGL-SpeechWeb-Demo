@@ -11,14 +11,10 @@ GET     /demo/ash                   controllers.Application.ash
 GET     /about                      controllers.Application.about
 
 
-# Swagger - Root Resources Listing
-GET /api-docs.json controllers.ApiHelpController.getResources
-
 # OPTIONS to support hosting UI off domain
 
 OPTIONS /*wholepath                                           controllers.AudioFileApiController.getOptions(wholepath)
 
-GET     /api-docs.json/audiofiles                             controllers.ApiHelpController.getResource(path = "/api-docs.json/audiofiles")
 POST    /audiofiles.json                                      controllers.AudioFileApiController.addAudioFile
 POST    /audiofiles.json/:id/transcriptions                   controllers.AudioFileApiController.startTranscriptions(id: Int)
 GET     /audiofiles.json/:id/transcriptions                   controllers.AudioFileApiController.getTranscriptions(id: Int)
