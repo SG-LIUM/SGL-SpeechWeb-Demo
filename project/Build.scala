@@ -12,9 +12,10 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc,
     anorm,
-    "com.wordnik" %% "swagger-play2-utils" % "1.2.4",
+    "com.wordnik" %% "swagger-play2-utils" % "1.2.5",
     "commons-io" % "commons-io" % "2.4",
     "com.typesafe.slick" %% "slick" % "1.0.1",
+    "com.typesafe.play" %% "play-slick" % "0.5.0.2-SNAPSHOT",
     "org.xerial" % "sqlite-jdbc" % "3.7.2")
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
@@ -27,7 +28,7 @@ object ApplicationBuild extends Build {
       "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
       "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases",
       "java-net" at "http://download.java.net/maven/2",
-      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"))
+      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/")).dependsOn(RootProject( uri("git://github.com/freekh/play-slick.git") ))
 
   //http://kailuowang.blogspot.fr/2013/05/define-arbitrary-tasks-in-play-21.html
   def registerTask(name: String, taskClass: String, description: String) = {
