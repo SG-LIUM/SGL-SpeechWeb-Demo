@@ -9,7 +9,7 @@ import play.api.libs.json._
 
 class BaseApiController extends Controller with RestResourceUtil {
 
-  protected def JsonResponse(response: SimpleResult[JsValue]): PlainResult =
+  protected def JsonResponse(response: SimpleResult): SimpleResult =
     response.as("application/json")
       .withHeaders(
         ("Access-Control-Allow-Origin", "*"),
